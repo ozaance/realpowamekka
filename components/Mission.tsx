@@ -68,10 +68,10 @@ export default function Mission() {
               transition={{ duration: 0.55, ease: "easeOut", delay: 0.08 }}
               style={{
                 fontFamily: "var(--font-display)",
-                fontWeight: 300,
+                fontWeight: "var(--disp-weight)" as unknown as number,
                 fontSize: "clamp(22px, 2.7vw, 36px)",
                 lineHeight: 1.32,
-                letterSpacing: "-0.01em",
+                letterSpacing: "var(--disp-track)",
                 color: "var(--ink)",
                 maxWidth: "24ch",
                 marginBottom: "28px",

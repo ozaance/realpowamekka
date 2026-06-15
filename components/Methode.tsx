@@ -65,10 +65,10 @@ export default function Methode() {
             transition={{ duration: 0.5, ease: "easeOut" }}
             style={{
               fontFamily: "var(--font-display)",
-              fontWeight: 300,
+              fontWeight: "var(--disp-weight)" as unknown as number,
               fontSize: "clamp(24px, 3vw, 40px)",
               lineHeight: 1.1,
-              letterSpacing: "-0.015em",
+              letterSpacing: "var(--disp-track)",
               color: "var(--ink)",
             }}
           >
@@ -135,7 +135,7 @@ export default function Methode() {
               <h4
                 style={{
                   fontFamily: "var(--font-display)",
-                  fontWeight: 300,
+                  fontWeight: "var(--disp-weight)" as unknown as number,
                   fontSize: "clamp(20px, 1.9vw, 26px)",
                   color: "var(--ink)",
                   marginBottom: "12px",

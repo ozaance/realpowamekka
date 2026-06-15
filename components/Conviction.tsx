@@ -50,10 +50,10 @@ export default function Conviction() {
             transition={{ duration: 0.55, ease: "easeOut", delay: 0.08 }}
             style={{
               fontFamily: "var(--font-display)",
-              fontWeight: 300,
+              fontWeight: "var(--disp-weight)" as unknown as number,
               fontSize: "clamp(30px, 5vw, 68px)",
               lineHeight: 1.06,
-              letterSpacing: "-0.015em",
+              letterSpacing: "var(--disp-track)",
               color: "var(--ink)",
               marginTop: "22px",
             }}

@@ -68,10 +68,10 @@ export default function CTAFinal() {
           transition={{ duration: 0.55, ease: "easeOut", delay: 0.1 }}
           style={{
             fontFamily: "var(--font-display)",
-            fontWeight: 300,
+            fontWeight: "var(--disp-weight)" as unknown as number,
             fontSize: "clamp(30px, 5vw, 68px)",
             lineHeight: 1.06,
-            letterSpacing: "-0.015em",
+            letterSpacing: "var(--disp-track)",
             color: "var(--ink)",
             maxWidth: "18ch",
             margin: "0 auto 14px",

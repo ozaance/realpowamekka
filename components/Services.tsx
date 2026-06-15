@@ -75,10 +75,10 @@ export default function Services() {
             transition={{ duration: 0.5, ease: "easeOut" }}
             style={{
               fontFamily: "var(--font-display)",
-              fontWeight: 300,
+              fontWeight: "var(--disp-weight)" as unknown as number,
               fontSize: "clamp(24px, 3vw, 40px)",
               lineHeight: 1.1,
-              letterSpacing: "-0.015em",
+              letterSpacing: "var(--disp-track)",
               color: "var(--ink)",
             }}
           >
@@ -192,7 +192,7 @@ function ServiceRow({
       <h4
         style={{
           fontFamily: "var(--font-display)",
-          fontWeight: 300,
+          fontWeight: "var(--disp-weight)" as unknown as number,
           fontSize: "clamp(22px, 2.2vw, 30px)",
           color: "var(--ink)",
           position: "relative",
