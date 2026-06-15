@@ -1,38 +1,51 @@
 @import "tailwindcss";
 
 @theme {
-  --color-paper: #f4f1ea;
-  --color-plaster: #eae4d8;
-  --color-mist: #dbd3c4;
-  --color-mist-deep: #c8bea9;
-  --color-ink: #1c1813;
-  --color-ink-soft: #3a342b;
-  --color-ink-dim: #756e62;
-  --color-gold: #a9792f;
-  --color-gold-soft: #c0913f;
+  /* Pierre palette — ivory / stone / sand */
+  --color-paper:       #F5F2EC;
+  --color-plaster:     #E8E3D9;
+  --color-mist:        #D4C9B0;
+  --color-mist-deep:   #C3B598;
+  --color-ink:         #1C1C1A;
+  --color-ink-soft:    #2E2E2C;
+  --color-ink-dim:     #7A7468;
+  --color-gold:        #8B7355;
+  --color-gold-soft:   #A68B5B;
 
-  --font-display: var(--font-newsreader), Georgia, serif;
-  --font-body: var(--font-hanken), system-ui, sans-serif;
-  --font-label: var(--font-space-mono), "Space Mono", monospace;
+  /* Typography */
+  --font-display: var(--font-cormorant), "Cormorant Garamond", Georgia, serif;
+  --font-body:    var(--font-hanken), system-ui, sans-serif;
+  --font-label:   var(--font-space-mono), "Space Mono", monospace;
 }
 
-/* Raw CSS tokens for direct use */
+/* Raw CSS tokens for component use */
 :root {
-  --paper: #f4f1ea;
-  --plaster: #eae4d8;
-  --shadow: #dbd3c4;
-  --shadow-deep: #c8bea9;
-  --ink: #1c1813;
-  --ink-soft: #3a342b;
-  --ink-dim: #756e62;
-  --gold: #a9792f;
-  --gold-soft: #c0913f;
-  --line: rgba(28, 24, 19, 0.13);
-  --line-strong: rgba(28, 24, 19, 0.24);
-  --ease: cubic-bezier(0.16, 1, 0.3, 1);
-  --light: 0.9;
-  --maxw: 1320px;
-  --pad: clamp(24px, 5vw, 80px);
+  /* Palette Pierre */
+  --paper:       #F5F2EC;
+  --plaster:     #E8E3D9;
+  --shadow:      #D4C9B0;
+  --shadow-deep: #C3B598;
+  --ink:         #1C1C1A;
+  --ink-soft:    #2E2E2C;
+  --ink-dim:     #7A7468;
+  --gold:        #8B7355;
+  --gold-soft:   #A68B5B;
+
+  /* Lines */
+  --line:        rgba(28, 28, 26, 0.12);
+  --line-strong: rgba(28, 28, 26, 0.22);
+
+  /* Typography — Éditorial + Affirmé */
+  --disp-weight: 500;
+  --disp-track:  -0.025em;
+
+  /* Light intensity 100% */
+  --light: 1;
+
+  /* Layout */
+  --ease:  cubic-bezier(0.16, 1, 0.3, 1);
+  --maxw:  1320px;
+  --pad:   clamp(24px, 5vw, 80px);
 }
 
 *,
@@ -58,7 +71,7 @@ body {
   position: relative;
 }
 
-/* Natural light atmosphere overlay */
+/* Architectural light atmosphere — intensity 100% */
 body::before {
   content: "";
   position: fixed;
@@ -69,6 +82,18 @@ body::before {
   background:
     radial-gradient(120% 80% at 84% -10%, color-mix(in oklab, #fff 70%, transparent), transparent 55%),
     linear-gradient(123deg, transparent 46%, color-mix(in oklab, var(--shadow) 70%, transparent) 60%, transparent 82%);
+}
+
+/* Soft architectural shadow overlay */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: calc(var(--light) * 0.45);
+  background:
+    linear-gradient(118deg, transparent 56%, var(--shadow) 58%, var(--shadow-deep) 74%, transparent 88%);
 }
 
 a {
@@ -100,7 +125,7 @@ a {
   stroke: none;
 }
 
-/* After panel SVG — gold system */
+/* After panel SVG — bronze order */
 .svg-after-ln {
   fill: none;
   stroke: var(--gold);
@@ -115,13 +140,13 @@ a {
 }
 .svg-after-nd {
   fill: var(--gold);
-  stroke: color-mix(in oklab, var(--gold) 55%, #fff);
-  stroke-width: 3;
+  stroke: color-mix(in oklab, var(--gold) 30%, #fff);
+  stroke-width: 4;
   paint-order: stroke;
-  filter: drop-shadow(0 0 5px color-mix(in oklab, var(--gold) 70%, transparent));
+  filter: drop-shadow(0 0 6px color-mix(in oklab, var(--gold) 90%, transparent));
 }
 
-/* Before panel — tangle paths */
+/* Before panel — tangle */
 .svg-tangle path {
   fill: none;
   stroke: var(--ink-dim);
@@ -129,21 +154,14 @@ a {
   opacity: 0.42;
 }
 
-/* ---------- PULSE ANIMATION ---------- */
+/* ---------- ANIMATIONS ---------- */
 @keyframes pulse {
-  0% { box-shadow: 0 0 0 0 color-mix(in oklab, var(--gold) 50%, transparent); }
-  70% { box-shadow: 0 0 0 7px transparent; }
+  0%   { box-shadow: 0 0 0 0 color-mix(in oklab, var(--gold) 50%, transparent); }
+  70%  { box-shadow: 0 0 0 7px transparent; }
   100% { box-shadow: 0 0 0 0 transparent; }
 }
 
-/* ---------- REVEAL ANIMATION ---------- */
 @keyframes rise {
   from { opacity: 0; transform: translateY(26px); }
-  to { opacity: 1; transform: none; }
-}
-
-/* ---------- SCROLL-TRIGGERED GOLD SWEEP on service rows ---------- */
-@keyframes goldSweep {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  to   { opacity: 1; transform: none; }
 }

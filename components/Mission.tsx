@@ -57,7 +57,7 @@ export default function Mission() {
               paddingTop: "8px",
             }}
           >
-            Notre Raison d&apos;Être
+            Ce que nous faisons
           </motion.span>
 
           {/* Content */}

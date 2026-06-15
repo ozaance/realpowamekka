@@ -133,16 +133,12 @@ export default function Conviction() {
           {/* AFTER — order */}
           <div
             style={{
+              border: "1px solid var(--line)",
               borderRadius: "18px",
               aspectRatio: "1 / 0.74",
               position: "relative",
               overflow: "hidden",
-              background: `
-                radial-gradient(120% 90% at 70% 12%, color-mix(in oklab, var(--gold) 14%, transparent), transparent 60%),
-                linear-gradient(158deg, color-mix(in oklab, var(--gold) 7%, #fcfbf7), color-mix(in oklab, var(--gold) 11%, var(--plaster)))
-              `,
-              boxShadow:
-                "0 34px 66px -42px color-mix(in oklab, var(--gold) 45%, rgba(28,24,19,.5)), inset 0 0 0 1px color-mix(in oklab, var(--gold) 24%, transparent)",
+              background: "color-mix(in oklab, var(--plaster) 40%, var(--paper))",
             }}
           >
             <svg
@@ -163,9 +159,9 @@ export default function Conviction() {
                 <rect className="svg-after-mod" x="200" y="150" width="60" height="26" rx="18" />
                 <rect className="svg-after-mod" x="80" y="150" width="60" height="26" rx="18" />
                 {/* Nodes */}
-                <circle className="svg-after-nd" cx="150" cy="70" r="4" />
-                <circle className="svg-after-nd" cx="150" cy="110" r="4" />
-                <circle className="svg-after-nd" cx="150" cy="150" r="4" />
+                <circle className="svg-after-nd" cx="150" cy="70" r="7" />
+                <circle className="svg-after-nd" cx="150" cy="110" r="7" />
+                <circle className="svg-after-nd" cx="150" cy="150" r="7" />
               </g>
             </svg>
             <span
