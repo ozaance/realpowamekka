@@ -34,58 +34,139 @@ export default function Methode() {
     <section
       ref={ref}
       id="methode"
-      className="bg-ivory border-t border-charcoal/10 py-[120px]"
+      style={{
+        borderTop: "1px solid var(--line)",
+        padding: "clamp(60px, 10vh, 120px) 0",
+        position: "relative",
+        zIndex: 1,
+      }}
     >
-      <div className="max-w-[1280px] mx-auto px-6 md:px-10">
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-16">
-          <motion.h2
+      <div
+        style={{
+          maxWidth: "var(--maxw)",
+          margin: "0 auto",
+          padding: "0 var(--pad)",
+        }}
+      >
+        {/* Header */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "flex-end",
+            justifyContent: "space-between",
+            gap: "30px",
+            marginBottom: "46px",
+            flexWrap: "wrap",
+          }}
+        >
+          <motion.h3
             initial={{ opacity: 0, y: 20 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.5, ease: "easeOut" }}
-            className="font-serif text-[42px] md:text-[52px] leading-tight font-light text-charcoal"
+            style={{
+              fontFamily: "var(--font-display)",
+              fontWeight: 300,
+              fontSize: "clamp(24px, 3vw, 40px)",
+              lineHeight: 1.1,
+              letterSpacing: "-0.015em",
+              color: "var(--ink)",
+            }}
           >
             Une méthode qui inspire confiance.
-          </motion.h2>
-          <motion.p
+          </motion.h3>
+
+          <motion.span
             initial={{ opacity: 0 }}
             animate={inView ? { opacity: 1 } : {}}
             transition={{ duration: 0.5, ease: "easeOut", delay: 0.1 }}
-            className="font-label text-[10px] tracking-[0.2em] uppercase text-charcoal/38 whitespace-nowrap pb-1"
+            style={{
+              fontFamily: "var(--font-label)",
+              fontSize: "11px",
+              letterSpacing: "0.16em",
+              textTransform: "uppercase",
+              color: "var(--ink-dim)",
+            }}
           >
-            Méthode &middot; 4 Étapes
-          </motion.p>
+            Méthode · 4 étapes
+          </motion.span>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 border-t border-charcoal/10">
+        {/* Steps grid */}
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(4, 1fr)",
+            gap: "clamp(20px, 3vw, 44px)",
+            marginTop: "46px",
+          }}
+          className="method-steps"
+        >
           {steps.map((step, i) => (
             <motion.div
               key={step.num}
               initial={{ opacity: 0, y: 20 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
-              transition={{
-                duration: 0.45,
-                ease: "easeOut",
-                delay: 0.1 + i * 0.1,
-              }}
-              className={[
-                "pt-10 pb-8",
-                i < 3 ? "lg:border-r border-charcoal/10" : "",
-                i > 0 ? "lg:pl-8" : "",
-              ].join(" ")}
+              transition={{ duration: 0.45, ease: "easeOut", delay: 0.1 + i * 0.1 }}
+              style={{ position: "relative" }}
             >
-              <p className="font-label text-[10px] tracking-[0.2em] uppercase text-bronze border-b border-charcoal/10 pb-4 mb-6">
+              {/* Step number with trailing line */}
+              <div
+                style={{
+                  fontFamily: "var(--font-label)",
+                  fontSize: "11px",
+                  letterSpacing: "0.1em",
+                  color: "var(--gold)",
+                  marginBottom: "18px",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "12px",
+                }}
+              >
                 {step.num}
-              </p>
-              <h3 className="font-serif text-[28px] leading-tight font-light text-charcoal mb-4">
+                <span
+                  style={{
+                    flex: 1,
+                    height: "1px",
+                    background: "var(--line)",
+                  }}
+                />
+              </div>
+
+              <h4
+                style={{
+                  fontFamily: "var(--font-display)",
+                  fontWeight: 300,
+                  fontSize: "clamp(20px, 1.9vw, 26px)",
+                  color: "var(--ink)",
+                  marginBottom: "12px",
+                  lineHeight: 1.2,
+                }}
+              >
                 {step.title}
-              </h3>
-              <p className="font-serif text-sm text-charcoal/55 leading-relaxed">
+              </h4>
+
+              <p
+                style={{
+                  fontSize: "13.5px",
+                  lineHeight: 1.65,
+                  color: "var(--ink-dim)",
+                }}
+              >
                 {step.desc}
               </p>
             </motion.div>
           ))}
         </div>
       </div>
+
+      <style>{`
+        @media (max-width: 860px) {
+          .method-steps { grid-template-columns: 1fr 1fr !important; gap: 34px !important; }
+        }
+        @media (max-width: 520px) {
+          .method-steps { grid-template-columns: 1fr !important; }
+        }
+      `}</style>
     </section>
   );
 }

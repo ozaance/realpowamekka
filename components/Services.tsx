@@ -44,60 +44,213 @@ export default function Services() {
     <section
       ref={ref}
       id="services"
-      className="bg-ivory border-t border-charcoal/10 pt-[120px] pb-20"
+      style={{
+        borderTop: "1px solid var(--line)",
+        padding: "clamp(60px, 10vh, 120px) 0",
+        position: "relative",
+        zIndex: 1,
+      }}
     >
-      <div className="max-w-[1280px] mx-auto px-6 md:px-10">
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-14">
-          <motion.h2
+      <div
+        style={{
+          maxWidth: "var(--maxw)",
+          margin: "0 auto",
+          padding: "0 var(--pad)",
+        }}
+      >
+        {/* Header */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "flex-end",
+            justifyContent: "space-between",
+            gap: "30px",
+            marginBottom: "48px",
+            flexWrap: "wrap",
+          }}
+        >
+          <motion.h3
             initial={{ opacity: 0, y: 20 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.5, ease: "easeOut" }}
-            className="font-serif text-[42px] md:text-[52px] leading-tight font-light text-charcoal"
+            style={{
+              fontFamily: "var(--font-display)",
+              fontWeight: 300,
+              fontSize: "clamp(24px, 3vw, 40px)",
+              lineHeight: 1.1,
+              letterSpacing: "-0.015em",
+              color: "var(--ink)",
+            }}
           >
             Cinq disciplines, un système.
-          </motion.h2>
-          <motion.p
+          </motion.h3>
+
+          <motion.span
             initial={{ opacity: 0 }}
             animate={inView ? { opacity: 1 } : {}}
             transition={{ duration: 0.5, ease: "easeOut", delay: 0.1 }}
-            className="font-label text-[10px] tracking-[0.2em] uppercase text-charcoal/38 whitespace-nowrap pb-1"
+            style={{
+              fontFamily: "var(--font-label)",
+              fontSize: "11px",
+              letterSpacing: "0.16em",
+              textTransform: "uppercase",
+              color: "var(--ink-dim)",
+            }}
           >
-            Services &middot; 01&ndash;05
-          </motion.p>
+            Services · 01&mdash;05
+          </motion.span>
         </div>
 
-        <div className="border-t border-charcoal/10">
+        {/* Service index rows */}
+        <div style={{ borderTop: "1px solid var(--line)" }}>
           {services.map((s, i) => (
-            <motion.div
-              key={s.num}
-              initial={{ opacity: 0, y: 14 }}
-              animate={inView ? { opacity: 1, y: 0 } : {}}
-              transition={{
-                duration: 0.4,
-                ease: "easeOut",
-                delay: 0.08 + i * 0.08,
-              }}
-              className="group grid grid-cols-[40px_1fr] md:grid-cols-[40px_240px_1fr_110px_28px] items-center gap-5 md:gap-8 py-7 border-b border-charcoal/10 hover:bg-stone/25 transition-colors duration-150 cursor-default"
-            >
-              <span className="font-label text-[11px] tracking-widest text-charcoal/28">
-                {s.num}
-              </span>
-              <span className="font-serif text-[22px] font-light text-charcoal">
-                {s.title}
-              </span>
-              <span className="hidden md:block font-serif text-sm text-charcoal/55 leading-relaxed">
-                {s.desc}
-              </span>
-              <span className="hidden md:inline-flex items-center justify-center px-3 py-1.5 border border-charcoal/18 font-label text-[9px] tracking-[0.14em] uppercase text-charcoal/55 w-fit">
-                {s.tag}
-              </span>
-              <span className="hidden md:block font-serif text-charcoal/35 group-hover:text-charcoal group-hover:translate-x-1 transition-all duration-200">
-                &#8594;
-              </span>
-            </motion.div>
+            <ServiceRow key={s.num} service={s} index={i} inView={inView} />
           ))}
         </div>
       </div>
     </section>
+  );
+}
+
+function ServiceRow({
+  service,
+  index,
+  inView,
+}: {
+  service: (typeof services)[0];
+  index: number;
+  inView: boolean;
+}) {
+  return (
+    <motion.a
+      href="#contact"
+      initial={{ opacity: 0, y: 14 }}
+      animate={inView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.4, ease: "easeOut", delay: 0.08 + index * 0.08 }}
+      style={{
+        display: "grid",
+        gridTemplateColumns: "70px 1.1fr 1.7fr 130px 34px",
+        gap: "28px",
+        alignItems: "center",
+        padding: "32px 6px",
+        borderBottom: "1px solid var(--line)",
+        position: "relative",
+        cursor: "pointer",
+        transition: "padding 0.5s",
+        textDecoration: "none",
+        color: "inherit",
+      }}
+      onMouseEnter={(e) => {
+        const el = e.currentTarget as HTMLAnchorElement;
+        el.style.paddingLeft = "22px";
+        const before = el.querySelector(".srow-bg") as HTMLDivElement;
+        if (before) before.style.opacity = "1";
+        const arrow = el.querySelector(".srow-arrow") as HTMLSpanElement;
+        if (arrow) {
+          arrow.style.transform = "translateX(7px)";
+          arrow.style.color = "var(--gold)";
+        }
+      }}
+      onMouseLeave={(e) => {
+        const el = e.currentTarget as HTMLAnchorElement;
+        el.style.paddingLeft = "6px";
+        const before = el.querySelector(".srow-bg") as HTMLDivElement;
+        if (before) before.style.opacity = "0";
+        const arrow = el.querySelector(".srow-arrow") as HTMLSpanElement;
+        if (arrow) {
+          arrow.style.transform = "translateX(0)";
+          arrow.style.color = "var(--ink-dim)";
+        }
+      }}
+    >
+      {/* Hover background sweep */}
+      <div
+        className="srow-bg"
+        style={{
+          position: "absolute",
+          inset: 0,
+          background:
+            "linear-gradient(90deg, color-mix(in oklab, var(--gold) 8%, transparent), transparent 60%)",
+          opacity: 0,
+          transition: "opacity 0.5s",
+          pointerEvents: "none",
+          borderRadius: "18px",
+        }}
+      />
+
+      <span
+        style={{
+          fontFamily: "var(--font-label)",
+          fontSize: "13px",
+          color: "var(--gold)",
+          position: "relative",
+        }}
+      >
+        {service.num}
+      </span>
+
+      <h4
+        style={{
+          fontFamily: "var(--font-display)",
+          fontWeight: 300,
+          fontSize: "clamp(22px, 2.2vw, 30px)",
+          color: "var(--ink)",
+          position: "relative",
+        }}
+      >
+        {service.title}
+      </h4>
+
+      <p
+        style={{
+          fontSize: "13.5px",
+          lineHeight: 1.6,
+          color: "var(--ink-dim)",
+          maxWidth: "42ch",
+          position: "relative",
+        }}
+        className="srow-desc"
+      >
+        {service.desc}
+      </p>
+
+      <span
+        style={{
+          fontFamily: "var(--font-label)",
+          fontSize: "10.5px",
+          letterSpacing: "0.08em",
+          textTransform: "uppercase",
+          color: "var(--ink-dim)",
+          border: "1px solid var(--line-strong)",
+          padding: "6px 10px",
+          borderRadius: "18px",
+          textAlign: "center",
+          justifySelf: "start",
+          position: "relative",
+        }}
+      >
+        {service.tag}
+      </span>
+
+      <span
+        className="srow-arrow"
+        style={{
+          fontFamily: "var(--font-display)",
+          fontSize: "20px",
+          color: "var(--ink-dim)",
+          justifySelf: "end",
+          transition: "transform 0.5s, color 0.4s",
+          position: "relative",
+        }}
+      >
+        →
+      </span>
+
+      <style>{`
+        @media (max-width: 860px) {
+          .srow-desc, [class*="srow-arrow"] { display: none !important; }
+        }
+      `}</style>
+    </motion.a>
   );
 }
