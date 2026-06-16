@@ -404,3 +404,6 @@ html.preload .d3{animation-delay:.28s}html.preload .d4{animation-delay:.4s}html.
   .brand img { height: 22px; }
   .nav-cta { font-size: 10px; padding: 8px 12px; white-space: nowrap; }
 }
+
+/* Recentrage du titre de la section Conviction */
+.v-philo.complexite .head { text-align: center; }
