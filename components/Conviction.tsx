@@ -49,7 +49,7 @@ export default function Conviction() {
         </div>
         <p className="cap sub rv d3">
           Un système clair n&apos;est pas un système pauvre. C&apos;est un système où chaque
-          élément a une raison d&apos;être — et où vous gardez le contrôle.
+          élément a une raison d&apos;être et où vous gardez le contrôle.
         </p>
       </div>
     </section>
