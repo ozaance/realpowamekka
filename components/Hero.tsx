@@ -4,10 +4,6 @@ export default function Hero() {
       <header className="v-hero field">
         <div className="lightbg" />
         <div className="inner wrap" style={{ paddingLeft: 0, paddingRight: 0 }}>
-          <span className="kicker rv d1">
-            <span className="ln" />
-            Systèmes digitaux &amp; conseil en IA
-          </span>
           <h1 className="display rv d2">
             Bâtir des entreprises
             <br />

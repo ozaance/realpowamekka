@@ -3,11 +3,7 @@ export default function Conviction() {
     <section className="philo wrap">
       <div className="v-philo complexite">
         <div className="head">
-          <span className="kicker rv d1">
-            <span className="ln" />
-            La conviction
-          </span>
-          <h2 className="display rv d2" style={{ marginTop: 22 }}>
+          <h2 className="display rv d2">
             Nous transformons la
             <br />
             complexité en maîtrise.
