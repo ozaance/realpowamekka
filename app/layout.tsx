@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Newsreader, Hanken_Grotesk, Space_Mono } from "next/font/google";
 import "./globals.css";
+import "../styles/hikari-v2.css";
 
 const newsreader = Newsreader({
   variable: "--font-newsreader",
@@ -40,7 +41,20 @@ export default function RootLayout({
       lang="fr"
       className={`${newsreader.variable} ${hankenGrotesk.variable} ${spaceMono.variable}`}
     >
-      <body>{children}</body>
+      <body
+        data-palette="calcaire"
+        data-type="editorial"
+        data-hier="affirme"
+        data-hero="field"
+        data-nav="barre"
+        data-philo="complexite"
+        data-svc="pile"
+        data-shadows="on"
+        data-kanji="off"
+        data-italics="off"
+      >
+        {children}
+      </body>
     </html>
   );
 }

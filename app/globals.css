@@ -1,56 +1,19 @@
-@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Mono:wght@300;400;500&display=swap');
 
-@theme {
-  /* Pierre palette — ivory / stone / sand */
-  --color-paper:       #F5F2EC;
-  --color-plaster:     #E8E3D9;
-  --color-mist:        #D4C9B0;
-  --color-mist-deep:   #C3B598;
-  --color-ink:         #1C1C1A;
-  --color-ink-soft:    #2E2E2C;
-  --color-ink-dim:     #7A7468;
-  --color-gold:        #8B7355;
-  --color-gold-soft:   #A68B5B;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-  /* Typography */
-  --font-display: var(--font-cormorant), "Cormorant Garamond", Georgia, serif;
-  --font-body:    var(--font-hanken), system-ui, sans-serif;
-  --font-label:   var(--font-space-mono), "Space Mono", monospace;
-}
-
-/* Raw CSS tokens for component use */
 :root {
-  /* Palette Pierre */
-  --paper:       #F5F2EC;
-  --plaster:     #E8E3D9;
-  --shadow:      #D4C9B0;
-  --shadow-deep: #C3B598;
-  --ink:         #1C1C1A;
-  --ink-soft:    #2E2E2C;
-  --ink-dim:     #7A7468;
-  --gold:        #8B7355;
-  --gold-soft:   #A68B5B;
-
-  /* Lines */
-  --line:        rgba(28, 28, 26, 0.12);
-  --line-strong: rgba(28, 28, 26, 0.22);
-
-  /* Typography — Éditorial + Affirmé */
-  --disp-weight: 500;
-  --disp-track:  -0.025em;
-
-  /* Light intensity 100% */
-  --light: 1;
-
-  /* Layout */
-  --ease:  cubic-bezier(0.16, 1, 0.3, 1);
-  --maxw:  1320px;
-  --pad:   clamp(24px, 5vw, 80px);
+  --ivory: #F5F2EC;
+  --stone: #E8E3D9;
+  --sand: #D4C9B0;
+  --charcoal: #1C1C1A;
+  --bronze: #8B7355;
+  --bronze-muted: #A68B5B;
 }
 
-*,
-*::before,
-*::after {
+* {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -61,107 +24,68 @@ html {
 }
 
 body {
-  background: var(--paper);
-  color: var(--ink);
-  font-family: var(--font-body);
-  font-weight: 400;
+  background-color: var(--ivory);
+  color: var(--charcoal);
+  font-family: "Cormorant Garamond", Georgia, serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overflow-x: hidden;
-  position: relative;
 }
 
-/* Architectural light atmosphere — intensity 100% */
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  opacity: calc(var(--light) * 0.85);
-  background:
-    radial-gradient(120% 80% at 84% -10%, color-mix(in oklab, #fff 70%, transparent), transparent 55%),
-    linear-gradient(123deg, transparent 46%, color-mix(in oklab, var(--shadow) 70%, transparent) 60%, transparent 82%);
+::selection {
+  background: var(--bronze);
+  color: var(--ivory);
 }
 
-/* Soft architectural shadow overlay */
-body::after {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  opacity: calc(var(--light) * 0.45);
-  background:
-    linear-gradient(118deg, transparent 56%, var(--shadow) 58%, var(--shadow-deep) 74%, transparent 88%);
+.kicker {
+  font-family: "DM Mono", monospace;
+  font-size: 0.7rem;
+  font-weight: 400;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--bronze);
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--charcoal);
+  color: var(--ivory);
+  font-family: "DM Mono", monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  padding: 1rem 1.75rem;
+  border: 1px solid var(--charcoal);
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
-/* ---------- SVG DIAGRAM STYLES ---------- */
-.svg-ln {
-  fill: none;
-  stroke: var(--ink-soft);
-  stroke-width: 1.4;
-  opacity: 0.5;
-}
-.svg-mod {
-  fill: none;
-  stroke: var(--ink-soft);
-  stroke-width: 1.5;
-  opacity: 0.72;
-}
-.svg-mod-hl {
-  fill: none;
-  stroke: var(--gold);
-  stroke-width: 1.5;
-  opacity: 1;
-}
-.svg-nd {
-  fill: var(--gold);
-  stroke: none;
+.btn-primary:hover {
+  background: transparent;
+  color: var(--charcoal);
 }
 
-/* After panel SVG — bronze order */
-.svg-after-ln {
-  fill: none;
-  stroke: var(--gold);
-  stroke-width: 1.6;
-  opacity: 0.62;
-}
-.svg-after-mod {
-  fill: none;
-  stroke: var(--gold);
-  stroke-width: 1.8;
-  opacity: 0.9;
-}
-.svg-after-nd {
-  fill: var(--gold);
-  stroke: color-mix(in oklab, var(--gold) 30%, #fff);
-  stroke-width: 4;
-  paint-order: stroke;
-  filter: drop-shadow(0 0 6px color-mix(in oklab, var(--gold) 90%, transparent));
+.btn-outline {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: transparent;
+  color: var(--charcoal);
+  font-family: "DM Mono", monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  padding: 1rem 1.75rem;
+  border: 1px solid var(--charcoal);
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
-/* Before panel — tangle */
-.svg-tangle path {
-  fill: none;
-  stroke: var(--ink-dim);
-  stroke-width: 1.3;
-  opacity: 0.42;
+.btn-outline:hover {
+  background: var(--charcoal);
+  color: var(--ivory);
 }
 
-/* ---------- ANIMATIONS ---------- */
-@keyframes pulse {
-  0%   { box-shadow: 0 0 0 0 color-mix(in oklab, var(--gold) 50%, transparent); }
-  70%  { box-shadow: 0 0 0 7px transparent; }
-  100% { box-shadow: 0 0 0 0 transparent; }
-}
-
-@keyframes rise {
-  from { opacity: 0; transform: translateY(26px); }
-  to   { opacity: 1; transform: none; }
+.section-divider {
+  border: none;
+  border-top: 1px solid rgba(28, 28, 26, 0.12);
 }
