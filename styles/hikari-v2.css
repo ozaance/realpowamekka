@@ -323,7 +323,7 @@ h3.shead{font-family:var(--font-display);font-weight:var(--disp-weight);
 @media (max-width:860px){.srow{grid-template-columns:46px 1fr;grid-template-areas:"no h" "p p" "tag tag";gap:12px 18px}.srow .no{grid-area:no}.srow h4{grid-area:h}.srow p{grid-area:p}.srow .tag{grid-area:tag}.srow .ar{display:none}}
 /* pile (system stack / pipeline) */
 .v-svc.pile .stack{display:flex;flex-direction:column;gap:14px}
-.v-svc.pile .layer{display:grid;grid-template-columns:54px 220px 1fr auto;gap:24px;align-items:center;
+.v-svc.pile .layer{display:grid;grid-template-columns:220px 1fr auto;gap:24px;align-items:center;
   background:color-mix(in oklab,var(--plaster) 40%,var(--paper));border:1px solid var(--line);border-radius:3px;
   padding:24px clamp(20px,3vw,36px);transition:.4s var(--ease)}
 .v-svc.pile .layer:hover{background:#fff;transform:translateX(6px);box-shadow:0 22px 44px -34px rgba(28,24,19,.4)}
@@ -333,7 +333,7 @@ h3.shead{font-family:var(--font-display);font-weight:var(--disp-weight);
 .v-svc.pile .layer .bar{height:6px;border-radius:3px;background:linear-gradient(90deg,var(--gold),var(--gold-soft));align-self:center;width:100%}
 .v-svc.pile .layer .barwrap{width:clamp(60px,8vw,120px);justify-self:end}
 .v-svc.pile .flowlabel{font-family:var(--font-mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-dim);text-align:center;margin-top:24px}
-@media (max-width:860px){.v-svc.pile .layer{grid-template-columns:40px 1fr;grid-template-areas:"no h" "p p"}.v-svc.pile .layer .no{grid-area:no}.v-svc.pile .layer h4{grid-area:h}.v-svc.pile .layer p{grid-area:p}.v-svc.pile .layer .barwrap{display:none}}
+@media (max-width:860px){.v-svc.pile .layer{grid-template-columns:1fr;grid-template-areas:"h" "p"}.v-svc.pile .layer h4{grid-area:h}.v-svc.pile .layer p{grid-area:p}.v-svc.pile .layer .barwrap{display:none}}
 
 /* ============================================================
    METHOD (always on)
@@ -406,4 +406,70 @@ html.preload .d3{animation-delay:.28s}html.preload .d4{animation-delay:.4s}html.
 }
 
 /* Recentrage du titre de la section Conviction */
-.v-philo.complexite .head { text-align: center; }
+
+/* Recentrage du bloc Mission */
+.posband > div { text-align: center; }
+.posband p { margin-left: auto; margin-right: auto; }
+.posband .sectors { justify-content: center; }
+
+/* ---------- SERVICES: clickable cards + detail modal ---------- */
+.v-svc.pile .layer{cursor:pointer}
+
+.svc-modal-overlay{
+  position:fixed;inset:0;z-index:100;
+  background:color-mix(in oklab, var(--ink) 55%, transparent);
+  backdrop-filter:blur(4px);
+  display:flex;align-items:center;justify-content:center;
+  padding:24px;
+}
+.svc-modal{
+  position:relative;
+  background:var(--paper);
+  border:1px solid var(--line);
+  border-radius:4px;
+  max-width:560px;width:100%;
+  max-height:86vh;overflow-y:auto;
+  padding:clamp(32px,5vw,52px);
+  box-shadow:0 60px 120px -50px rgba(0,0,0,.45);
+}
+.svc-modal-close{
+  position:absolute;top:18px;right:18px;
+  width:32px;height:32px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;line-height:1;color:var(--ink-dim);
+  background:transparent;border:none;cursor:pointer;
+  transition:color .3s;
+}
+.svc-modal-close:hover{color:var(--ink)}
+.svc-modal-kicker{
+  font-family:var(--font-mono);font-size:11px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--gold);
+}
+.svc-modal-title{
+  font-family:var(--font-display);font-weight:var(--disp-weight);
+  font-size:clamp(26px,3.2vw,36px);line-height:1.1;
+  margin-top:14px;color:var(--ink);
+}
+.svc-modal-lede{
+  font-size:15px;line-height:1.6;color:var(--ink-soft);
+  margin-top:16px;
+}
+.svc-modal-body{
+  font-size:14px;line-height:1.75;color:var(--ink-dim);
+  margin-top:18px;
+}
+.svc-modal-points{
+  margin-top:24px;padding-top:24px;border-top:1px solid var(--line);
+  display:flex;flex-direction:column;gap:12px;
+  list-style:none;
+}
+.svc-modal-points li{
+  font-size:13.5px;line-height:1.5;color:var(--ink-soft);
+  padding-left:18px;position:relative;
+}
+.svc-modal-points li::before{
+  content:"";position:absolute;left:0;top:7px;
+  width:7px;height:1px;background:var(--gold);
+}
+.svc-modal .btn{margin-top:32px}
+@media (max-width:600px){.svc-modal{padding:32px 24px}}

@@ -3,11 +3,7 @@ export default function Conviction() {
     <section className="philo wrap">
       <div className="v-philo complexite">
         <div className="head">
-          <h2 className="display rv d2">
-            Nous transformons la
-            <br />
-            complexité en maîtrise.
-          </h2>
+          <h3 className="shead rv d1">Nous transformons la complexité en maîtrise.</h3>
         </div>
         <div className="ct rv d3">
           <div className="cbox before">

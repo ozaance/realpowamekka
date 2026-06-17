@@ -12,7 +12,7 @@ export default function CTAFinal() {
           de vos systèmes.
         </h2>
         <p className="sub">
-          Un échange de 30 minutes suffit pour identifier vos premiers leviers de clarté, d&apos;efficacité et de croissance.
+          Un seul échange peut révéler vos premiers leviers de clarté, d&apos;efficacité et de croissance.
         </p>
         <div className="acts">
           <a className="btn" href="https://wa.me/33605715122?text=Bonjour%2C%20je%20souhaite%20demander%20un%20audit%20pour%20mon%20entreprise." target="_blank" rel="noopener noreferrer" style={{ borderRadius: 18 }}>Demander un audit <span className="ar">{"\u2192"}</span></a>

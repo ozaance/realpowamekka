@@ -3,7 +3,6 @@ export default function Methode() {
     <section className="method wrap" id="methode">
       <div className="sec-head">
         <h3 className="shead rv d1">Une méthode qui inspire confiance.</h3>
-        <span className="idx rv d1">Méthode · 4 étapes</span>
       </div>
       <div className="steps">
         <div className="step rv d1">
