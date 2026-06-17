@@ -10,7 +10,7 @@ export default function Hero() {
             plus claires.
           </h1>
           <p className="lede rv d3">
-            <span style={{ color: 'var(--gold)', fontFamily: 'var(--font-display)', fontWeight: 500, letterSpacing: '0.2em' }}>POWAMEKKA</span> conçoit les systèmes et l&apos;IA qui mettent de l&apos;ordre dans la complexité.
+            <span style={{ color: 'var(--gold)', fontFamily: 'var(--font-display)', fontWeight: 500, letterSpacing: '0.2em' }}>POWAMEKKA</span> prend en charge la gestion du quotidien, pour que vous puissiez diriger.
           </p>
           <div className="hero-actions rv d4">
             <a className="btn" href="https://wa.me/33605715122?text=Bonjour%2C%20je%20souhaite%20demander%20un%20audit%20pour%20mon%20entreprise." target="_blank" rel="noopener noreferrer" style={{ borderRadius: 18 }}>Demander un audit <span className="ar">{"\u2192"}</span></a>

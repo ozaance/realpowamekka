@@ -473,3 +473,6 @@ html.preload .d3{animation-delay:.28s}html.preload .d4{animation-delay:.4s}html.
 }
 .svc-modal .btn{margin-top:32px}
 @media (max-width:600px){.svc-modal{padding:32px 24px}}
+
+/* Illustration Conviction (remplace les SVG avant/après) */
+.v-philo.complexite .ct-illustration { margin-bottom: clamp(30px, 5vh, 56px); }
