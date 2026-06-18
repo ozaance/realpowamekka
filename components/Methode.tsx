@@ -13,7 +13,7 @@ export default function Methode() {
         <div className="step rv d2">
           <div className="no">02&nbsp;&nbsp;Conception</div>
           <h4>Architecturer</h4>
-          <p>Nous dessinons le système juste — sans superflu, aligné sur votre réalité.</p>
+          <p>Nous dessinons le système juste, sans superflu, aligné sur votre réalité.</p>
         </div>
         <div className="step rv d3">
           <div className="no">03&nbsp;&nbsp;Déploiement</div>

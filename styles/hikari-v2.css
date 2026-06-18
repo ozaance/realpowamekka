@@ -468,11 +468,39 @@ html.preload .d3{animation-delay:.28s}html.preload .d4{animation-delay:.4s}html.
   padding-left:18px;position:relative;
 }
 .svc-modal-points li::before{
-  content:"";position:absolute;left:0;top:7px;
-  width:7px;height:1px;background:var(--gold);
+  content:"";position:absolute;left:1px;top:7px;
+  width:5px;height:5px;border-radius:50%;background:var(--gold);
 }
 .svc-modal .btn{margin-top:32px}
 @media (max-width:600px){.svc-modal{padding:32px 24px}}
 
 /* Illustration Conviction (remplace les SVG avant/après) */
 .v-philo.complexite .ct-illustration { margin-bottom: clamp(30px, 5vh, 56px); }
+
+
+
+/* Conviction : image pleine largeur avec fondu sur les bords */
+.v-philo.complexite .ct-illustration {
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-bottom: clamp(24px, 4vh, 48px);
+}
+.v-philo.complexite .ct-illustration img {
+  mask-image:
+    linear-gradient(to right,  transparent 0%, black 6%, black 94%, transparent 100%),
+    linear-gradient(to bottom, transparent 0%, black 6%, black 94%, transparent 100%);
+  -webkit-mask-image:
+    linear-gradient(to right,  transparent 0%, black 6%, black 94%, transparent 100%),
+    linear-gradient(to bottom, transparent 0%, black 6%, black 94%, transparent 100%);
+  mask-composite: intersect;
+  -webkit-mask-composite: destination-in;
+}
+
+/* Texte Conviction plus visible */
+.v-philo.complexite .cap.sub {
+  color: var(--ink);
+  font-size: clamp(16px, 1.8vw, 20px);
+  opacity: 1;
+}
