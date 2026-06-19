@@ -16,7 +16,7 @@ const services: Service[] = [
     id: "audits",
     title: "Audits Stratégiques",
     lede: "Comprendre vos opérations et nommer les leviers.",
-    body: "Avant toute solution, nous prenons le temps de comprendre votre réalité : vos outils, vos flux de travail, vos points de friction. Cet audit n'est pas un rapport théorique, mais un diagnostic concret qui révèle où se cachent vos leviers de clarté, d'efficacité et de croissance.",
+    body: "Avant toute solution, nous prenons le temps de comprendre votre réalité. Vos outils, vos flux de travail, vos points de friction. Cet audit n'est pas un rapport théorique, mais un diagnostic concret qui révèle où se cachent vos leviers de clarté, d'efficacité et de croissance.",
     points: [
       "Diagnostic complet de vos outils et flux de travail",
       "Cartographie des points de friction et des opportunités",

@@ -532,3 +532,58 @@ html.preload .d3{animation-delay:.28s}html.preload .d4{animation-delay:.4s}html.
 .blog-post-body strong { color: var(--ink); font-weight: 600; }
 .blog-post-cta { margin-top: 64px; padding: 40px; background: var(--paper-light, #f8f8f5); border: 1px solid var(--line, rgba(0,0,0,0.08)); border-radius: 4px; }
 .blog-post-cta p { font-size: 17px; color: var(--ink); margin-bottom: 24px; line-height: 1.5; }
+
+/* Alignement uniforme du contenu des modales */
+.svc-modal-kicker,
+.svc-modal h2,
+.svc-modal-lede,
+.svc-modal-body,
+.svc-modal-points,
+.svc-modal .btn {
+  margin-left: 0;
+  padding-left: 0;
+}
+.svc-modal-points {
+  padding-left: 18px;
+}
+
+/* Modal : texte justifié + bouton centré */
+.svc-modal-kicker,
+.svc-modal h2,
+.svc-modal-lede,
+.svc-modal-body,
+.svc-modal-points {
+  text-align: left;
+}
+.svc-modal-lede,
+.svc-modal-body {
+  text-align: justify;
+}
+.svc-modal .btn {
+  display: block;
+  width: fit-content;
+  margin: 32px auto 0;
+}
+
+/* Bouton modal centré - override */
+.svc-modal .btn {
+  display: block !important;
+  width: fit-content !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+/* Bouton modal : style identique au CTA principal */
+.svc-modal .btn {
+  border-radius: 18px !important;
+  padding-left: 28px !important;
+  padding-right: 28px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  width: fit-content !important;
+  margin: 32px auto 0 !important;
+}
+.svc-modal .btn .ar {
+  margin-left: 4px;
+}
