@@ -6,7 +6,7 @@ import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'Blog — Powamekka | IA & Systèmes Digitaux pour PME',
-  description: 'Conseils pratiques sur l'automatisation, l'intelligence artificielle et les systèmes digitaux pour les dirigeants de PME et artisans BTP.',
+  description: "Conseils pratiques sur l'automatisation, l'intelligence artificielle et les systèmes digitaux pour les dirigeants de PME et artisans BTP.",
 };
 
 export default function BlogPage() {

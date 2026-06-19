@@ -24,7 +24,7 @@ Sur 5 devis par semaine, c'est 2 heures récupérées immédiatement.
 
 Un devis envoyé sans réponse après 5 jours : vous pensez à le relancer, mais vous oubliez, ou vous n'avez pas le temps. Ce client vous échappe.
 
-Un système automatisé peut envoyer une relance personnalisée au bon moment, avec le bon ton, sans que vous ayez à y penser. Pas un email générique — un message qui ressemble à ce que vous auriez écrit vous-même.
+Un système automatisé peut envoyer une relance personnalisée au bon moment, avec le bon ton, sans que vous ayez à y penser. Pas un email générique, mais un message qui ressemble à ce que vous auriez écrit vous-même.
 
 Les artisans qui mettent en place ce système récupèrent en moyenne 15 à 20% de devis supplémentaires sur les prospects déjà intéressés.
 
@@ -50,6 +50,6 @@ Ce n'est pas de la magie. C'est de l'organisation, outillée correctement.
 
 La première étape n'est pas d'acheter un logiciel. C'est de comprendre où vous perdez le plus de temps dans votre semaine.
 
-Chez Powamekka, on commence toujours par un audit de 30 minutes : on cartographie vos processus, on identifie les 2 ou 3 tâches qui mangent le plus de temps, et on vous propose un plan d'action concret.
+Chez Powamekka, on commence toujours par un audit : on cartographie vos processus, on identifie les 2 ou 3 tâches qui mangent le plus de temps, et on vous propose un plan d'action concret.
 
 Pas de jargon technique. Pas d'engagement. Juste une vision claire de ce que l'IA peut faire pour votre activité, maintenant.

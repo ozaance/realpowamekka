@@ -33,29 +33,13 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
         <Link href="/blog" className="blog-back">← Retour aux articles</Link>
         <article>
           <header className="blog-post-header">
-            <span className="blog-kicker">{post.category}</span>
             <h1 className="blog-post-title">{post.title}</h1>
-            <div className="blog-post-meta">
-              <span>{post.date}</span>
-              <span>{post.readTime}</span>
-            </div>
           </header>
-          <div
-            className="blog-post-body"
-            dangerouslySetInnerHTML={{ __html: post.contentHtml }}
-          />
+          <div className="blog-post-body" dangerouslySetInnerHTML={{ __html: post.contentHtml }} />
         </article>
         <div className="blog-post-cta">
-          <p>Vous êtes dans le BTP et vous voulez savoir ce que l&apos;IA peut faire concrètement pour votre activité ?</p>
-          
-            href="https://wa.me/33605715122?text=Bonjour%2C%20j%27ai%20lu%20votre%20article%20et%20je%20voudrais%20en%20savoir%20plus."
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn"
-            style={{ borderRadius: 18 }}
-          >
-            Demander un audit gratuit →
-          </a>
+          <p>Vous êtes dans le BTP et vous voulez savoir ce que l&apos;IA peut faire pour votre activité ?</p>
+          <a href="https://wa.me/33605715122?text=Bonjour%2C%20j%27ai%20lu%20votre%20article%20et%20je%20voudrais%20en%20savoir%20plus." target="_blank" rel="noopener noreferrer" className="btn" style={{ borderRadius: 18 }}>Demander un audit gratuit →</a>
         </div>
       </main>
       <Footer />
