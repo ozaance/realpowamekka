@@ -14,6 +14,7 @@ export default function Navbar() {
             <a href="#approche">Approche</a>
             <a href="#services">Services</a>
             <a href="#methode">Méthode</a>
+            <Link href="/blog">Blog</Link>
             <a href="#contact">Contact</a>
           </div>
         </div>
