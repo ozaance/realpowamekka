@@ -34,6 +34,7 @@ export default function Navbar() {
         <div className="center">
           <div className="navlinks">
             <a href="/#approche">Approche</a>
+            <Link href="/vision">Vision</Link>
 
             <div
               style={{ position: 'relative', display: 'inline-block' }}
@@ -46,12 +47,9 @@ export default function Navbar() {
                   <path d="M1 1l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
               </a>
-
-              {/* Pont invisible pour combler le gap */}
               {open && (
                 <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, height: 14, background: 'transparent' }} />
               )}
-
               {open && (
                 <div
                   onMouseEnter={handleEnter}

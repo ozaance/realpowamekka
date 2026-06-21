@@ -28,7 +28,6 @@ export default function BlogPage() {
               <p className="blog-card-desc">{post.description}</p>
               <div className="blog-card-meta">
                 <span>{post.date}</span>
-                <span>{post.readTime}</span>
               </div>
             </Link>
           ))}
