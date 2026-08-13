@@ -84,6 +84,7 @@ export default function Navbar() {
             </div>
 
             <a href="/#methode">Méthode</a>
+            <Link href="/offres">Offres</Link>
             <Link href="/blog">Blog</Link>
             <a href="/#contact">Contact</a>
           </div>
