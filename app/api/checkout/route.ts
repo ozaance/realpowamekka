@@ -6,7 +6,7 @@ import { getOffer } from '@/lib/offers';
 function resolveOrigin(req: Request): string {
   const origin = req.headers.get('origin');
   if (origin) return origin;
-  return process.env.NEXT_PUBLIC_SITE_URL || 'https://powamekka.com';
+  return process.env.NEXT_PUBLIC_SITE_URL || 'https://www.powamekka.com';
 }
 
 export async function POST(req: Request) {

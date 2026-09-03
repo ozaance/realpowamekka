@@ -13,7 +13,7 @@ export const metadata: Metadata = {
     title: 'Questions fréquentes — Powamekka',
     description:
       "Les réponses aux questions que posent les dirigeants de PME sur l'IA, l'automatisation, les systèmes digitaux et nos tarifs.",
-    url: 'https://powamekka.com/faq',
+    url: 'https://www.powamekka.com/faq',
     type: 'website',
   },
 };

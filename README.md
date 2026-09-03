@@ -47,12 +47,12 @@ qu'un identifiant d'offre : le prix facturé vient toujours du `priceId` Stripe 
 ```bash
 STRIPE_SECRET_KEY=sk_live_...      # ou sk_test_... en développement
 STRIPE_WEBHOOK_SECRET=whsec_...    # secret de signature du webhook
-NEXT_PUBLIC_SITE_URL=https://powamekka.com
+NEXT_PUBLIC_SITE_URL=https://www.powamekka.com
 ```
 
 ### Webhook
 
-Endpoint `we_1U3xgbAmS2hPu7V9iBYUTRnp`, déclaré sur `https://powamekka.com/api/stripe/webhook`
+Endpoint `we_1U3xgbAmS2hPu7V9iBYUTRnp`, déclaré sur `https://www.powamekka.com/api/stripe/webhook`
 avec l'événement `checkout.session.completed`. Chaque commande payée déclenche un email vers
 `contact@powamekka.com`.
 

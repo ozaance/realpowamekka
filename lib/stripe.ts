@@ -17,7 +17,7 @@ export function getStripe(): Stripe {
   }
 
   client = new Stripe(key, {
-    appInfo: { name: 'Powamekka', url: 'https://powamekka.com' },
+    appInfo: { name: 'Powamekka', url: 'https://www.powamekka.com' },
   });
 
   return client;

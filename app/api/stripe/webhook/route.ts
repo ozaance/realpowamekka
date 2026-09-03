@@ -7,7 +7,7 @@ import { formatPrice } from '@/lib/offers';
 /**
  * Webhook Stripe : notifie Powamekka dès qu'une commande est payée.
  *
- * À déclarer dans le dashboard Stripe sur https://powamekka.com/api/stripe/webhook
+ * À déclarer dans le dashboard Stripe sur https://www.powamekka.com/api/stripe/webhook
  * avec l'événement `checkout.session.completed`, puis renseigner le secret de
  * signature dans STRIPE_WEBHOOK_SECRET.
  */

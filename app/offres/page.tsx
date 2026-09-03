@@ -13,7 +13,7 @@ export const metadata: Metadata = {
     title: 'Offres & tarifs — Powamekka',
     description:
       'Landing page, site vitrine, prototype MVP et applications SaaS sur mesure. Tarifs clairs et paiement sécurisé.',
-    url: 'https://powamekka.com/offres',
+    url: 'https://www.powamekka.com/offres',
     type: 'website',
   },
 };

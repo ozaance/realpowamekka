@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: '/',
       disallow: ['/api/', '/merci'],
     },
-    sitemap: 'https://powamekka.com/sitemap.xml',
+    sitemap: 'https://www.powamekka.com/sitemap.xml',
   };
 }

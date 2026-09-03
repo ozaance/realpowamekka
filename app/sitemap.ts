@@ -1,7 +1,7 @@
 import { MetadataRoute } from 'next';
 import { getAllPosts } from '@/lib/posts';
 
-const BASE = 'https://powamekka.com';
+const BASE = 'https://www.powamekka.com';
 
 const services = ['audit', 'systemes', 'ia', 'sites', 'formation'];
 

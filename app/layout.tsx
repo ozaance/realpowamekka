@@ -41,16 +41,16 @@ export const metadata: Metadata = {
     "agence consulting IA",
     "transformation digitale PME",
   ],
-  authors: [{ name: "Powamekka", url: "https://powamekka.com" }],
+  authors: [{ name: "Powamekka", url: "https://www.powamekka.com" }],
   creator: "Powamekka",
-  metadataBase: new URL("https://powamekka.com"),
+  metadataBase: new URL("https://www.powamekka.com"),
   alternates: {
     canonical: "/",
   },
   openGraph: {
     type: "website",
     locale: "fr_FR",
-    url: "https://powamekka.com",
+    url: "https://www.powamekka.com",
     siteName: "Powamekka",
     title: "POWAMEKKA — Agence IA & Systèmes Digitaux pour PME",
     description:

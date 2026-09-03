@@ -11,8 +11,8 @@ const jsonLd = {
   "@context": "https://schema.org",
   "@type": "ProfessionalService",
   "name": "Powamekka",
-  "url": "https://powamekka.com",
-  "logo": "https://powamekka.com/logo-mark-bone.png",
+  "url": "https://www.powamekka.com",
+  "logo": "https://www.powamekka.com/logo-mark-bone.png",
   "description": "Agence spécialisée en intelligence artificielle et systèmes digitaux pour PME. Audit stratégique, automatisation, formation et intégration IA.",
   "address": {
     "@type": "PostalAddress",
