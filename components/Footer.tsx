@@ -1,4 +1,13 @@
 import Image from 'next/image';
+import Link from 'next/link';
+
+const services = [
+  { label: 'Systèmes Digitaux', href: '/services/systemes' },
+  { label: 'Sites Premium', href: '/services/sites' },
+  { label: 'IA & Automatisation', href: '/services/ia' },
+  { label: 'Audits Stratégiques', href: '/services/audit' },
+  { label: 'Formation & Adoption', href: '/services/formation' },
+];
 
 export default function Footer() {
   return (
@@ -13,17 +22,20 @@ export default function Footer() {
         </div>
         <div className="foot-col">
           <h5>Services</h5>
-          <a href="#services">Systèmes Digitaux</a>
-          <a href="#services">Sites Premium</a>
-          <a href="#services">IA &amp; Automatisation</a>
-          <a href="#services">Audits Stratégiques</a>
-          <a href="#services">Formation &amp; Adoption</a>
+          {services.map((s) => (
+            <Link key={s.href} href={s.href}>{s.label}</Link>
+          ))}
         </div>
         <div className="foot-col">
           <h5>Maison</h5>
-          <a href="#approche">Approche</a>
-          <a href="#methode">Méthode</a>
-          <a href="#contact">Contact</a>
+          {/* Ancres préfixées par « / » : elles doivent ramener à l'accueil
+              depuis n'importe quelle page du site, pas chercher la section
+              sur la page courante. */}
+          <a href="/#approche">Approche</a>
+          <a href="/#methode">Méthode</a>
+          <Link href="/offres">Offres</Link>
+          <Link href="/faq">FAQ</Link>
+          <a href="/#contact">Contact</a>
         </div>
       </div>
       <div className="foot-bottom">
