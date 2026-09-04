@@ -1,0 +1,48 @@
+name: Export Search Console (données SEO)
+
+on:
+  schedule:
+    # Dimanche 21h00 UTC — avant le cycle SEO du lundi 07h00 Europe/Paris.
+    - cron: '0 21 * * 0'
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Basculer sur la branche de données (créée si absente)
+        run: |
+          git fetch origin seo-data || true
+          if git ls-remote --exit-code --heads origin seo-data > /dev/null 2>&1; then
+            git checkout -B seo-data origin/seo-data
+            git merge --no-edit origin/main
+          else
+            git checkout -B seo-data
+          fi
+
+      - name: Exporter les 28 derniers jours
+        env:
+          GSC_SERVICE_ACCOUNT_JSON: ${{ secrets.GSC_SERVICE_ACCOUNT_JSON }}
+          GSC_PROPERTY: https://www.powamekka.com/
+        run: node scripts/export-gsc.mjs
+
+      - name: Commit et push (branche seo-data uniquement)
+        run: |
+          git config user.name "seo-data-bot"
+          git config user.email "seo-data-bot@users.noreply.github.com"
+          git add seo/data/
+          git diff --cached --quiet && echo "Rien de nouveau." && exit 0
+          git commit -m "chore(seo-data): export Search Console $(date -u +%F)"
+          git push origin HEAD:seo-data

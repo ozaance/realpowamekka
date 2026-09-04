@@ -2,37 +2,41 @@
 
 La propriété `https://www.powamekka.com/` est vérifiée dans Search Console.
 
-## Lecture automatisée (souhaitable)
+## Lecture automatisée — en place
 
-L'API Search Console permet à l'agent de lire les requêtes sans intervention humaine.
-Mise en place, une seule fois :
+Un compte de service Google lit l'API Search Console une fois par semaine, le dimanche à
+21h00 UTC (avant le cycle SEO du lundi), via `.github/workflows/seo-gsc-export.yml` et
+`scripts/export-gsc.mjs`. Le résultat est commité sur une branche dédiée **`seo-data`**,
+jamais sur `main` : cette branche est un cache de données, pas du contenu à relire.
 
-1. Console Google Cloud → créer un projet → activer **Google Search Console API**.
-2. Créer un **compte de service**, générer une clé JSON.
-3. Dans Search Console → Paramètres → Utilisateurs et autorisations → ajouter l'adresse
-   email du compte de service en **Lecteur complet**.
-4. Stocker la clé hors dépôt (elle ne doit jamais être commitée) et exposer son chemin via
-   `GSC_SERVICE_ACCOUNT_FILE`, ou son contenu via `GSC_SERVICE_ACCOUNT_JSON`.
-
-Vérifier au début de chaque cycle :
+Au début de chaque cycle, récupérer le dernier export :
 
 ```bash
-[ -n "$GSC_SERVICE_ACCOUNT_JSON" ] || [ -f "${GSC_SERVICE_ACCOUNT_FILE:-/dev/null}" ] \
+git fetch origin seo-data
+git show origin/seo-data:seo/data/latest.json > /tmp/gsc-latest.json 2>/dev/null \
   && echo "GSC disponible" || echo "GSC indisponible"
 ```
 
-Requête type sur `searchanalytics/query`, propriété `https://www.powamekka.com/`,
-dimensions `query` et `page`, 28 derniers jours, `rowLimit` 500.
+`latest.json` contient :
+
+- `period` — la fenêtre de 28 jours couverte (avec 3 jours de décalage, délai habituel de GSC).
+- `queries` — chaque ligne requête × page : `clicks`, `impressions`, `ctr`, `position`.
+- `pages` — les mêmes métriques agrégées par page.
+
+C'est ce fichier qui alimente l'étape 2 du cycle (`SKILL.md`) : requêtes en position 5-20,
+CTR faible malgré de fortes impressions, pages en recul.
+
+Si le fichier est absent ou date de plus de 10 jours, le secret `GSC_SERVICE_ACCOUNT_JSON`
+n'est probablement pas configuré côté GitHub, ou l'Action a échoué : regarder l'onglet
+**Actions** du dépôt. Continuer le cycle sans bloquer (voir repli ci-dessous), et le signaler
+dans la PR.
 
 ## Repli manuel
 
-Sans identifiants, le cycle continue mais à l'aveugle. Dans ce cas :
+Sans données, le cycle continue mais à l'aveugle. Dans ce cas :
 
 - l'écrire noir sur blanc dans la PR, à chaque fois, sans l'enfouir ;
-- prioriser à partir de `seo/strategie.md` et de l'état réel des pages ;
-- proposer à Abdoulaye d'exporter manuellement le CSV « Performances » de Search Console
-  (28 jours, requêtes + pages) et de le déposer dans `seo/data/` — le cycle suivant s'en
-  servira.
+- prioriser à partir de `seo/strategie.md` et de l'état réel des pages.
 
 ## Rappels
 
