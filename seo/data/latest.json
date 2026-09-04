@@ -1,0 +1,69 @@
+{
+  "site": "sc-domain:powamekka.com",
+  "generatedAt": "2026-09-04T11:34:03.579Z",
+  "period": {
+    "startDate": "2026-08-04",
+    "endDate": "2026-09-01"
+  },
+  "queries": [
+    {
+      "query": "powamekka",
+      "page": "https://www.powamekka.com/",
+      "clicks": 0,
+      "impressions": 6,
+      "ctr": 0,
+      "position": 1.5
+    }
+  ],
+  "pages": [
+    {
+      "page": "https://www.powamekka.com/",
+      "clicks": 0,
+      "impressions": 9,
+      "ctr": 0,
+      "position": 8.88888888888889
+    },
+    {
+      "page": "https://www.powamekka.com/services/audit",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 7
+    },
+    {
+      "page": "https://www.powamekka.com/services/formation",
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 6
+    },
+    {
+      "page": "https://www.powamekka.com/services/ia",
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 6
+    },
+    {
+      "page": "https://www.powamekka.com/services/sites",
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 3
+    },
+    {
+      "page": "https://www.powamekka.com/services/systemes",
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 5
+    },
+    {
+      "page": "https://www.powamekka.com/vision",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 2
+    }
+  ]
+}
