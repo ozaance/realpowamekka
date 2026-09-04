@@ -9,7 +9,7 @@ import { createSign } from 'node:crypto';
 import { writeFile, mkdir } from 'node:fs/promises';
 import path from 'node:path';
 
-const SITE_URL = process.env.GSC_PROPERTY || 'https://www.powamekka.com/';
+const SITE_URL = process.env.GSC_PROPERTY || 'sc-domain:powamekka.com';
 const SCOPE = 'https://www.googleapis.com/auth/webmasters.readonly';
 const TOKEN_ENDPOINT = 'https://oauth2.googleapis.com/token';
 
