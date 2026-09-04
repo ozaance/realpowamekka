@@ -2,6 +2,7 @@ import ServicePage from '@/components/ServicePage';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
+  alternates: { canonical: '/services/audit' },
   title: 'Audit Stratégique : Powamekka',
   description: 'Diagnostic complet de vos opérations, outils et flux de travail. Identifiez vos leviers de clarté, d\'efficacité et de croissance avec Powamekka.',
 };

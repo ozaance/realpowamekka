@@ -2,6 +2,7 @@ import ServicePage from '@/components/ServicePage';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
+  alternates: { canonical: '/services/formation' },
   title: 'Formation & Adoption : Powamekka',
   description: 'Formation IA et outils digitaux pour équipes PME. Accompagnement post-déploiement pour ancrer les nouvelles pratiques durablement.',
 };

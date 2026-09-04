@@ -3,6 +3,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 
 export const metadata: Metadata = {
+  alternates: { canonical: '/vision' },
   title: 'Notre Vision — Powamekka',
   description: 'Powamekka existe parce que les PME perdent chaque jour des heures sur des tâches que l\'IA peut faire. Nous construisons les systèmes qui rendent ce temps aux dirigeants.',
 };

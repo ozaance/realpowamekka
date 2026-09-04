@@ -2,6 +2,7 @@ import ServicePage from '@/components/ServicePage';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
+  alternates: { canonical: '/services/ia' },
   title: 'IA & Automatisation : Powamekka',
   description: 'Automatisation des tâches répétitives et intégration IA pour PME. Devis, relances, rapports : libérez du temps pour ce qui compte vraiment.',
 };
