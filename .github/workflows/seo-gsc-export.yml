@@ -37,7 +37,7 @@ jobs:
       - name: Exporter les 28 derniers jours
         env:
           GSC_SERVICE_ACCOUNT_JSON: ${{ secrets.GSC_SERVICE_ACCOUNT_JSON }}
-          GSC_PROPERTY: https://www.powamekka.com/
+          GSC_PROPERTY: sc-domain:powamekka.com
         run: node scripts/export-gsc.mjs
 
       - name: Commit et push (branche seo-data uniquement)

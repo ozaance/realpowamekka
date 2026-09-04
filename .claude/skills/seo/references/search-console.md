@@ -1,6 +1,9 @@
 # Accès Google Search Console
 
-La propriété `https://www.powamekka.com/` est vérifiée dans Search Console.
+La propriété est une **propriété de domaine** : `sc-domain:powamekka.com`, pas une propriété
+de préfixe d'URL. Toute requête à l'API Search Console (ou toute nouvelle propriété créée
+côté Google) doit utiliser cet identifiant, pas `https://www.powamekka.com/` — l'API répond
+403 sinon, même avec un compte de service correctement autorisé.
 
 ## Lecture automatisée — en place
 
