@@ -24,6 +24,8 @@ jobs:
 
       - name: Basculer sur la branche de données (créée si absente)
         run: |
+          git config user.name "seo-data-bot"
+          git config user.email "seo-data-bot@users.noreply.github.com"
           if git ls-remote --exit-code --heads origin seo-data > /dev/null 2>&1; then
             git fetch origin seo-data:seo-data
             git checkout seo-data
@@ -40,8 +42,6 @@ jobs:
 
       - name: Commit et push (branche seo-data uniquement)
         run: |
-          git config user.name "seo-data-bot"
-          git config user.email "seo-data-bot@users.noreply.github.com"
           git add seo/data/
           git diff --cached --quiet && echo "Rien de nouveau." && exit 0
           git commit -m "chore(seo-data): export Search Console $(date -u +%F)"
