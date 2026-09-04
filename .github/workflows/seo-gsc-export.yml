@@ -20,13 +20,13 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
 
       - name: Basculer sur la branche de données (créée si absente)
         run: |
-          git fetch origin seo-data || true
           if git ls-remote --exit-code --heads origin seo-data > /dev/null 2>&1; then
-            git checkout -B seo-data origin/seo-data
+            git fetch origin seo-data:seo-data
+            git checkout seo-data
             git merge --no-edit origin/main
           else
             git checkout -B seo-data
