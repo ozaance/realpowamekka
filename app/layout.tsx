@@ -44,9 +44,6 @@ export const metadata: Metadata = {
   authors: [{ name: "Powamekka", url: "https://www.powamekka.com" }],
   creator: "Powamekka",
   metadataBase: new URL("https://www.powamekka.com"),
-  alternates: {
-    canonical: "/",
-  },
   openGraph: {
     type: "website",
     locale: "fr_FR",

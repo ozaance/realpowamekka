@@ -2,6 +2,7 @@ import ServicePage from '@/components/ServicePage';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
+  alternates: { canonical: '/services/systemes' },
   title: 'Systèmes Digitaux : Powamekka',
   description: 'Architecture digitale sur-mesure pour PME. CRM, facturation, planning, communication : vos outils reliés en un système cohérent et automatisé.',
 };

@@ -6,6 +6,11 @@ import Services from '@/components/Services';
 import Methode from '@/components/Methode';
 import CTAFinal from '@/components/CTAFinal';
 import Footer from '@/components/Footer';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  alternates: { canonical: '/' },
+};
 
 const jsonLd = {
   "@context": "https://schema.org",

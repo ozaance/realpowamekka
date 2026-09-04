@@ -2,6 +2,7 @@ import ServicePage from '@/components/ServicePage';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
+  alternates: { canonical: '/services/sites' },
   title: 'Sites Premium : Powamekka',
   description: 'Création de sites web premium pour PME et artisans. Design sur-mesure, développement Next.js, intégration avec vos outils internes. Basé à Rouen.',
 };
