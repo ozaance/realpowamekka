@@ -2,6 +2,7 @@ import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { getStripe } from '@/lib/stripe';
+import { fromMollieAmount, getPayment } from '@/lib/mollie';
 import { formatPrice } from '@/lib/offers';
 import type { Metadata } from 'next';
 
@@ -16,9 +17,14 @@ type Confirmation = {
   offerName: string;
   amount: string;
   email: string | null;
+  provider: 'Stripe' | 'Mollie';
 };
 
-async function loadConfirmation(sessionId: string | undefined): Promise<Confirmation | null> {
+async function loadConfirmation(
+  sessionId: string | undefined,
+  mollieId: string | undefined
+): Promise<Confirmation | null> {
+  if (mollieId) return loadMollieConfirmation(mollieId);
   if (!sessionId) return null;
   try {
     const session = await getStripe().checkout.sessions.retrieve(sessionId);
@@ -27,6 +33,7 @@ async function loadConfirmation(sessionId: string | undefined): Promise<Confirma
       offerName: session.metadata?.offer_name || 'votre commande',
       amount: session.amount_total !== null ? formatPrice(session.amount_total) : '',
       email: session.customer_details?.email ?? null,
+      provider: 'Stripe',
     };
   } catch (err) {
     console.error('[merci] session illisible', err);
@@ -34,13 +41,29 @@ async function loadConfirmation(sessionId: string | undefined): Promise<Confirma
   }
 }
 
+async function loadMollieConfirmation(id: string): Promise<Confirmation | null> {
+  try {
+    const payment = await getPayment(id);
+    return {
+      paid: payment.status === 'paid',
+      offerName: payment.metadata?.offer_name || 'votre commande',
+      amount: formatPrice(fromMollieAmount(payment.amount.value)),
+      email: payment.metadata?.email ?? null,
+      provider: 'Mollie',
+    };
+  } catch (err) {
+    console.error('[merci] paiement Mollie illisible', err);
+    return null;
+  }
+}
+
 export default async function MerciPage({
   searchParams,
 }: {
-  searchParams: Promise<{ session_id?: string }>;
+  searchParams: Promise<{ session_id?: string; mollie_id?: string }>;
 }) {
-  const { session_id } = await searchParams;
-  const confirmation = await loadConfirmation(session_id);
+  const { session_id, mollie_id } = await searchParams;
+  const confirmation = await loadConfirmation(session_id, mollie_id);
   const paid = confirmation?.paid ?? false;
 
   return (
@@ -74,8 +97,10 @@ export default async function MerciPage({
             {confirmation && paid ? (
               <p className="lede" style={{ marginBottom: 40 }}>
                 Votre paiement de {confirmation.amount} pour l&apos;offre {confirmation.offerName} a
-                bien été reçu. Un reçu Stripe vient de partir
-                {confirmation.email ? ` sur ${confirmation.email}` : ''}.
+                bien été reçu.{' '}
+                {confirmation.provider === 'Stripe'
+                  ? `Un reçu Stripe vient de partir${confirmation.email ? ` sur ${confirmation.email}` : ''}.`
+                  : `Nous vous écrivons${confirmation.email ? ` sur ${confirmation.email}` : ''} sous 24h.`}
               </p>
             ) : (
               <p className="lede" style={{ marginBottom: 40 }}>
