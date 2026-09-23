@@ -1,10 +1,9 @@
 /**
  * Catalogue des offres vendues en ligne.
  *
- * Le montant réellement facturé vient toujours de Stripe via `priceId` : le champ
- * `price` ci-dessous ne sert qu'à l'affichage. Si vous modifiez un tarif dans le
- * dashboard Stripe, pensez à mettre à jour `price` ici pour éviter un écart entre
- * la page et l'écran de paiement.
+ * Côté Stripe, le montant facturé vient du dashboard via `priceId`. Côté Mollie,
+ * c'est le champ `price` ci-dessous qui est facturé. Si vous modifiez un tarif,
+ * mettez à jour les deux pour éviter un écart entre la page, Stripe et Mollie.
  *
  * Chaque `priceId` peut être surchargé par une variable d'environnement
  * (ex. STRIPE_PRICE_LANDING_PAGE) pour basculer sur des prix de test sans
@@ -16,7 +15,7 @@ export type Offer = {
   id: string;
   name: string;
   tagline: string;
-  /** Montant affiché, en centimes d'euro */
+  /** Montant affiché et facturé par Mollie, en centimes d'euro */
   price: number;
   delivery: string;
   features: string[];
