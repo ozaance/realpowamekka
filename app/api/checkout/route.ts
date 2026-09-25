@@ -1,7 +1,9 @@
 import { NextResponse } from 'next/server';
 import { getStripe } from '@/lib/stripe';
 import { createPayment, toMollieAmount, updatePayment } from '@/lib/mollie';
-import { getOffer, type Offer } from '@/lib/offers';
+import { getOffer } from '@/lib/offers';
+
+type Offer = NonNullable<ReturnType<typeof getOffer>>;
 
 /** Base URL utilisée pour les redirections de retour depuis Stripe / Mollie. */
 function resolveOrigin(req: Request): string {
