@@ -1,10 +1,9 @@
 /**
  * Catalogue des offres vendues en ligne.
  *
- * Le montant réellement facturé vient toujours de Stripe via `priceId` : le champ
- * `price` ci-dessous ne sert qu'à l'affichage. Si vous modifiez un tarif dans le
- * dashboard Stripe, pensez à mettre à jour `price` ici pour éviter un écart entre
- * la page et l'écran de paiement.
+ * Côté Stripe, le montant facturé vient du dashboard via `priceId`. Côté Mollie,
+ * c'est le champ `price` ci-dessous qui est facturé. Si vous modifiez un tarif,
+ * mettez à jour les deux pour éviter un écart entre la page, Stripe et Mollie.
  *
  * Chaque `priceId` peut être surchargé par une variable d'environnement
  * (ex. STRIPE_PRICE_LANDING_PAGE) pour basculer sur des prix de test sans
@@ -16,13 +15,30 @@ export type Offer = {
   id: string;
   name: string;
   tagline: string;
-  /** Montant affiché, en centimes d'euro */
+  /** Montant affiché et facturé par Mollie, en centimes d'euro */
   price: number;
   delivery: string;
   features: string[];
   /** Price ID Stripe (mode live) */
   priceId: string;
   featured?: boolean;
+};
+
+export type ServiceCategory = 'sites' | 'visibilite' | 'ia' | 'audit';
+
+export const serviceCategories: { id: ServiceCategory; label: string }[] = [
+  { id: 'sites', label: 'Sites & design' },
+  { id: 'visibilite', label: 'SEO & visibilité' },
+  { id: 'ia', label: 'IA & automatisation' },
+  { id: 'audit', label: 'Audit & mesure' },
+];
+
+/**
+ * Prestations ponctuelles vendues à la carte, affichées en liste compacte sous
+ * les offres principales. Mêmes règles de prix que `offers`.
+ */
+export type Service = Omit<Offer, 'delivery' | 'features' | 'featured'> & {
+  category: ServiceCategory;
 };
 
 export const offers: Offer[] = [
@@ -99,6 +115,36 @@ export const offers: Offer[] = [
   },
 ];
 
+export const services: Service[] = [
+  // Sites & design
+  { id: 'refonte-site', category: 'sites', name: 'Refonte site web', tagline: 'Un site existant remis au goût du jour : design, structure et lisibilité.', price: 20500, priceId: 'price_1U3zXtAmS2hPu7V9v67jOgHV' },
+  { id: 'design-ui-page', category: 'sites', name: "Design UI d'une page", tagline: "La maquette soignée d'une page clé, prête à être intégrée.", price: 20500, priceId: 'price_1U3zkJAmS2hPu7V9sLmYybQZ' },
+  { id: 'optimisation-page-vente', category: 'sites', name: 'Optimisation de page de vente', tagline: 'Une page de vente retravaillée pour transformer plus de visiteurs en clients.', price: 25900, priceId: 'price_1UH3svAmS2hPu7V9SrWS1sjx' },
+  { id: 'charte-graphique', category: 'sites', name: 'Charte graphique express', tagline: 'Couleurs, typographies et règles visuelles pour une image cohérente.', price: 26900, priceId: 'price_1UH3swAmS2hPu7V9YYX8fR69' },
+  { id: 'migration-site', category: 'sites', name: 'Migration & mise en ligne de site', tagline: 'Votre site déplacé ou publié proprement : hébergement, domaine, redirections.', price: 20900, priceId: 'price_1UH3sbAmS2hPu7V9biDORJWr' },
+  { id: 'maintenance-site', category: 'sites', name: 'Maintenance de site (1 mois)', tagline: 'Mises à jour, corrections et petites évolutions pendant un mois.', price: 22900, priceId: 'price_1UH3ssAmS2hPu7V9ecJPPHW3' },
+
+  // SEO & visibilité
+  { id: 'optimisation-seo', category: 'visibilite', name: 'Optimisation SEO', tagline: 'Les réglages techniques et éditoriaux pour mieux remonter sur Google.', price: 20500, priceId: 'price_1U3zZzAmS2hPu7V9fR09a1ZD' },
+  { id: 'pack-seo-local', category: 'visibilite', name: 'Pack SEO Local', tagline: 'Être trouvé par les clients de votre zone quand ils cherchent votre métier.', price: 20500, priceId: 'price_1U3ziVAmS2hPu7V9EgimSWFd' },
+  { id: 'google-business', category: 'visibilite', name: 'Optimisation Google Business', tagline: 'Une fiche Google complète et à jour, qui inspire confiance et génère des appels.', price: 20500, priceId: 'price_1U3zfCAmS2hPu7V9sFABeFAL' },
+  { id: 'redaction-seo', category: 'visibilite', name: 'Rédaction de 5 pages web SEO', tagline: 'Cinq pages rédigées pour vos clients et optimisées pour les moteurs de recherche.', price: 27900, priceId: 'price_1UH3sxAmS2hPu7V9Aej1JQpb' },
+  { id: 'strategie-instagram', category: 'visibilite', name: 'Stratégie de contenu Instagram', tagline: 'Une ligne éditoriale claire et un plan de publications adapté à votre activité.', price: 21900, priceId: 'price_1UH3srAmS2hPu7V94T9GBkjN' },
+
+  // IA & automatisation
+  { id: 'audit-ia', category: 'ia', name: "Audit IA de l'entreprise", tagline: "Où l'IA peut vous faire gagner du temps, concrètement, dans votre activité.", price: 20500, priceId: 'price_1U3znaAmS2hPu7V9H7V7Dpw3' },
+  { id: 'plan-automatisation', category: 'ia', name: "Plan d'automatisation", tagline: 'Les tâches répétitives identifiées et un plan pour les automatiser.', price: 20500, priceId: 'price_1U3zp0AmS2hPu7V9KBnBVRM3' },
+  { id: 'chatbot-ia-basique', category: 'ia', name: 'Chatbot IA basique', tagline: 'Un assistant qui répond aux questions fréquentes de vos clients.', price: 20500, priceId: 'price_1U3zm2AmS2hPu7V9opoqXI3U' },
+  { id: 'integration-chatbot', category: 'ia', name: 'Intégration de chatbot IA sur site existant', tagline: 'Un chatbot IA ajouté à votre site actuel, sans refonte.', price: 28900, priceId: 'price_1UH3syAmS2hPu7V9sDHrCyKZ' },
+  { id: 'automatisation-emails', category: 'ia', name: 'Automatisation e-mails & relances', tagline: 'Vos e-mails de suivi et relances envoyés automatiquement, au bon moment.', price: 24900, priceId: 'price_1UH3suAmS2hPu7V9Vje2nAcK' },
+  { id: 'formation-ia', category: 'ia', name: 'Formation IA pour équipe (2 h en visio)', tagline: 'Deux heures pour que votre équipe utilise l’IA au quotidien, sur vos cas réels.', price: 29900, priceId: 'price_1UH3szAmS2hPu7V9HWej3eNz' },
+
+  // Audit & mesure
+  { id: 'audit-ux', category: 'audit', name: 'Audit UX & conversion', tagline: 'Ce qui freine vos visiteurs, et les corrections prioritaires pour y remédier.', price: 20500, priceId: 'price_1U3zd8AmS2hPu7V9JYMl1XYZ' },
+  { id: 'audit-performance', category: 'audit', name: 'Audit performance & vitesse', tagline: 'Un diagnostic de la vitesse de votre site et les leviers pour l’accélérer.', price: 20500, priceId: 'price_1U3zgzAmS2hPu7V998tgeKaQ' },
+  { id: 'tracking-analytics', category: 'audit', name: 'Tracking & analytics', tagline: 'Des mesures fiables pour savoir d’où viennent vos clients et ce qu’ils font.', price: 23900, priceId: 'price_1UH3stAmS2hPu7V9MYFoaFtZ' },
+];
+
 /** Variable d'environnement de surcharge pour une offre donnée. */
 function envPriceKey(id: string): string {
   return `STRIPE_PRICE_${id.toUpperCase().replace(/-/g, '_')}`;
@@ -108,9 +154,9 @@ function envPriceKey(id: string): string {
  * Retourne l'offre correspondante, ou undefined si l'identifiant est inconnu.
  * Sert de liste blanche : le client n'envoie jamais de price ID ni de montant.
  */
-export function getOffer(id: unknown): Offer | undefined {
+export function getOffer(id: unknown): Pick<Offer, 'id' | 'name' | 'price' | 'priceId'> | undefined {
   if (typeof id !== 'string') return undefined;
-  const offer = offers.find((o) => o.id === id);
+  const offer = [...offers, ...services].find((o) => o.id === id);
   if (!offer) return undefined;
 
   const override = process.env[envPriceKey(offer.id)];
@@ -152,5 +198,23 @@ export function getOfferViews(): OfferView[] {
     delivery: o.delivery,
     features: o.features,
     featured: o.featured ?? false,
+  }));
+}
+
+export type ServiceView = {
+  id: string;
+  name: string;
+  tagline: string;
+  priceLabel: string;
+  category: ServiceCategory;
+};
+
+export function getServiceViews(): ServiceView[] {
+  return services.map((s) => ({
+    id: s.id,
+    name: s.name,
+    tagline: s.tagline,
+    priceLabel: formatPrice(s.price),
+    category: s.category,
   }));
 }

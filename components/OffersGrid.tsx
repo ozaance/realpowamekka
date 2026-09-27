@@ -1,6 +1,7 @@
 'use client';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import type { OfferView } from '@/lib/offers';
+import CheckoutDialog, { type CheckoutItem } from './CheckoutDialog';
 
 export default function OffersGrid({
   offers,
@@ -9,29 +10,8 @@ export default function OffersGrid({
   offers: OfferView[];
   canceled: boolean;
 }) {
-  const [pending, setPending] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
-
-  async function handleCheckout(offerId: string) {
-    setPending(offerId);
-    setError(null);
-    try {
-      const res = await fetch('/api/checkout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ offerId }),
-      });
-      const data = await res.json();
-      if (res.ok && data.url) {
-        window.location.href = data.url;
-        return;
-      }
-      setError("Le paiement n'a pas pu être ouvert. Réessayez ou contactez-nous.");
-    } catch {
-      setError("Le paiement n'a pas pu être ouvert. Réessayez ou contactez-nous.");
-    }
-    setPending(null);
-  }
+  const [selected, setSelected] = useState<CheckoutItem | null>(null);
+  const close = useCallback(() => setSelected(null), []);
 
   return (
     <>
@@ -48,10 +28,6 @@ export default function OffersGrid({
         >
           Paiement annulé. Aucun montant n&apos;a été débité.
         </p>
-      )}
-
-      {error && (
-        <p style={{ fontSize: 13, color: '#c0392b', marginBottom: 24 }}>{error}</p>
       )}
 
       <div
@@ -152,22 +128,16 @@ export default function OffersGrid({
             <button
               type="button"
               className="btn"
-              onClick={() => handleCheckout(offer.id)}
-              disabled={pending !== null}
-              style={{
-                alignSelf: 'flex-start',
-                borderRadius: 18,
-                border: 'none',
-                cursor: pending ? 'wait' : 'pointer',
-                opacity: pending && pending !== offer.id ? 0.5 : 1,
-              }}
+              onClick={() => setSelected(offer)}
+              style={{ alignSelf: 'flex-start', borderRadius: 18, border: 'none', cursor: 'pointer' }}
             >
-              {pending === offer.id ? 'Redirection...' : 'Commander'}
-              {pending !== offer.id && <span className="ar">→</span>}
+              Commander <span className="ar">→</span>
             </button>
           </div>
         ))}
       </div>
+
+      <CheckoutDialog item={selected} onClose={close} />
     </>
   );
 }
