@@ -1,9 +1,9 @@
 {
   "site": "sc-domain:powamekka.com",
-  "generatedAt": "2026-10-04T23:49:10.524Z",
+  "generatedAt": "2026-10-12T00:13:30.479Z",
   "period": {
-    "startDate": "2026-09-03",
-    "endDate": "2026-10-01"
+    "startDate": "2026-09-11",
+    "endDate": "2026-10-09"
   },
   "queries": [
     {
@@ -34,62 +34,13 @@
   "pages": [
     {
       "page": "https://www.powamekka.com/",
-      "clicks": 0,
-      "impressions": 14,
-      "ctr": 0,
-      "position": 6.285714285714286
-    },
-    {
-      "page": "https://www.powamekka.com/blog",
-      "clicks": 0,
-      "impressions": 1,
-      "ctr": 0,
-      "position": 4
-    },
-    {
-      "page": "https://www.powamekka.com/blog/systeme-digital-pme-guide-2026",
-      "clicks": 0,
-      "impressions": 3,
-      "ctr": 0,
-      "position": 4.333333333333334
-    },
-    {
-      "page": "https://www.powamekka.com/faq",
-      "clicks": 0,
-      "impressions": 1,
-      "ctr": 0,
-      "position": 5
-    },
-    {
-      "page": "https://www.powamekka.com/services/audit",
-      "clicks": 0,
-      "impressions": 1,
-      "ctr": 0,
-      "position": 8
-    },
-    {
-      "page": "https://www.powamekka.com/services/formation",
-      "clicks": 0,
-      "impressions": 1,
-      "ctr": 0,
-      "position": 7
-    },
-    {
-      "page": "https://www.powamekka.com/services/ia",
-      "clicks": 0,
-      "impressions": 1,
-      "ctr": 0,
-      "position": 10
+      "clicks": 1,
+      "impressions": 17,
+      "ctr": 0.058823529411764705,
+      "position": 6.411764705882353
     },
     {
       "page": "https://www.powamekka.com/services/sites",
-      "clicks": 0,
-      "impressions": 2,
-      "ctr": 0,
-      "position": 4
-    },
-    {
-      "page": "https://www.powamekka.com/services/systemes",
       "clicks": 0,
       "impressions": 1,
       "ctr": 0,
@@ -98,9 +49,9 @@
     {
       "page": "https://www.powamekka.com/vision",
       "clicks": 0,
-      "impressions": 2,
+      "impressions": 1,
       "ctr": 0,
-      "position": 7
+      "position": 5
     }
   ]
 }
