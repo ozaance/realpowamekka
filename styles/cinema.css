@@ -1,0 +1,547 @@
+/* ============================================================
+   POWAMEKKA — CINEMA
+   Couche cinématique posée sur hikari-v2.css.
+   Récit scrollé : le tableau s'ouvre, on entre dedans, le
+   système se révèle. Les pages internes (services, offres,
+   blog) ne sont pas touchées : tout est préfixé .cn-.
+   ============================================================ */
+
+:root {
+  --cn-stage: 100svh;
+  --cn-frame-w: min(62vw, 980px);
+  --cn-ease-cine: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Le récit a besoin d'un fond stable derrière les scènes :
+   l'atmosphère globale de hikari gênerait les fondus. */
+body.cn-active::before { opacity: 0.55; }
+body.cn-active { background: var(--paper); }
+
+/* ------------------------------------------------------------
+   LOADER
+   ------------------------------------------------------------ */
+.cn-loader {
+  position: fixed; inset: 0; z-index: 200;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--paper);
+  transition: opacity 0.9s var(--cn-ease-cine), visibility 0.9s;
+}
+.cn-loader[data-done="true"] { opacity: 0; visibility: hidden; pointer-events: none; }
+.cn-loader-inner { display: flex; flex-direction: column; align-items: center; gap: 26px; }
+.cn-loader-mark { width: 38px; height: auto; opacity: 0; animation: cn-mark 1.5s var(--cn-ease-cine) 0.25s forwards; }
+.cn-loader-rule { position: relative; width: min(42vw, 320px); height: 1px; background: var(--line); overflow: hidden; }
+.cn-loader-rule i {
+  position: absolute; inset: 0; transform-origin: left;
+  background: linear-gradient(90deg, transparent, var(--gold), var(--gold-soft));
+  animation: cn-trace 1.9s var(--cn-ease-cine) forwards;
+}
+.cn-loader-word {
+  font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.26em;
+  text-transform: uppercase; color: var(--ink-dim);
+  opacity: 0; animation: cn-mark 1.4s var(--cn-ease-cine) 0.6s forwards;
+}
+@keyframes cn-trace { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes cn-mark { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+/* ------------------------------------------------------------
+   NAV — superposée au récit, se densifie après le héros
+   ------------------------------------------------------------ */
+.cn-nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 90;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 20px; padding: 22px var(--pad);
+  transition: background 0.5s var(--cn-ease-cine), border-color 0.5s, padding 0.5s var(--cn-ease-cine);
+  border-bottom: 1px solid transparent;
+}
+.cn-nav[data-solid="true"] {
+  background: color-mix(in oklab, var(--paper) 86%, transparent);
+  backdrop-filter: blur(14px) saturate(1.1);
+  border-bottom-color: var(--line);
+  padding-top: 14px; padding-bottom: 14px;
+}
+/* Sur le tableau plein écran, la nav passe en clair */
+.cn-nav[data-over-art="true"] { color: var(--paper); }
+.cn-nav[data-over-art="true"] .cn-nav-link { color: color-mix(in oklab, #fff 82%, transparent); }
+.cn-nav[data-over-art="true"] .cn-nav-link:hover { color: #fff; }
+.cn-nav[data-over-art="true"] .cn-nav-mark { filter: invert(1) brightness(2); }
+.cn-nav[data-over-art="true"] .cn-nav-cta { border-color: color-mix(in oklab, #fff 55%, transparent); color: #fff; }
+.cn-nav[data-over-art="true"] .cn-nav-cta:hover { background: #fff; color: var(--ink); }
+
+.cn-nav-brand { display: flex; align-items: center; gap: 12px; }
+.cn-nav-mark { height: 24px; width: auto; transition: filter 0.5s; }
+.cn-nav-wm {
+  font-family: var(--font-display); font-weight: 500; font-size: 17px;
+  letter-spacing: 0.22em; padding-left: 0.22em;
+}
+.cn-nav-links { display: flex; gap: 30px; font-size: 13px; }
+.cn-nav-link { position: relative; padding-bottom: 3px; color: var(--ink-soft); transition: color 0.3s; }
+.cn-nav-link::after {
+  content: ""; position: absolute; left: 0; bottom: 0; width: 0; height: 1px;
+  background: var(--gold); transition: width 0.4s var(--cn-ease-cine);
+}
+.cn-nav-link:hover::after { width: 100%; }
+.cn-nav-cta {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 12.5px; font-weight: 500; letter-spacing: 0.02em;
+  border: 1px solid var(--ink); border-radius: 18px; padding: 10px 20px;
+  transition: 0.4s var(--cn-ease-cine); white-space: nowrap;
+}
+.cn-nav-cta:hover { background: var(--ink); color: var(--paper); }
+@media (max-width: 920px) { .cn-nav-links { display: none; } }
+@media (max-width: 540px) {
+  .cn-nav { padding: 14px 18px; }
+  .cn-nav-wm { font-size: 13px; letter-spacing: 0.1em; }
+  .cn-nav-cta { font-size: 10.5px; padding: 8px 13px; }
+}
+
+/* ------------------------------------------------------------
+   HÉROS — le tableau qui s'ouvre
+   ------------------------------------------------------------ */
+.cn-hero { position: relative; z-index: 2; }
+.cn-hero-stage {
+  position: sticky; top: 0; height: var(--cn-stage);
+  overflow: hidden; display: flex; align-items: center; justify-content: center;
+}
+
+/* Le cadre : boîte 16/9 au centre, qui grandit jusqu'au plein écran.
+   La moulure est en CSS et non dans l'image : elle reste nette à toute
+   échelle et son épaisseur tombe à zéro quand on entre dans le tableau,
+   ce qui donne la sensation exacte de traverser le cadre. */
+.cn-frame {
+  position: relative;
+  width: var(--cn-frame-w); aspect-ratio: 16 / 9;
+  will-change: width, height, padding;
+  background:
+    /* feuille d'or usée dans les creux */
+    linear-gradient(142deg,
+      color-mix(in oklab, var(--gold-soft) 26%, #efe9dc) 0%,
+      #f6f2e9 22%,
+      color-mix(in oklab, var(--gold) 20%, #e4ddcd) 48%,
+      #faf7f0 70%,
+      color-mix(in oklab, var(--gold-soft) 30%, #e6dfd0) 100%),
+    var(--plaster);
+  box-shadow:
+    0 60px 120px -60px rgba(28, 24, 19, 0.55),
+    0 10px 30px -18px rgba(28, 24, 19, 0.4),
+    inset 0 0 0 1px color-mix(in oklab, var(--gold) 40%, transparent);
+}
+/* Biseau intérieur : la toile est en retrait dans la moulure */
+.cn-frame-inner {
+  background: #15120e;
+  position: relative; width: 100%; height: 100%; overflow: hidden;
+  box-shadow:
+    0 0 0 1px color-mix(in oklab, var(--gold) 55%, transparent),
+    inset 0 2px 14px rgba(28, 24, 19, 0.45);
+}
+.cn-frame-media { position: absolute; inset: 0; width: 100%; height: 100%; }
+.cn-frame-media img,
+.cn-frame-media video { width: 100%; height: 100%; object-fit: cover; display: block; }
+/* La vidéo recouvre l'image dès qu'elle est prête à être scrubée */
+.cn-frame-video { opacity: 0; transition: opacity 0.6s linear; }
+.cn-frame-video[data-ready="true"] { opacity: 1; }
+
+/* Version « mouvement réduit » : le tableau est simplement posé en
+   plein écran, sans récit scrollé. */
+.cn-hero-static { height: 100svh; }
+.cn-hero-static .cn-frame-inner { height: 100%; box-shadow: none; }
+.cn-hero-static .cn-frame-media img { width: 100%; height: 100%; object-fit: cover; }
+
+/* Voile d'encre : protège la lisibilité du texte sur le tableau */
+.cn-frame-veil {
+  position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    rgba(16, 14, 11, 0.42) 0%,
+    rgba(16, 14, 11, 0.12) 32%,
+    rgba(16, 14, 11, 0.18) 62%,
+    rgba(16, 14, 11, 0.68) 100%
+  );
+}
+
+/* Légende sous le cadre, avant l'entrée dans le tableau */
+.cn-hero-caption {
+  position: absolute; left: 0; right: 0; bottom: clamp(26px, 6vh, 56px);
+  display: flex; flex-direction: column; align-items: center; gap: 14px;
+  text-align: center; padding: 0 24px; pointer-events: none;
+}
+.cn-hero-caption .l {
+  font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.24em;
+  text-transform: uppercase; color: var(--ink-dim);
+}
+.cn-scroll-hint { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.cn-scroll-hint i {
+  display: block; width: 1px; height: 38px;
+  background: linear-gradient(180deg, transparent, var(--gold));
+  animation: cn-hint 2.4s var(--cn-ease-cine) infinite;
+}
+@keyframes cn-hint {
+  0% { transform: scaleY(0.2); transform-origin: top; opacity: 0; }
+  40% { transform: scaleY(1); transform-origin: top; opacity: 1; }
+  70% { transform: scaleY(1); transform-origin: bottom; opacity: 1; }
+  100% { transform: scaleY(0.2); transform-origin: bottom; opacity: 0; }
+}
+
+/* Contenu du héros, épinglé une fois dans le tableau */
+.cn-hero-content {
+  position: absolute; inset: 0; z-index: 3;
+  display: flex; flex-direction: column; justify-content: flex-end;
+  padding: 0 var(--pad) clamp(44px, 9vh, 104px);
+  color: var(--paper); pointer-events: none;
+}
+.cn-hero-content > * { pointer-events: auto; }
+.cn-hero-eyebrow,
+.cn-hero-lede,
+.cn-slide-no,
+.cn-slide-lede { text-shadow: 0 1px 16px rgba(10, 8, 6, 0.6); }
+.cn-hero-eyebrow {
+  font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.22em;
+  text-transform: uppercase; color: color-mix(in oklab, var(--gold-soft) 28%, #fff);
+  margin-bottom: 22px;
+}
+.cn-hero-title {
+  font-family: var(--font-display); font-weight: 400;
+  font-size: clamp(38px, 6.4vw, 92px); line-height: 1.02;
+  letter-spacing: -0.025em; color: #fff; max-width: 15ch;
+  text-wrap: balance;
+}
+.cn-hero-lede {
+  margin-top: 24px; max-width: 46ch;
+  font-size: clamp(14.5px, 1.2vw, 17.5px); line-height: 1.75;
+  color: color-mix(in oklab, #fff 82%, transparent);
+}
+.cn-hero-actions { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-top: 36px; }
+.cn-btn-light {
+  display: inline-flex; align-items: center; gap: 10px;
+  background: var(--paper); color: var(--ink);
+  font-size: 13px; font-weight: 500; letter-spacing: 0.02em;
+  padding: 15px 28px; border-radius: 18px;
+  transition: 0.4s var(--cn-ease-cine);
+}
+.cn-btn-light:hover { background: var(--gold); color: #fff; transform: translateY(-2px); }
+.cn-btn-outline {
+  display: inline-flex; align-items: center; gap: 10px;
+  border: 1px solid color-mix(in oklab, #fff 48%, transparent); color: #fff;
+  font-size: 13px; font-weight: 500; padding: 15px 28px; border-radius: 18px;
+  transition: 0.4s var(--cn-ease-cine);
+}
+.cn-btn-outline:hover { border-color: #fff; background: color-mix(in oklab, #fff 12%, transparent); transform: translateY(-2px); }
+.cn-btn-light .ar, .cn-btn-outline .ar { transition: transform 0.4s var(--cn-ease-cine); }
+.cn-btn-light:hover .ar, .cn-btn-outline:hover .ar { transform: translateX(4px); }
+
+/* Trois preuves alignées en bas du tableau */
+.cn-hero-proof {
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px; margin-top: clamp(32px, 5vh, 54px);
+  padding-top: 26px; border-top: 1px solid color-mix(in oklab, #fff 22%, transparent);
+  max-width: 900px;
+}
+.cn-hero-proof .n {
+  font-family: var(--font-display); font-size: clamp(18px, 1.9vw, 24px);
+  color: #fff; line-height: 1.2;
+}
+.cn-hero-proof .t {
+  margin-top: 7px; font-size: 12.5px; line-height: 1.6;
+  color: color-mix(in oklab, #fff 64%, transparent);
+}
+/* Écrans courts : la liste des trois promesses ne tient plus sous les boutons. */
+@media (max-height: 740px) { .cn-hero-proof { display: none; } }
+@media (max-width: 760px) {
+  .cn-hero-proof { grid-template-columns: 1fr; gap: 14px; padding-top: 18px; }
+  .cn-hero-proof .t { display: none; }
+  .cn-hero-proof .n { font-size: 15px; }
+  .cn-hero-content { padding-bottom: clamp(32px, 7vh, 64px); }
+}
+
+/* ------------------------------------------------------------
+   MANIFESTE — se révèle derrière le héros qui s'efface
+   ------------------------------------------------------------ */
+.cn-manifeste {
+  position: relative; z-index: 1;
+  margin-top: calc(var(--cn-stage) * -1);
+  min-height: 100svh;
+  display: flex; align-items: center;
+  padding: clamp(80px, 14vh, 160px) var(--pad);
+}
+.cn-manifeste-inner { max-width: var(--maxw); margin: 0 auto; width: 100%; }
+.cn-manifeste-label {
+  font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.22em;
+  text-transform: uppercase; color: var(--gold); margin-bottom: 34px;
+}
+.cn-manifeste-text {
+  font-family: var(--font-display); font-weight: 300;
+  font-size: clamp(26px, 4.1vw, 60px); line-height: 1.26;
+  letter-spacing: -0.018em; color: var(--ink); max-width: 20ch;
+}
+/* Révélation mot à mot au scroll */
+.cn-word { display: inline-block; transition: opacity 0.5s var(--cn-ease-cine), transform 0.5s var(--cn-ease-cine); }
+.cn-word .em { color: var(--gold); }
+.cn-manifeste-foot {
+  margin-top: clamp(42px, 7vh, 76px); display: flex; flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* ------------------------------------------------------------
+   CONVICTION — le fil se démêle
+   ------------------------------------------------------------ */
+.cn-conviction {
+  position: relative; z-index: 1;
+  padding: clamp(60px, 11vh, 130px) 0;
+  border-top: 1px solid var(--line);
+  overflow: hidden;
+}
+.cn-conviction-head { max-width: var(--maxw); margin: 0 auto; padding: 0 var(--pad); text-align: center; }
+.cn-conviction-title {
+  /* L'illustration porte déjà ce titre à l'image : on le garde dans le
+     DOM pour le référencement et les lecteurs d'écran, sans le doubler. */
+  position: absolute; width: 1px; height: 1px; overflow: hidden;
+  clip-path: inset(50%); white-space: nowrap;
+}
+.cn-conviction-title-visible {
+  font-family: var(--font-display); font-weight: 400;
+  font-size: clamp(24px, 3.2vw, 42px); line-height: 1.14;
+  letter-spacing: -0.018em; color: var(--ink); max-width: 22ch;
+  margin: 0 auto clamp(26px, 5vh, 52px);
+}
+.cn-conviction-art { position: relative; width: 100%; overflow: hidden; }
+.cn-conviction-pan {
+  position: relative; width: 100%; will-change: transform;
+  mask-image:
+    linear-gradient(to right, transparent 0%, black 7%, black 93%, transparent 100%),
+    linear-gradient(to bottom, transparent 0%, black 5%, black 95%, transparent 100%);
+  -webkit-mask-image:
+    linear-gradient(to right, transparent 0%, black 7%, black 93%, transparent 100%),
+    linear-gradient(to bottom, transparent 0%, black 5%, black 95%, transparent 100%);
+  mask-composite: intersect;
+  -webkit-mask-composite: destination-in;
+}
+@media (max-width: 759px) {
+  .cn-conviction-pan { width: 230%; }
+  .cn-conviction-sweep { display: none; }
+}
+.cn-conviction-art img {
+  width: 100%; height: auto; display: block;
+}
+/* Un rai de lumière balaie l'illustration au scroll */
+.cn-conviction-sweep {
+  position: absolute; top: 0; bottom: 0; left: 0; width: 34%;
+  pointer-events: none; mix-blend-mode: screen;
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.85), transparent);
+}
+.cn-conviction-cap {
+  max-width: 44ch; margin: clamp(28px, 5vh, 54px) auto 0; padding: 0 var(--pad);
+  text-align: center; font-size: clamp(15px, 1.4vw, 19px); line-height: 1.7;
+  color: var(--ink-soft);
+}
+
+/* ------------------------------------------------------------
+   DISCIPLINES — galerie de tableaux qui passent plein écran
+   ------------------------------------------------------------ */
+.cn-gallery { position: relative; z-index: 1; }
+.cn-gallery-stage {
+  position: sticky; top: 0; height: var(--cn-stage);
+  overflow: hidden; background: var(--paper);
+  display: flex; align-items: center; justify-content: center;
+}
+/* Un seul cadre pour toute la galerie : il grandit une fois, puis les
+   tableaux se succèdent dedans en fondu. */
+.cn-slide-frame {
+  position: relative;
+  width: var(--cn-frame-w); aspect-ratio: 16 / 9;
+  will-change: width, height, padding;
+  background:
+    linear-gradient(142deg,
+      color-mix(in oklab, var(--gold-soft) 26%, #efe9dc) 0%,
+      #f6f2e9 22%,
+      color-mix(in oklab, var(--gold) 20%, #e4ddcd) 48%,
+      #faf7f0 70%,
+      color-mix(in oklab, var(--gold-soft) 30%, #e6dfd0) 100%),
+    var(--plaster);
+  box-shadow:
+    0 60px 120px -60px rgba(28, 24, 19, 0.5),
+    inset 0 0 0 1px color-mix(in oklab, var(--gold) 40%, transparent);
+}
+.cn-slide-canvas {
+  background: #15120e;
+  position: relative; width: 100%; height: 100%; overflow: hidden;
+  box-shadow:
+    0 0 0 1px color-mix(in oklab, var(--gold) 55%, transparent),
+    inset 0 2px 14px rgba(28, 24, 19, 0.45);
+}
+.cn-slide {
+  position: absolute; inset: 0;
+  will-change: opacity;
+}
+.cn-slide img, .cn-slide video {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%; object-fit: cover; display: block;
+}
+.cn-slide-veil {
+  position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(to bottom, rgba(16, 14, 11, 0.3) 0%, rgba(16, 14, 11, 0.08) 40%, rgba(16, 14, 11, 0.72) 100%);
+}
+.cn-slide-body {
+  position: absolute; inset: 0; z-index: 3; color: #fff;
+  display: flex; flex-direction: column; justify-content: flex-end;
+  padding: 0 var(--pad) clamp(50px, 10vh, 110px);
+  pointer-events: none;
+}
+.cn-slide-body > * { pointer-events: auto; }
+.cn-slide-no {
+  font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.2em;
+  color: color-mix(in oklab, var(--gold-soft) 90%, #fff); margin-bottom: 18px;
+}
+.cn-slide-title {
+  font-family: var(--font-display); font-weight: 400;
+  font-size: clamp(30px, 5.2vw, 72px); line-height: 1.04;
+  letter-spacing: -0.025em; color: #fff; max-width: 16ch;
+}
+.cn-slide-lede {
+  margin-top: 18px; max-width: 48ch; font-size: clamp(14px, 1.15vw, 17px);
+  line-height: 1.7; color: color-mix(in oklab, #fff 80%, transparent);
+}
+.cn-slide-link {
+  display: inline-flex; align-items: center; gap: 10px; margin-top: 28px;
+  font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.14em;
+  text-transform: uppercase; color: #fff;
+  border-bottom: 1px solid color-mix(in oklab, #fff 40%, transparent);
+  padding-bottom: 6px; transition: 0.4s var(--cn-ease-cine);
+}
+.cn-slide-link:hover { gap: 18px; border-bottom-color: var(--gold-soft); color: var(--gold-soft); }
+
+/* Index des disciplines, fixé à droite pendant la galerie */
+.cn-gallery-index {
+  position: absolute; right: var(--pad); top: 50%; transform: translateY(-50%);
+  z-index: 4; display: flex; flex-direction: column; gap: 14px;
+  font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.cn-gallery-index span {
+  display: flex; align-items: center; gap: 10px; justify-content: flex-end;
+  color: color-mix(in oklab, #fff 45%, transparent); transition: color 0.4s;
+}
+.cn-gallery-index span i {
+  display: block; width: 18px; height: 1px;
+  background: currentColor; transition: width 0.4s var(--cn-ease-cine);
+}
+.cn-gallery-index span[data-on="true"] { color: #fff; }
+.cn-gallery-index span[data-on="true"] i { width: 38px; background: var(--gold-soft); }
+@media (max-width: 860px) {
+  .cn-gallery-index { display: none; }
+  .cn-slide-lede { font-size: 14px; }
+}
+
+/* ------------------------------------------------------------
+   MÉTHODE — la ligne d'or se trace
+   ------------------------------------------------------------ */
+.cn-method {
+  position: relative; z-index: 1;
+  padding: clamp(70px, 12vh, 150px) var(--pad);
+  border-top: 1px solid var(--line);
+}
+.cn-method-inner { max-width: var(--maxw); margin: 0 auto; }
+.cn-method-title {
+  font-family: var(--font-display); font-weight: 400;
+  font-size: clamp(26px, 3.6vw, 48px); line-height: 1.1;
+  letter-spacing: -0.02em; max-width: 18ch; margin-bottom: clamp(44px, 7vh, 80px);
+}
+.cn-method-track { position: relative; }
+.cn-method-rule {
+  position: absolute; left: 0; right: 0; top: 7px; height: 1px;
+  background: var(--line);
+}
+.cn-method-rule i {
+  position: absolute; inset: 0; transform-origin: left;
+  background: linear-gradient(90deg, var(--gold), var(--gold-soft));
+}
+.cn-method-steps {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: clamp(20px, 3vw, 46px);
+}
+.cn-method-step { position: relative; padding-top: 34px; }
+.cn-method-step::before {
+  content: ""; position: absolute; top: 4px; left: 0;
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--paper); border: 1px solid var(--line-strong);
+  transition: background 0.5s var(--cn-ease-cine), border-color 0.5s, box-shadow 0.5s;
+}
+.cn-method-step[data-on="true"]::before {
+  background: var(--gold); border-color: var(--gold);
+  box-shadow: 0 0 0 4px color-mix(in oklab, var(--gold) 18%, transparent);
+}
+.cn-method-step .no {
+  font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.16em;
+  text-transform: uppercase; color: var(--gold); margin-bottom: 14px;
+}
+.cn-method-step h4 {
+  font-family: var(--font-display); font-weight: 400;
+  font-size: clamp(19px, 1.9vw, 26px); margin-bottom: 11px; color: var(--ink);
+}
+.cn-method-step p { font-size: 13.5px; line-height: 1.68; color: var(--ink-dim); }
+@media (max-width: 860px) {
+  .cn-method-steps { grid-template-columns: 1fr; gap: 30px; }
+  .cn-method-rule { display: none; }
+  .cn-method-step { padding-top: 0; padding-left: 26px; border-left: 1px solid var(--line); }
+  .cn-method-step::before { top: 5px; left: -4px; }
+}
+
+/* ------------------------------------------------------------
+   CTA FINAL — le second tableau
+   ------------------------------------------------------------ */
+.cn-cta {
+  position: relative; z-index: 1;
+  min-height: 100svh; display: flex; align-items: center;
+  overflow: hidden; isolation: isolate;
+}
+.cn-cta-media { position: absolute; inset: 0; z-index: -2; }
+.cn-cta-media img, .cn-cta-media video {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+  will-change: transform;
+}
+.cn-cta-veil {
+  position: absolute; inset: 0; z-index: -1;
+  background: linear-gradient(to bottom, rgba(16, 14, 11, 0.6) 0%, rgba(16, 14, 11, 0.38) 45%, rgba(16, 14, 11, 0.78) 100%);
+}
+.cn-cta-inner {
+  max-width: var(--maxw); margin: 0 auto; width: 100%;
+  padding: clamp(80px, 14vh, 160px) var(--pad); text-align: center; color: #fff;
+}
+.cn-cta-eyebrow {
+  font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.24em;
+  text-transform: uppercase; color: color-mix(in oklab, var(--gold-soft) 88%, #fff);
+  margin-bottom: 26px;
+}
+.cn-cta-title {
+  font-family: var(--font-display); font-weight: 400;
+  font-size: clamp(32px, 5.4vw, 76px); line-height: 1.04;
+  letter-spacing: -0.025em; color: #fff; max-width: 17ch; margin: 0 auto;
+}
+.cn-cta-sub {
+  margin: 24px auto 0; max-width: 48ch;
+  font-size: clamp(14.5px, 1.2vw, 17px); line-height: 1.72;
+  color: color-mix(in oklab, #fff 78%, transparent);
+}
+.cn-cta-actions { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin-top: 40px; }
+
+/* ------------------------------------------------------------
+   RÉVÉLATIONS AU SCROLL (générique)
+   ------------------------------------------------------------ */
+.cn-rise { opacity: 0; transform: translateY(28px); transition: opacity 1s var(--cn-ease-cine), transform 1s var(--cn-ease-cine); }
+.cn-rise[data-in="true"] { opacity: 1; transform: none; }
+.cn-rise[data-d="1"] { transition-delay: 0.1s; }
+.cn-rise[data-d="2"] { transition-delay: 0.2s; }
+.cn-rise[data-d="3"] { transition-delay: 0.3s; }
+.cn-rise[data-d="4"] { transition-delay: 0.4s; }
+
+/* ------------------------------------------------------------
+   ACCESSIBILITÉ — mouvement réduit : le récit devient statique
+   ------------------------------------------------------------ */
+@media (prefers-reduced-motion: reduce) {
+  .cn-rise { opacity: 1; transform: none; transition: none; }
+  .cn-word { opacity: 1 !important; transform: none !important; transition: none; }
+  .cn-loader { display: none; }
+  .cn-scroll-hint i { animation: none; }
+  .cn-conviction-sweep { display: none; }
+  /* Le héros statique ne fait plus qu'un écran : sans cela le
+     manifeste, remonté d'un écran, viendrait se cacher derrière lui. */
+  .cn-manifeste { margin-top: 0; }
+}
