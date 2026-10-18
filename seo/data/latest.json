@@ -1,26 +1,18 @@
 {
   "site": "sc-domain:powamekka.com",
-  "generatedAt": "2026-10-12T00:13:30.479Z",
+  "generatedAt": "2026-10-18T22:45:57.792Z",
   "period": {
-    "startDate": "2026-09-11",
-    "endDate": "2026-10-09"
+    "startDate": "2026-09-17",
+    "endDate": "2026-10-15"
   },
   "queries": [
-    {
-      "query": "poenmeka",
-      "page": "https://www.powamekka.com/",
-      "clicks": 0,
-      "impressions": 1,
-      "ctr": 0,
-      "position": 4
-    },
     {
       "query": "powamekka",
       "page": "https://www.powamekka.com/",
       "clicks": 0,
-      "impressions": 2,
+      "impressions": 3,
       "ctr": 0,
-      "position": 1.5
+      "position": 1.3333333333333333
     },
     {
       "query": "powamekka café",
@@ -34,24 +26,24 @@
   "pages": [
     {
       "page": "https://www.powamekka.com/",
-      "clicks": 1,
-      "impressions": 17,
-      "ctr": 0.058823529411764705,
-      "position": 6.411764705882353
+      "clicks": 2,
+      "impressions": 19,
+      "ctr": 0.10526315789473684,
+      "position": 5.842105263157895
     },
     {
       "page": "https://www.powamekka.com/services/sites",
       "clicks": 0,
-      "impressions": 1,
+      "impressions": 2,
       "ctr": 0,
-      "position": 2
+      "position": 1.5
     },
     {
       "page": "https://www.powamekka.com/vision",
       "clicks": 0,
-      "impressions": 1,
+      "impressions": 2,
       "ctr": 0,
-      "position": 5
+      "position": 3
     }
   ]
 }
