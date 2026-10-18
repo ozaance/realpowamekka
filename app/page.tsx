@@ -1,10 +1,12 @@
-import Navbar from '@/components/Navbar';
-import Hero from '@/components/Hero';
-import Mission from '@/components/Mission';
-import Conviction from '@/components/Conviction';
-import Services from '@/components/Services';
-import Methode from '@/components/Methode';
-import CTAFinal from '@/components/CTAFinal';
+import BodyClass from '@/components/cine/BodyClass';
+import Loader from '@/components/cine/Loader';
+import CineNav from '@/components/cine/CineNav';
+import HeroTableau from '@/components/cine/HeroTableau';
+import Manifeste from '@/components/cine/Manifeste';
+import ConvictionCine from '@/components/cine/ConvictionCine';
+import Disciplines from '@/components/cine/Disciplines';
+import MethodeCine from '@/components/cine/MethodeCine';
+import CTACine from '@/components/cine/CTACine';
 import Footer from '@/components/Footer';
 import type { Metadata } from 'next';
 
@@ -50,13 +52,20 @@ export default function Home() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <Navbar />
-      <Hero />
-      <Mission />
-      <Conviction />
-      <Services />
-      <Methode />
-      <CTAFinal />
+      <BodyClass name="cn-active" />
+      <Loader />
+      <CineNav />
+
+      {/* Le récit : on entre dans le tableau, le manifeste se découvre
+          derrière, puis la page redevient un scroll normal. */}
+      <HeroTableau />
+      <Manifeste />
+
+      <ConvictionCine />
+      <Disciplines />
+      <MethodeCine />
+      <CTACine />
+
       <Footer />
     </>
   );
