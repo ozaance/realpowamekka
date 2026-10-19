@@ -1,15 +1,43 @@
 import ServicePage from '@/components/ServicePage';
+import { breadcrumbJsonLd, jsonLdScript, serviceJsonLd } from '@/lib/schema';
 import type { Metadata } from 'next';
+
+const TITLE = 'IA & Automatisation : Powamekka';
+const DESCRIPTION = 'Automatisation des tâches répétitives et intégration IA pour PME. Devis, relances, rapports : libérez du temps pour ce qui compte vraiment.';
 
 export const metadata: Metadata = {
   alternates: { canonical: '/services/ia' },
-  title: 'IA & Automatisation : Powamekka',
-  description: 'Automatisation des tâches répétitives et intégration IA pour PME. Devis, relances, rapports : libérez du temps pour ce qui compte vraiment.',
+  title: TITLE,
+  description: DESCRIPTION,
+  openGraph: {
+    type: 'website',
+    url: '/services/ia',
+    title: TITLE,
+    description: DESCRIPTION,
+    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'Powamekka — IA & Automatisation' }],
+  },
 };
+
+const serviceSchema = serviceJsonLd({
+  name: 'IA & Automatisation',
+  description: DESCRIPTION,
+  url: '/services/ia',
+  serviceType: 'Conseil en intelligence artificielle',
+});
+
+const breadcrumbSchema = breadcrumbJsonLd([
+  { name: 'Accueil', url: '/' },
+  { name: 'IA & Automatisation', url: '/services/ia' },
+]);
 
 export default function IAPage() {
   return (
-    <ServicePage
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: jsonLdScript([serviceSchema, breadcrumbSchema]) }}
+      />
+      <ServicePage
       kicker="IA & Automatisation"
       title="L'IA qui travaille à votre place."
       lede="Rédaction de devis, relances clients, tri des messages, rapports automatiques : l'IA prend en charge le répétitif pour que vous vous concentriez sur ce qui compte."
@@ -26,6 +54,7 @@ export default function IAPage() {
         { label: 'Formation & Adoption', href: '/services/formation' },
         { label: 'Sites Premium', href: '/services/sites' },
       ]}
-    />
+      />
+    </>
   );
 }

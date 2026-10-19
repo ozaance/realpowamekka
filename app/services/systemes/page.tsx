@@ -1,15 +1,43 @@
 import ServicePage from '@/components/ServicePage';
+import { breadcrumbJsonLd, jsonLdScript, serviceJsonLd } from '@/lib/schema';
 import type { Metadata } from 'next';
+
+const TITLE = 'Systèmes Digitaux : Powamekka';
+const DESCRIPTION = 'Architecture digitale sur-mesure pour PME. CRM, facturation, planning, communication : vos outils reliés en un système cohérent et automatisé.';
 
 export const metadata: Metadata = {
   alternates: { canonical: '/services/systemes' },
-  title: 'Systèmes Digitaux : Powamekka',
-  description: 'Architecture digitale sur-mesure pour PME. CRM, facturation, planning, communication : vos outils reliés en un système cohérent et automatisé.',
+  title: TITLE,
+  description: DESCRIPTION,
+  openGraph: {
+    type: 'website',
+    url: '/services/systemes',
+    title: TITLE,
+    description: DESCRIPTION,
+    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'Powamekka — Systèmes Digitaux' }],
+  },
 };
+
+const serviceSchema = serviceJsonLd({
+  name: 'Systèmes Digitaux',
+  description: DESCRIPTION,
+  url: '/services/systemes',
+  serviceType: 'Développement de systèmes digitaux',
+});
+
+const breadcrumbSchema = breadcrumbJsonLd([
+  { name: 'Accueil', url: '/' },
+  { name: 'Systèmes Digitaux', url: '/services/systemes' },
+]);
 
 export default function SystemesPage() {
   return (
-    <ServicePage
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: jsonLdScript([serviceSchema, breadcrumbSchema]) }}
+      />
+      <ServicePage
       kicker="Systèmes Digitaux"
       title="L'architecture qui relie tout."
       lede="CRM, facturation, planning, communication : vos outils travaillent enfin ensemble. Vos données circulent sans ressaisie, vos équipes avancent sans friction."
@@ -26,6 +54,7 @@ export default function SystemesPage() {
         { label: 'Formation & Adoption', href: '/services/formation' },
         { label: 'Sites Premium', href: '/services/sites' },
       ]}
-    />
+      />
+    </>
   );
 }

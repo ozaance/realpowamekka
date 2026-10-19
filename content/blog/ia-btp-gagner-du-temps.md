@@ -10,7 +10,7 @@ Vous êtes plombier, électricien, maçon ou chef de chantier. Votre journée co
 
 Ce temps administratif, la plupart des patrons de BTP l'estiment entre 8 et 12 heures par semaine. C'est du temps perdu sur des chantiers, sur du développement commercial, sur votre famille.
 
-L'intelligence artificielle ne remplace pas votre métier. Elle prend en charge ce qui vous épuise.
+[L'intelligence artificielle](/services/ia) ne remplace pas votre métier. Elle prend en charge ce qui vous épuise.
 
 ## 1. La rédaction de devis
 
@@ -50,6 +50,6 @@ Ce n'est pas de la magie. C'est de l'organisation, outillée correctement.
 
 La première étape n'est pas d'acheter un logiciel. C'est de comprendre où vous perdez le plus de temps dans votre semaine.
 
-Chez Powamekka, on commence toujours par un audit : on cartographie vos processus, on identifie les 2 ou 3 tâches qui mangent le plus de temps, et on vous propose un plan d'action concret.
+Chez Powamekka, on commence toujours par un [audit stratégique](/services/audit) : on cartographie vos processus, on identifie les 2 ou 3 tâches qui mangent le plus de temps, et on vous propose un plan d'action concret.
 
 Pas de jargon technique. Pas d'engagement. Juste une vision claire de ce que l'IA peut faire pour votre activité, maintenant.
