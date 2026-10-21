@@ -17,6 +17,7 @@ export const metadata: Metadata = {
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "ProfessionalService",
+  "@id": "https://www.powamekka.com/#organization",
   "name": "Powamekka",
   "url": "https://www.powamekka.com",
   "logo": "https://www.powamekka.com/logo-mark-bone.png",

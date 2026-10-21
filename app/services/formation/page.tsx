@@ -1,15 +1,43 @@
 import ServicePage from '@/components/ServicePage';
+import { breadcrumbJsonLd, jsonLdScript, serviceJsonLd } from '@/lib/schema';
 import type { Metadata } from 'next';
+
+const TITLE = 'Formation & Adoption : Powamekka';
+const DESCRIPTION = 'Formation IA et outils digitaux pour équipes PME. Accompagnement post-déploiement pour ancrer les nouvelles pratiques durablement.';
 
 export const metadata: Metadata = {
   alternates: { canonical: '/services/formation' },
-  title: 'Formation & Adoption : Powamekka',
-  description: 'Formation IA et outils digitaux pour équipes PME. Accompagnement post-déploiement pour ancrer les nouvelles pratiques durablement.',
+  title: TITLE,
+  description: DESCRIPTION,
+  openGraph: {
+    type: 'website',
+    url: '/services/formation',
+    title: TITLE,
+    description: DESCRIPTION,
+    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'Powamekka — Formation & Adoption' }],
+  },
 };
+
+const serviceSchema = serviceJsonLd({
+  name: 'Formation & Adoption',
+  description: DESCRIPTION,
+  url: '/services/formation',
+  serviceType: 'Formation IA entreprise',
+});
+
+const breadcrumbSchema = breadcrumbJsonLd([
+  { name: 'Accueil', url: '/' },
+  { name: 'Formation & Adoption', url: '/services/formation' },
+]);
 
 export default function FormationPage() {
   return (
-    <ServicePage
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: jsonLdScript([serviceSchema, breadcrumbSchema]) }}
+      />
+      <ServicePage
       kicker="Formation & Adoption"
       title="La maîtrise qui reste en interne."
       lede="Un système n'a de valeur que si vos équipes le maîtrisent. Nous formons, documentons et accompagnons : pour que les bonnes habitudes s'installent durablement."
@@ -26,6 +54,7 @@ export default function FormationPage() {
         { label: 'IA & Automatisation', href: '/services/ia' },
         { label: 'Sites Premium', href: '/services/sites' },
       ]}
-    />
+      />
+    </>
   );
 }
