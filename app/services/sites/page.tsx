@@ -1,15 +1,43 @@
 import ServicePage from '@/components/ServicePage';
+import { breadcrumbJsonLd, jsonLdScript, serviceJsonLd } from '@/lib/schema';
 import type { Metadata } from 'next';
+
+const TITLE = 'Sites Premium : Powamekka';
+const DESCRIPTION = 'Création de sites web premium pour PME et artisans. Design sur-mesure, développement Next.js, intégration avec vos outils internes. Basé à Rouen.';
 
 export const metadata: Metadata = {
   alternates: { canonical: '/services/sites' },
-  title: 'Sites Premium : Powamekka',
-  description: 'Création de sites web premium pour PME et artisans. Design sur-mesure, développement Next.js, intégration avec vos outils internes. Basé à Rouen.',
+  title: TITLE,
+  description: DESCRIPTION,
+  openGraph: {
+    type: 'website',
+    url: '/services/sites',
+    title: TITLE,
+    description: DESCRIPTION,
+    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'Powamekka — Sites Premium' }],
+  },
 };
+
+const serviceSchema = serviceJsonLd({
+  name: 'Sites Premium',
+  description: DESCRIPTION,
+  url: '/services/sites',
+  serviceType: 'Développement de sites web',
+});
+
+const breadcrumbSchema = breadcrumbJsonLd([
+  { name: 'Accueil', url: '/' },
+  { name: 'Sites Premium', url: '/services/sites' },
+]);
 
 export default function SitesPage() {
   return (
-    <ServicePage
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: jsonLdScript([serviceSchema, breadcrumbSchema]) }}
+      />
+      <ServicePage
       kicker="Sites Premium"
       title="Une vitrine à la hauteur de votre système."
       lede="Votre site n'est pas un dépliant en ligne. C'est la vitrine de votre système : rapide, crédible, pensé pour convertir et relié directement à vos outils."
@@ -26,6 +54,7 @@ export default function SitesPage() {
         { label: 'IA & Automatisation', href: '/services/ia' },
         { label: 'Formation & Adoption', href: '/services/formation' },
       ]}
-    />
+      />
+    </>
   );
 }

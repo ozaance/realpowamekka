@@ -1,15 +1,43 @@
 import ServicePage from '@/components/ServicePage';
+import { breadcrumbJsonLd, jsonLdScript, serviceJsonLd } from '@/lib/schema';
 import type { Metadata } from 'next';
+
+const TITLE = 'Audit Stratégique : Powamekka';
+const DESCRIPTION = 'Diagnostic complet de vos opérations, outils et flux de travail. Identifiez vos leviers de clarté, d\'efficacité et de croissance avec Powamekka.';
 
 export const metadata: Metadata = {
   alternates: { canonical: '/services/audit' },
-  title: 'Audit Stratégique : Powamekka',
-  description: 'Diagnostic complet de vos opérations, outils et flux de travail. Identifiez vos leviers de clarté, d\'efficacité et de croissance avec Powamekka.',
+  title: TITLE,
+  description: DESCRIPTION,
+  openGraph: {
+    type: 'website',
+    url: '/services/audit',
+    title: TITLE,
+    description: DESCRIPTION,
+    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'Powamekka — Audit Stratégique' }],
+  },
 };
+
+const serviceSchema = serviceJsonLd({
+  name: 'Audit Stratégique',
+  description: DESCRIPTION,
+  url: '/services/audit',
+  serviceType: 'Audit stratégique digital',
+});
+
+const breadcrumbSchema = breadcrumbJsonLd([
+  { name: 'Accueil', url: '/' },
+  { name: 'Audit Stratégique', url: '/services/audit' },
+]);
 
 export default function AuditPage() {
   return (
-    <ServicePage
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: jsonLdScript([serviceSchema, breadcrumbSchema]) }}
+      />
+      <ServicePage
       kicker="Audit Stratégique"
       title="Comprendre avant d'agir."
       lede="Avant toute solution, nous analysons votre réalité. Vos outils, vos flux, vos points de friction. Un diagnostic concret qui révèle où se cachent vos vrais leviers."
@@ -26,6 +54,7 @@ export default function AuditPage() {
         { label: 'Formation & Adoption', href: '/services/formation' },
         { label: 'Sites Premium', href: '/services/sites' },
       ]}
-    />
+      />
+    </>
   );
 }

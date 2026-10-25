@@ -24,7 +24,7 @@ Le problème n'est pas la quantité d'outils. C'est l'absence de logique entre e
 
 Un système digital, ce n'est pas un logiciel tout-en-un qui fait tout. Ces solutions existent. Elles coûtent cher, demandent 6 mois d'intégration, et finissent souvent sous-utilisées.
 
-Un système digital, c'est un ensemble d'outils choisis pour fonctionner ensemble, reliés par des automatisations claires, avec un endroit unique où l'information vit.
+Un [système digital](/services/systemes) cohérent, c'est un ensemble d'outils choisis pour fonctionner ensemble, reliés par des automatisations claires, avec un endroit unique où l'information vit.
 
 Concrètement : quand un prospect vous contacte, l'information arrive au même endroit que vos devis, que votre planning, et que votre suivi client. Vous n'avez pas à copier-coller. Vous n'avez pas à chercher.
 
@@ -82,6 +82,6 @@ La première question à se poser n'est pas "quel outil acheter". C'est "où est
 
 La réponse est presque toujours dans trois endroits : la gestion des contacts et des opportunités, la coordination interne, et le suivi des projets ou des chantiers.
 
-Chez Powamekka, on commence chaque mission par un audit de 30 minutes. On cartographie vos outils actuels, on identifie les ruptures dans vos processus, et on vous propose un plan d'action concret avec un ordre de priorité clair.
+Chez Powamekka, on commence chaque mission par un [audit de 30 minutes](/services/audit). On cartographie vos outils actuels, on identifie les ruptures dans vos processus, et on vous propose un plan d'action concret avec un ordre de priorité clair.
 
 Pas de jargon. Pas de solution toute faite. Un diagnostic honnête, suivi d'une mise en œuvre sur mesure.
