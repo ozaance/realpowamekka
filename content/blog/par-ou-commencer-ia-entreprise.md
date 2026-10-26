@@ -78,6 +78,6 @@ Un dirigeant qui suit cet ordre sait, après le premier pilote, s'il doit contin
 
 Vous n'avez pas besoin d'un plan sur un an pour démarrer. Vous avez besoin d'identifier, cette semaine, les deux ou trois tâches qui reviennent le plus souvent et qui ne nécessitent pas votre jugement pour être faites : une relance, un tri de messages, un rapport récurrent.
 
-C'est exactement le point de départ d'un [audit stratégique](/services/audit) : trente minutes pour nommer ce qui freine réellement votre activité, avant de dépenser un euro sur un outil. Si vous êtes dans le BTP, [cet article sur l'IA appliquée aux artisans](/blog/ia-btp-gagner-du-temps) détaille des cas concrets adaptés à votre quotidien de chantier.
+C'est exactement le point de départ d'un [audit stratégique](/services/audit) : trente minutes pour nommer ce qui freine réellement votre activité, avant de dépenser un euro sur un outil. Si la question du budget reste le frein principal, [notre détail des prix réels de l'automatisation](/blog/combien-coute-automatisation-pme) donne les fourchettes poste par poste. Si vous êtes dans le BTP, [cet article sur l'IA appliquée aux artisans](/blog/ia-btp-gagner-du-temps) détaille des cas concrets adaptés à votre quotidien de chantier.
 
 Le reste suit naturellement : un diagnostic clair rend chaque décision suivante plus simple, et chaque euro investi plus mesurable.

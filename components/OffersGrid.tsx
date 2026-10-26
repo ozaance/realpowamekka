@@ -42,6 +42,7 @@ export default function OffersGrid({
         {offers.map((offer) => (
           <div
             key={offer.id}
+            id={offer.id}
             style={{
               background: offer.featured
                 ? 'color-mix(in oklab, var(--plaster) 45%, var(--paper))'

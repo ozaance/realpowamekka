@@ -63,6 +63,29 @@ export function blogPostingJsonLd({
   };
 }
 
+export function offerCatalogJsonLd(
+  offers: { id: string; name: string; tagline: string; price: number }[]
+) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'OfferCatalog',
+    name: 'Offres Powamekka',
+    url: `${BASE}/offres`,
+    itemListElement: offers.map((offer, i) => ({
+      '@type': 'Offer',
+      position: i + 1,
+      url: `${BASE}/offres#${offer.id}`,
+      priceCurrency: 'EUR',
+      price: (offer.price / 100).toFixed(2),
+      itemOffered: {
+        '@type': 'Service',
+        name: offer.name,
+        description: offer.tagline,
+      },
+    })),
+  };
+}
+
 export function jsonLdScript(data: unknown) {
   return JSON.stringify(data).replace(/</g, '\\u003c');
 }

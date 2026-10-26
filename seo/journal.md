@@ -27,6 +27,71 @@ Format d'une entrée :
 
 ---
 
+## 2026-10-26 — Schéma Offer, nettoyage éditorial, deuxième article du backlog
+
+**Chiffres (28 j, Search Console, période 2026-09-24 → 2026-10-22)**
+- Page d'accueil : 3 clics, 10 impressions, position moyenne 6,9, CTR 30 %.
+- `/services/sites` : 0 clic, 1 impression, position 1. `/vision` : 0 clic, 1 impression,
+  position 1.
+- Une seule requête distincte remontée dans l'export (seuil de reporting de l'API sur un volume
+  aussi faible) : « powamekka » (1 clic, 2 impressions, position 1). La requête « powamekka
+  café » du cycle précédent n'apparaît plus.
+- Toujours aucune requête commerciale, aucune requête en position 5-20, aucune page à fortes
+  impressions et CTR faible : le volume reste trop ténu pour piloter l'étape 4 (optimisation
+  on-page ciblée) sur des pages précises. Même constat qu'au cycle du 2026-10-19 — site encore
+  trop jeune pour ce niveau de donnée. Étape 4 de nouveau redirigée vers le fond technique et
+  éditorial plutôt que vers la réécriture de title/description d'une page identifiée par les
+  données.
+
+**Actions**
+- Ajouté le schéma `Offer` sur `/offres` (`offerCatalogJsonLd` dans `lib/schema.ts`), aligné sur
+  les prix réels de `lib/offers.ts` sans dupliquer ni modifier les tarifs. `lib/offers.ts` non
+  touché. Ajout d'un `id` DOM sur chaque carte d'offre (`components/OffersGrid.tsx`) pour que
+  les ancres du schéma pointent vers un élément réel de la page. Vérifié en servant le build :
+  JSON-LD strict, prix cohérents avec l'affichage.
+- Recompressé `public/og-image.png` (770 Ko → 193 Ko, PNG palette 52 couleurs, écart RMSE 0,003
+  vs l'original, vérifié visuellement). `public/conviction-illustration.png` non touché : les
+  tentatives de compression (WebP lossy et lossless) ont produit un rendu de transparence
+  incohérent entre les outils de prévisualisation disponibles dans l'environnement, impossible
+  de garantir l'absence d'écart visuel réel pour un visuel de marque ; reporté au backlog avec
+  le détail de ce qui a été tenté.
+- Reformulé dans `ia-btp-gagner-du-temps.md` les deux passages signalés au backlog précédent
+  comme non sourcés (un pourcentage de devis récupérés et un cas client nommé) : retirés sans
+  être remplacés par un autre chiffre, personne disponible pour les confirmer en cycle
+  automatisé.
+- Publié le deuxième article du backlog : **« Combien coûte vraiment l'automatisation d'une
+  PME en 2026 »** (`content/blog/combien-coute-automatisation-pme.md`), cluster 1 + 4, 1316
+  mots. S'appuie sur les tarifs réels affichés sur `/offres` (205 € à 10 000 € selon le
+  périmètre) plutôt que sur des fourchettes de marché non sourcées. 7 liens internes dont 2 vers
+  les articles existants ; lien réciproque ajouté depuis `par-ou-commencer-ia-entreprise.md`
+  vers ce nouvel article.
+- Maillage : le nouvel article est atteignable en 2 clics depuis l'accueil (`Navbar → /blog →
+  article`) et listé automatiquement sur `/blog` et dans `sitemap.xml` (vérifié sur le build
+  servi localement). Aucune page orpheline détectée.
+
+**Hypothèse testée**
+- L'hypothèse canonical → plus d'impressions internes (posée le 2026-09-04) reste invérifiable
+  faute de volume : les pages de service apparaissent désormais dans l'export, mais avec 1
+  impression chacune, rien de statistiquement exploitable. Je ne la considère plus comme la
+  priorité de suivi : le site est simplement trop récent et trop peu visité pour que Search
+  Console produise un signal utilisable avant plusieurs mois. → à réévaluer au cycle du
+  2026-12-21 (environ 8 semaines), plutôt que toutes les 4 semaines, pour laisser le temps à un
+  volume réel de s'accumuler.
+- Nouvelle hypothèse posée ce cycle : les articles ancrés sur de vrais prix affichés (plutôt que
+  sur des fourchettes de marché génériques) convertissent mieux un lecteur en audit demandé, et
+  se différencient davantage des dix premiers résultats actuels, qui restent vagues sur les
+  prix. À réévaluer qualitativement (demandes d'audit mentionnant cet article) plutôt que
+  quantitativement, le volume de clics organiques étant hors de portée avant plusieurs mois.
+
+**À faire côté Abdoulaye (humain)** : aucune confirmation chiffrée nécessaire ce cycle (les deux
+passages non sourcés ont été reformulés plutôt que laissés en attente). Vérifier, quand le temps
+le permet, si la fiche Google Business Profile existe toujours et explique la requête
+« powamekka café » vue au cycle précédent (non reproduite ce cycle, donc non bloquant).
+
+**PR** : cycle du 2026-10-26
+
+---
+
 ## 2026-10-19 — Fondations techniques + premier article du cluster IA
 
 **Chiffres (28 j, Search Console, période 2026-09-17 → 2026-10-15)**

@@ -26,7 +26,7 @@ Un devis envoyé sans réponse après 5 jours : vous pensez à le relancer, mais
 
 Un système automatisé peut envoyer une relance personnalisée au bon moment, avec le bon ton, sans que vous ayez à y penser. Pas un email générique, mais un message qui ressemble à ce que vous auriez écrit vous-même.
 
-Les artisans qui mettent en place ce système récupèrent en moyenne 15 à 20% de devis supplémentaires sur les prospects déjà intéressés.
+Un système qui relance seul évite ce genre de perte sèche : chaque prospect intéressé reçoit sa relance, même les semaines où vous n'avez pas une minute à y consacrer.
 
 ## 3. Les réponses aux demandes entrantes
 
@@ -42,7 +42,7 @@ Avec un simple formulaire vocal ou texte sur téléphone, l'IA compile ces infor
 
 ## Ce que ça change concrètement
 
-Un artisan électricien en région parisienne avec qui nous avons travaillé passait 10 heures par semaine sur l'administratif. Après 3 semaines de mise en place, il est descendu à 4 heures. Les 6 heures récupérées sont allées directement sur un nouveau chantier par mois.
+Le temps récupéré sur les devis, les relances et le reporting ne disparaît pas : il se retrouve sur un chantier supplémentaire, sur un appel commercial qui n'aurait pas eu lieu, ou simplement sur une soirée en famille.
 
 Ce n'est pas de la magie. C'est de l'organisation, outillée correctement.
 
