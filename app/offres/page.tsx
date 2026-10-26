@@ -2,7 +2,8 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import OffersGrid from '@/components/OffersGrid';
 import ServicesCatalog from '@/components/ServicesCatalog';
-import { getOfferViews, getServiceViews, serviceCategories } from '@/lib/offers';
+import { offers as rawOffers, getOfferViews, getServiceViews, serviceCategories } from '@/lib/offers';
+import { jsonLdScript, offerCatalogJsonLd } from '@/lib/schema';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -28,8 +29,14 @@ export default async function OffresPage({
   const offers = getOfferViews();
   const services = getServiceViews();
 
+  const offerCatalogSchema = offerCatalogJsonLd(rawOffers);
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(offerCatalogSchema) }}
+      />
       <Navbar />
       <main>
         {/* HERO */}
