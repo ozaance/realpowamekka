@@ -27,6 +27,77 @@ Format d'une entrée :
 
 ---
 
+## 2026-11-02 — Titres/descriptions hors normes + article coûts automatisation
+
+**Chiffres (28 j, Search Console, période 2026-10-02 → 2026-10-30)**
+- Clics : 4 au total (3 sur `/`, 1 sur rien d'autre de mesurable). Impressions : 19 sur
+  tout le site, réparties sur 8 pages (contre 2 pages avec impressions au cycle précédent).
+- Position moyenne `/` : 3,18 (11 impressions, 3 clics, CTR 27 %). Seule requête nommément
+  identifiée dans l'export : « powamekka » (marque, position 1, 2 impressions) — la requête
+  « powamekka café » du cycle précédent n'apparaît plus dans cet export.
+- Signal nouveau : les quatre pages `/services/*` et `/blog/par-ou-commencer-ia-entreprise`
+  apparaissent désormais avec 1 impression chacune, à des positions 5 à 9 — exactement le
+  gisement « position 5-20 » visé par l'étape 2 du cycle. **Mais 1 impression par page ne
+  permet pas de savoir quelle requête l'a déclenchée** : impossible d'en tirer un title ou
+  une description ciblés sans deviner. Donnée disponible, toujours trop ténue pour une
+  optimisation on-page requête par requête.
+- Vercel Web Analytics : interrogé via le connecteur, l'API renvoie 404 (« Web Analytics not
+  found ») sur le projet `powamekka` — la fonctionnalité n'est pas activée côté Vercel pour ce
+  projet. Signalé pour qu'Abdoulaye l'active si le volume de trafic réel doit un jour compléter
+  Search Console.
+
+**Actions**
+- Étape 4 (on-page prioritaire) à nouveau redirigée vers l'audit technique, pour la même
+  raison qu'au cycle précédent : aucune requête commerciale identifiable avec assez de volume
+  pour cibler une page précise. Repris en revanche un point de la checklist jamais vérifié
+  jusqu'ici — la longueur des titres et descriptions hors des pages de service (celles-ci
+  avaient déjà été calibrées le 2026-10-19) :
+  - `/` : description à 208 caractères (`app/layout.tsx`), largement au-dessus de 160 →
+    réduite à 160, promesse resserrée sur l'automatisation et l'IA sans perdre Rouen/France.
+  - `/offres` : titre à 66 caractères → 50, même promesse.
+  - `/faq` : titre à 83 caractères → 56 ; description à 193 → 152.
+  - `/vision` : description à 169 → 159.
+  - `/blog` : description à 137 (sous la borne basse de 140) → 150.
+  - `/` étant la seule page du site avec des clics mesurés ce cycle (3), c'est la correction
+    la plus susceptible d'avoir un effet visible sur le CTR une fois réindexée.
+- Publié l'article du haut du backlog : **« Combien coûte vraiment l'automatisation d'une
+  PME »** (`content/blog/combien-coute-automatisation-pme.md`), cluster 1 + 4, 1312 mots,
+  4 liens internes (`/offres`, `/services/audit`, `/services/ia`,
+  `/blog/par-ou-commencer-ia-entreprise`). Angle tenu : les prix réels affichés sur `/offres`
+  pour les prestations IA à la carte (audit IA, plan d'automatisation, chatbot, automatisation
+  e-mails, formation — tous entre 205 € et 299 €, prix publiés donc sourcés, pas inventés),
+  et les facteurs qui font varier un devis sur mesure, sans donner de fourchette chiffrée
+  inventée pour ce dernier cas.
+- Maillage : ajouté un lien contextuel vers ce nouvel article depuis les deux articles
+  existants (`ia-btp-gagner-du-temps.md`, `systeme-digital-pme-guide-2026.md`), en plus de
+  son apparition automatique sur `/blog` et dans le sitemap. Reporté dans le backlog comme
+  traité.
+- En relisant `systeme-digital-pme-guide-2026.md` pour y ajouter ce lien, relevé un chiffre
+  non sourcé qui n'avait pas été signalé le 2026-10-19 (« 4 à 8 heures par semaine récupérées,
+  PME type ») : ajouté à la liste des chiffres à confirmer avec Abdoulaye dans `seo/backlog.md`,
+  non modifié par prudence tant que la confirmation n'est pas donnée.
+
+**Hypothèse testée**
+- Hypothèse du 2026-10-19 (canonical corrigé → plus d'impressions sur `/services/*`) :
+  **partiellement confirmée** ce cycle — les cinq pages de service et un article apparaissent
+  désormais dans l'export avec des impressions, contre deux pages seulement au cycle
+  précédent. Le volume (1 impression/page) reste trop faible pour conclure définitivement.
+  → nouvelle échéance de réévaluation inchangée, 2026-11-16, avec si possible un export
+  couvrant une période plus longue post-correctifs.
+- Nouvelle hypothèse : la description de `/` resserrée à 160 caractères devrait améliorer le
+  CTR de la page d'accueil (actuellement 27 % sur 11 impressions, échantillon encore faible)
+  une fois le nouveau snippet repris par Google. → à réévaluer le 2026-12-01, avec au moins
+  un mois de données post-correctif.
+
+**À faire côté Abdoulaye (humain)** : confirmer ou retirer les chiffres non sourcés dans
+`ia-btp-gagner-du-temps.md` (signalé le 2026-10-19) et, nouveau ce cycle, dans
+`systeme-digital-pme-guide-2026.md` ; activer Vercel Web Analytics sur le projet `powamekka`
+si un second signal de trafic réel est souhaité en complément de Search Console.
+
+**PR** : cycle du 2026-11-02
+
+---
+
 ## 2026-10-19 — Fondations techniques + premier article du cluster IA
 
 **Chiffres (28 j, Search Console, période 2026-09-17 → 2026-10-15)**

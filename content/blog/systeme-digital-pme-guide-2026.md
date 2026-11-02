@@ -84,4 +84,4 @@ La réponse est presque toujours dans trois endroits : la gestion des contacts e
 
 Chez Powamekka, on commence chaque mission par un [audit de 30 minutes](/services/audit). On cartographie vos outils actuels, on identifie les ruptures dans vos processus, et on vous propose un plan d'action concret avec un ordre de priorité clair.
 
-Pas de jargon. Pas de solution toute faite. Un diagnostic honnête, suivi d'une mise en œuvre sur mesure.
+Pas de jargon. Pas de solution toute faite. Un diagnostic honnête, suivi d'une mise en œuvre sur mesure. Pour savoir ce qui fait varier le prix d'un tel projet, [cet article détaille les facteurs réels de coût](/blog/combien-coute-automatisation-pme).

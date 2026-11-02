@@ -6,7 +6,7 @@ import { getOfferViews, getServiceViews, serviceCategories } from '@/lib/offers'
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Offres & tarifs — Powamekka | Sites web et applications sur mesure',
+  title: 'Offres & tarifs — Sites web sur mesure | Powamekka',
   description:
     'Landing page, site vitrine, prototype MVP et applications SaaS sur mesure. Tarifs clairs, commande en ligne et paiement sécurisé par Stripe ou Mollie.',
   alternates: { canonical: '/offres' },
