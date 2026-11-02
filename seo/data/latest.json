@@ -1,9 +1,9 @@
 {
   "site": "sc-domain:powamekka.com",
-  "generatedAt": "2026-10-25T23:00:46.211Z",
+  "generatedAt": "2026-11-02T00:13:11.283Z",
   "period": {
-    "startDate": "2026-09-24",
-    "endDate": "2026-10-22"
+    "startDate": "2026-10-02",
+    "endDate": "2026-10-30"
   },
   "queries": [
     {
@@ -19,16 +19,65 @@
     {
       "page": "https://www.powamekka.com/",
       "clicks": 3,
-      "impressions": 10,
-      "ctr": 0.3,
-      "position": 6.9
+      "impressions": 11,
+      "ctr": 0.2727272727272727,
+      "position": 3.1818181818181817
+    },
+    {
+      "page": "https://www.powamekka.com/blog",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 3
+    },
+    {
+      "page": "https://www.powamekka.com/blog/par-ou-commencer-ia-entreprise",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 9
+    },
+    {
+      "page": "https://www.powamekka.com/faq",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 2
+    },
+    {
+      "page": "https://www.powamekka.com/services/audit",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 8
+    },
+    {
+      "page": "https://www.powamekka.com/services/formation",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 7
+    },
+    {
+      "page": "https://www.powamekka.com/services/ia",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 5
     },
     {
       "page": "https://www.powamekka.com/services/sites",
       "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 2.5
+    },
+    {
+      "page": "https://www.powamekka.com/services/systemes",
+      "clicks": 0,
       "impressions": 1,
       "ctr": 0,
-      "position": 1
+      "position": 6
     },
     {
       "page": "https://www.powamekka.com/vision",
