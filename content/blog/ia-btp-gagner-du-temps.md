@@ -52,4 +52,4 @@ La première étape n'est pas d'acheter un logiciel. C'est de comprendre où vou
 
 Chez Powamekka, on commence toujours par un [audit stratégique](/services/audit) : on cartographie vos processus, on identifie les 2 ou 3 tâches qui mangent le plus de temps, et on vous propose un plan d'action concret.
 
-Pas de jargon technique. Pas d'engagement. Juste une vision claire de ce que l'IA peut faire pour votre activité, maintenant.
+Pas de jargon technique. Pas d'engagement. Juste une vision claire de ce que l'IA peut faire pour votre activité, maintenant. Si vous voulez savoir à quoi vous attendre côté budget avant de vous lancer, [cet article détaille ce qui fait varier le prix d'une automatisation](/blog/combien-coute-automatisation-pme).
