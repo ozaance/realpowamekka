@@ -1,9 +1,9 @@
 {
   "site": "sc-domain:powamekka.com",
-  "generatedAt": "2026-11-02T00:13:11.283Z",
+  "generatedAt": "2026-11-09T00:32:11.289Z",
   "period": {
-    "startDate": "2026-10-02",
-    "endDate": "2026-10-30"
+    "startDate": "2026-10-09",
+    "endDate": "2026-11-06"
   },
   "queries": [
     {
@@ -18,10 +18,10 @@
   "pages": [
     {
       "page": "https://www.powamekka.com/",
-      "clicks": 3,
-      "impressions": 11,
-      "ctr": 0.2727272727272727,
-      "position": 3.1818181818181817
+      "clicks": 2,
+      "impressions": 7,
+      "ctr": 0.2857142857142857,
+      "position": 1.5714285714285714
     },
     {
       "page": "https://www.powamekka.com/blog",
