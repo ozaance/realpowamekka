@@ -59,7 +59,7 @@ export function blogPostingJsonLd({
     url: `${BASE}/blog/${slug}`,
     author: { '@id': ORG_ID },
     publisher: { '@id': ORG_ID },
-    image: `${BASE}/og-image.png`,
+    image: `${BASE}/og-image.jpg`,
   };
 }
 

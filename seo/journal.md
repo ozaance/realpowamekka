@@ -27,6 +27,82 @@ Format d'une entrée :
 
 ---
 
+## 2026-11-09 — Compression d'images, nettoyage de contenu invérifiable, 2e article
+
+**Chiffres (28 j, Search Console, période 2026-10-09 → 2026-11-06, export `seo-data` du
+2026-11-09T00:32 UTC)**
+- Clics : 1 (page d'accueil, requête « powamekka »). Impressions : 17 au total sur tout le
+  site (7 accueil, 2 `/services/sites`, 1 chacune sur `/blog`, l'article existant, `/faq`,
+  les quatre autres pages de service, `/vision`).
+- Une seule requête distincte dans l'export `queries` : « powamekka » (marque), position 1,
+  CTR 50 %. Aucune requête commerciale, aucune requête en position 5-20 avec un volume
+  exploitable, aucune page à fort CTR/fortes impressions à corriger. Même constat qu'au
+  cycle du 2026-10-19, trois semaines plus tard : le volume n'a pas bougé de façon
+  significative. **Hypothèse du 2026-10-19 (canonical → plus d'impressions internes) toujours
+  ni confirmée ni infirmée : le bruit (17 impressions) est trop faible pour trancher.**
+- **Vercel Web Analytics interrogé via le connecteur MCP** (`aggregate_pageviews` sur le
+  projet `powamekka`) : 404 `Web Analytics not found`. Le produit ne semble pas activé sur le
+  projet Vercel, donc aucune donnée de trafic réel disponible non plus par ce canal cette
+  semaine. À vérifier côté Abdoulaye si Web Analytics doit être activé sur le dashboard Vercel.
+- Étape 2 et étape 4 du cycle (priorisation et on-page ciblé par les données) redirigées vers
+  l'audit technique et la production éditoriale, comme au cycle précédent, faute de signal.
+
+**Actions**
+- Poids des images (point ouvert du backlog depuis le 2026-09-04/2026-10-19) :
+  - `public/og-image.png` (752 Ko, 1731×909, hors `next/image`) recadré en 1200×630 et
+    reconverti en JPEG qualité 90 → `public/og-image.jpg`, 36 Ko. Références mises à jour dans
+    `app/layout.tsx`, `lib/schema.ts`, les cinq pages `app/services/*/page.tsx` et
+    `app/blog/[slug]/page.tsx`. Vérifié visuellement avant remplacement.
+  - Découverte en marge de l'audit : `public/art/hero-atelier.jpg` (image LCP du hero, servie
+    hors `next/image` avec `fetchPriority="high"`), `cta-atelier.jpg` et les cinq
+    `discipline-*.jpg` pesaient 296 à 492 Ko chacune. Recompressées en JPEG qualité 70
+    (chroma 4:2:0, mêmes dimensions) : 170 à 233 Ko après, soit environ -55 % en moyenne.
+    Vérifié visuellement (hero + un visuel de discipline) : aucun artefact perceptible.
+  - `public/conviction-illustration.png` non touché : déjà optimisé à la volée par
+    `next/image`, donc le poids de la source ne reflète pas ce qui part au navigateur.
+  - Reporté au backlog : les vidéos `hero-atelier.mp4` (9,4 Mo) et `cta-atelier.mp4` (3,1 Mo),
+    découvertes au même moment, non traitées ce cycle (risque plus élevé, nécessite une
+    vérification de lecture complète plutôt qu'une capture statique).
+- Nettoyage de contenu invérifiable dans `content/blog/ia-btp-gagner-du-temps.md`, signalé au
+  backlog depuis le 2026-10-19 sans confirmation possible d'Abdoulaye en cycle automatisé :
+  le chiffre « 15 à 20 % de devis supplémentaires » et le témoignage non sourcé de l'« artisan
+  électricien en région parisienne » ont été reformulés sans chiffre ni cas client inventé.
+- Publié le deuxième article du backlog : **« Combien coûte vraiment l'automatisation d'une
+  PME en 2026 »** (`content/blog/combien-coute-automatisation-pme.md`), cluster 1 + 4,
+  1273 mots, 5 liens internes (dont un vers l'article BTP existant). Les seules valeurs
+  chiffrées utilisées sont les prix réels de `lib/offers.ts` (non modifié), aucune statistique
+  inventée. Lien pilier `/services/audit` et `/offres`. Reporté dans le backlog comme traité.
+- Maillage : le nouvel article est automatiquement listé sur `/blog` (`getAllPosts()`), donc
+  atteignable en 2 clics depuis l'accueil (nav → Blog → article). Pas de page orpheline
+  détectée sur le reste du site lors de la revue.
+- Audit technique (checklist) : `robots.ts`, `sitemap.ts` (services à jour, `lastModified`
+  réel), canonical `www`, H1 unique par page (vérifié via les composants partagés `Hero.tsx` /
+  `HeroTableau.tsx` / `ServicePage.tsx`, un seul rendu par page), attributs `alt` descriptifs
+  sur toutes les images : rien à corriger cette semaine, tout conforme.
+- Ajouté une idée au backlog éditorial faute de requête GSC nouvelle à exploiter : « Un audit
+  stratégique PME, ça contient quoi et ça prend combien de temps », cluster 4, en
+  prolongement naturel de l'article publié ce cycle.
+
+**Hypothèse testée**
+- Les images compressées ce cycle (og-image, hero, cta, disciplines) ne sont pas optimisées
+  par `next/image` : le gain de poids (environ -55 % à -95 % selon les fichiers) devrait se
+  voir directement sur le temps de chargement réel, en particulier le LCP du hero. Pas de
+  mesure Core Web Vitals en place pour le vérifier précisément ce cycle → à recouper avec
+  Vercel Web Analytics si le produit est activé d'ici le prochain cycle, sinon au jugement
+  visuel. L'hypothèse canonical du 2026-09-04, toujours en attente de volume suffisant pour
+  conclure → à réévaluer le 2026-12-07 (délai allongé, le rythme d'accumulation de données
+  étant plus lent que prévu).
+
+**À faire côté Abdoulaye (humain)** : activer Vercel Web Analytics sur le projet si ce n'est
+pas déjà fait (404 côté connecteur MCP cette semaine) ; les deux points déjà en attente du
+cycle précédent (fiche Google Business Profile pour « powamekka café », chiffres de l'article
+BTP) sont traités ou n'appellent plus d'action de sa part, sauf s'il souhaite réintroduire un
+cas client réel et vérifiable à la place du passage reformulé.
+
+**PR** : cycle du 2026-11-09
+
+---
+
 ## 2026-10-19 — Fondations techniques + premier article du cluster IA
 
 **Chiffres (28 j, Search Console, période 2026-09-17 → 2026-10-15)**
