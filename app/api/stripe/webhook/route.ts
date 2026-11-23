@@ -32,7 +32,9 @@ export async function POST(req: Request) {
   try {
     event = await getStripe().webhooks.constructEventAsync(payload, signature, secret);
   } catch (err) {
-    console.error('[webhook] signature invalide', err);
+    // Uniquement le message : l'objet d'erreur Stripe embarque le payload brut,
+    // donc les coordonnées du client.
+    console.error('[webhook] signature invalide', err instanceof Error ? err.message : 'erreur inconnue');
     return NextResponse.json({ error: 'Signature invalide' }, { status: 400 });
   }
 
