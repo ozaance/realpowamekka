@@ -9,8 +9,9 @@ import { describeEmailError } from '@/lib/email';
  * Webhook Stripe : notifie Powamekka dès qu'une commande est payée.
  *
  * À déclarer dans le dashboard Stripe sur https://www.powamekka.com/api/stripe/webhook
- * avec l'événement `checkout.session.completed`, puis renseigner le secret de
- * signature dans STRIPE_WEBHOOK_SECRET.
+ * avec les événements `checkout.session.completed`,
+ * `checkout.session.async_payment_succeeded` et `checkout.session.async_payment_failed`,
+ * puis renseigner le secret de signature dans STRIPE_WEBHOOK_SECRET.
  */
 export async function POST(req: Request) {
   const secret = process.env.STRIPE_WEBHOOK_SECRET;
@@ -35,13 +36,32 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Signature invalide' }, { status: 400 });
   }
 
-  if (event.type === 'checkout.session.completed') {
+  // `checkout.session.completed` arrive aussi pour un paiement différé (SEPA,
+  // virement…) avec payment_status « unpaid » : l'argent n'est pas encore là.
+  // On ne notifie qu'un paiement effectivement encaissé, soit immédiatement,
+  // soit plus tard via `checkout.session.async_payment_succeeded`.
+  if (
+    event.type === 'checkout.session.async_payment_failed' &&
+    event.data.object.metadata?.source === 'powamekka.com'
+  ) {
+    console.warn('[webhook] paiement différé échoué', event.data.object.id);
+  }
+
+  if (
+    event.type === 'checkout.session.completed' ||
+    event.type === 'checkout.session.async_payment_succeeded'
+  ) {
     const session = event.data.object;
 
     // Le compte Stripe est partagé avec d'autres produits (Ozance) : on ignore
     // les commandes qui ne proviennent pas de ce site.
     if (session.metadata?.source !== 'powamekka.com') {
       return NextResponse.json({ received: true, ignored: true });
+    }
+
+    if (session.payment_status !== 'paid') {
+      console.info('[webhook] session terminée, paiement en attente', session.id);
+      return NextResponse.json({ received: true, pending: true });
     }
 
     try {
