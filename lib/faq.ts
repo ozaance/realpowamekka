@@ -95,7 +95,7 @@ export const faqSections: FaqSection[] = [
       {
         question: 'Peut-on commander et payer en ligne ?',
         answer:
-          "Oui. Les offres web se commandent directement depuis la page Offres, avec un paiement sécurisé par Stripe. Nous vous contactons ensuite sous 24 heures pour réunir les éléments nécessaires au démarrage.",
+          "Oui. Les offres web se commandent directement depuis la page Offres, avec un paiement sécurisé par Mollie. Nous vous contactons ensuite sous 24 heures pour réunir les éléments nécessaires au démarrage.",
       },
     ],
   },
