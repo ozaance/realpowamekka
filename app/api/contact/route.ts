@@ -39,7 +39,7 @@ export async function POST(req: Request) {
 
   // Honeypot : champ invisible pour un humain. Un robot qui le remplit reçoit
   // une réponse de succès, sans qu'aucun email ne parte.
-  const trap = (body as Record<string, unknown> | null)?.website;
+  const trap = (body as Record<string, unknown> | null)?.hp_extra;
   if (typeof trap === 'string' && trap.trim() !== '') {
     console.warn('[contact] honeypot rempli, demande ignorée');
     return NextResponse.json({ success: true });

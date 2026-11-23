@@ -23,7 +23,10 @@ export default function ServicePage({
   const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error' | 'limited'>('idle');
   const [form, setForm] = useState({ name: '', email: '', message: '' });
   // Honeypot anti-spam : invisible et hors tabulation, seul un robot le remplit.
-  const [website, setWebsite] = useState('');
+  // Nom volontairement neutre (« hp_extra ») : un nom comme « website » ou « url »
+  // est reconnu et rempli par certains gestionnaires de mots de passe, ce qui ferait
+  // perdre silencieusement la demande d'un vrai visiteur.
+  const [trap, setTrap] = useState('');
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -32,7 +35,7 @@ export default function ServicePage({
       const res = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...form, service: kicker, website }),
+        body: JSON.stringify({ ...form, service: kicker, hp_extra: trap }),
       });
       if (res.ok) {
         setStatus('sent');
@@ -175,9 +178,10 @@ export default function ServicePage({
                     style={{ ...inputStyle, resize: 'vertical' }} />
                 </div>
                 <div aria-hidden="true" style={{ position: 'absolute', left: '-10000px', width: 1, height: 1, overflow: 'hidden' }}>
-                  <label htmlFor="website">Ne pas remplir ce champ</label>
-                  <input id="website" name="website" type="text" tabIndex={-1} autoComplete="off"
-                    value={website} onChange={e => setWebsite(e.target.value)} />
+                  <label htmlFor="hp-extra">Ne pas remplir ce champ</label>
+                  <input id="hp-extra" name="hp_extra" type="text" tabIndex={-1} autoComplete="off"
+                    data-lpignore="true" data-1p-ignore="true" data-bwignore="true" data-form-type="other"
+                    value={trap} onChange={e => setTrap(e.target.value)} />
                 </div>
                 {status === 'limited' && (
                   <p role="alert" style={{ fontSize: 13, color: '#c0392b' }}>Trop de demandes envoyées. Réessayez dans quelques minutes ou contactez-nous sur WhatsApp.</p>
