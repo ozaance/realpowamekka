@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server';
 import { getStripe } from '@/lib/stripe';
 import { formatPrice } from '@/lib/offers';
 import { notifyOrder, type PaidOrder } from '@/lib/notify-order';
+import { describeEmailError } from '@/lib/email';
 
 /**
  * Webhook Stripe : notifie Powamekka dès qu'une commande est payée.
@@ -46,9 +47,11 @@ export async function POST(req: Request) {
     try {
       await notifyOrder(toPaidOrder(session));
     } catch (err) {
-      // On accuse quand même réception : le paiement est encaissé, seul l'email
-      // a échoué. Stripe ne doit pas rejouer l'événement indéfiniment.
-      console.error('[webhook] notification échouée', err);
+      // Le paiement est encaissé mais Powamekka n'a pas été prévenu : on répond
+      // en erreur pour que Stripe rejoue l'événement (jusqu'à 3 jours). La clé
+      // d'idempotence de notifyOrder empêche tout doublon d'email.
+      console.error('[webhook] notification échouée', session.id, describeEmailError(err));
+      return NextResponse.json({ error: 'Notification échouée' }, { status: 500 });
     }
   }
 
