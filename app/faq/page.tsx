@@ -5,9 +5,9 @@ import { faqSections, faqJsonLd } from '@/lib/faq';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Questions fréquentes — IA, automatisation et systèmes digitaux pour PME | Powamekka',
+  title: 'Questions fréquentes IA & automatisation PME | Powamekka',
   description:
-    "Combien coûte un site pour une PME, quelles tâches automatiser en premier, comment se déroule un audit, l'IA remplace-t-elle les salariés : les réponses aux questions que posent les dirigeants.",
+    "Combien coûte un site, quelles tâches automatiser en premier, comment se déroule un audit : les réponses aux questions que posent les dirigeants de PME.",
   alternates: { canonical: '/faq' },
   openGraph: {
     title: 'Questions fréquentes — Powamekka',
@@ -15,6 +15,9 @@ export const metadata: Metadata = {
       "Les réponses aux questions que posent les dirigeants de PME sur l'IA, l'automatisation, les systèmes digitaux et nos tarifs.",
     url: 'https://www.powamekka.com/faq',
     type: 'website',
+    // Un openGraph de page remplace celui du layout : sans cette ligne, /faq
+    // était partagée sans image.
+    images: [{ url: '/og-image.jpg', width: 1200, height: 630, alt: 'Powamekka — Questions fréquentes' }],
   },
 };
 
