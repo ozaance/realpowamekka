@@ -2,15 +2,43 @@ import { NextResponse } from 'next/server';
 import { getStripe } from '@/lib/stripe';
 import { createPayment, toMollieAmount, updatePayment } from '@/lib/mollie';
 import { getOffer } from '@/lib/offers';
+import { clientIp, rateLimit } from '@/lib/security';
 
 type Offer = NonNullable<ReturnType<typeof getOffer>>;
 
-/** Base URL utilisée pour les redirections de retour depuis Stripe / Mollie. */
+const CANONICAL_ORIGIN = 'https://www.powamekka.com';
+
+/**
+ * Origines autorisées pour les URL de retour Stripe / Mollie : production,
+ * déploiement Vercel courant (Preview), et localhost hors production.
+ * VERCEL_URL / VERCEL_BRANCH_URL sont fournies automatiquement par Vercel.
+ */
+function allowedOrigins(): Set<string> {
+  const set = new Set<string>([CANONICAL_ORIGIN, 'https://powamekka.com']);
+  if (process.env.NEXT_PUBLIC_SITE_URL) set.add(process.env.NEXT_PUBLIC_SITE_URL.replace(/\/$/, ''));
+  if (process.env.VERCEL_URL) set.add(`https://${process.env.VERCEL_URL}`);
+  if (process.env.VERCEL_BRANCH_URL) set.add(`https://${process.env.VERCEL_BRANCH_URL}`);
+  return set;
+}
+
+/**
+ * Base URL utilisée pour les redirections de retour depuis Stripe / Mollie.
+ * L'en-tête Origin n'est retenu que s'il figure dans la liste blanche : un
+ * site tiers ne peut plus créer une session qui renvoie vers son domaine.
+ */
 function resolveOrigin(req: Request): string {
   const origin = req.headers.get('origin');
-  if (origin) return origin;
-  return process.env.NEXT_PUBLIC_SITE_URL || 'https://www.powamekka.com';
+  if (origin) {
+    if (allowedOrigins().has(origin)) return origin;
+    if (process.env.NODE_ENV !== 'production' && /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin)) {
+      return origin;
+    }
+  }
+  return process.env.NEXT_PUBLIC_SITE_URL || CANONICAL_ORIGIN;
 }
+
+/** 10 ouvertures de paiement par IP et par tranche de 10 minutes. */
+const RATE = { limit: 10, windowMs: 10 * 60 * 1000 };
 
 type Customer = { name: string; email: string; phone: string; company: string };
 
@@ -30,6 +58,13 @@ function parseCustomer(raw: unknown): Customer | null {
 }
 
 export async function POST(req: Request) {
+  if (!rateLimit(`checkout:${clientIp(req)}`, RATE.limit, RATE.windowMs)) {
+    return NextResponse.json(
+      { error: 'Trop de tentatives. Réessayez dans quelques minutes.' },
+      { status: 429 }
+    );
+  }
+
   try {
     const { offerId, provider, customer } = await req.json();
 
