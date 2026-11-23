@@ -1,11 +1,11 @@
 import { Resend } from 'resend';
 
 /**
- * Expéditeur actuel. `onboarding@resend.dev` est l'adresse de test de Resend :
- * à remplacer par une adresse @powamekka.com une fois le domaine vérifié dans
- * le dashboard Resend (voir docs/RESEND_VERIFICATION.md). Non modifié ici.
+ * Expéditeur : adresse du domaine powamekka.com, vérifié dans Resend le
+ * 23/11/2026 (voir docs/RESEND_VERIFICATION.md). L'ancienne adresse de test
+ * `onboarding@resend.dev` n'envoyait qu'au propriétaire du compte Resend.
  */
-export const MAIL_FROM = 'Powamekka <onboarding@resend.dev>';
+export const MAIL_FROM = 'Powamekka <notifications@powamekka.com>';
 export const MAIL_TO = 'contact@powamekka.com';
 
 /** Échec d'envoi : configuration absente ou erreur renvoyée par Resend. */

@@ -1,8 +1,10 @@
 # Vérification de l'expéditeur Resend — action humaine requise
 
-> Statut : **à faire par le propriétaire** dans le dashboard Resend et le DNS Vercel.
-> Le code n'a **pas** été modifié : l'expéditeur reste `Powamekka <onboarding@resend.dev>`
-> (constante `MAIL_FROM` dans `lib/email.ts`).
+> Statut (23/11/2026) : **domaine `powamekka.com` vérifié dans Resend** (DKIM + 2 CNAME `send` et
+> `rsend` ajoutés dans le DNS Vercel). L'expéditeur est désormais
+> `Powamekka <notifications@powamekka.com>` (constante `MAIL_FROM` dans `lib/email.ts`).
+> Avant cela, le test sur la Preview avait montré un refus 403 de Resend : l'adresse de test
+> `onboarding@resend.dev` ne peut envoyer qu'au propriétaire du compte.
 
 ## Pourquoi c'est important
 
