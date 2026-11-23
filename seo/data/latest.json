@@ -1,9 +1,9 @@
 {
   "site": "sc-domain:powamekka.com",
-  "generatedAt": "2026-11-16T00:45:41.309Z",
+  "generatedAt": "2026-11-23T01:23:51.709Z",
   "period": {
-    "startDate": "2026-10-16",
-    "endDate": "2026-11-13"
+    "startDate": "2026-10-23",
+    "endDate": "2026-11-20"
   },
   "queries": [
     {
@@ -19,9 +19,9 @@
     {
       "page": "https://www.powamekka.com/",
       "clicks": 1,
-      "impressions": 7,
-      "ctr": 0.14285714285714285,
-      "position": 2
+      "impressions": 8,
+      "ctr": 0.125,
+      "position": 1.875
     },
     {
       "page": "https://www.powamekka.com/blog",
