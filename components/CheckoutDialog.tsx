@@ -26,7 +26,9 @@ export default function CheckoutDialog({
   item: CheckoutItem | null;
   onClose: () => void;
 }) {
-  const [provider, setProvider] = useState<Provider | null>(null);
+  // Initialisé à 'mollie' quand Stripe est masqué : évite d'afficher un instant l'écran de choix
+  // avant que l'effet d'ouverture ne s'exécute.
+  const [provider, setProvider] = useState<Provider | null>(STRIPE_ENABLED ? null : 'mollie');
   const [pending, setPending] = useState<Provider | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [customer, setCustomer] = useState({ name: '', email: '', phone: '', company: '' });
