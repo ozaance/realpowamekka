@@ -120,10 +120,9 @@ export default async function OffresPage({
         {/* HORS CATALOGUE */}
         <section style={{ padding: 'clamp(60px,10vh,120px) 0' }}>
           <div
-            className="wrap"
+            className="wrap split split-16"
             style={{
               display: 'grid',
-              gridTemplateColumns: '1fr 1.6fr',
               gap: 'clamp(30px,6vw,80px)',
               alignItems: 'start',
             }}
