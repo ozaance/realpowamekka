@@ -29,7 +29,7 @@ const spaceMono = Space_Mono({
 export const metadata: Metadata = {
   title: "POWAMEKKA — Agence IA & Systèmes Digitaux pour PME",
   description:
-    "Powamekka aide les dirigeants de PME à automatiser leurs opérations, intégrer l'IA et structurer leur croissance. Audit stratégique, systèmes digitaux et formation. Basé à Rouen, intervient partout en France.",
+    "Powamekka aide les dirigeants de PME à automatiser leurs tâches administratives et intégrer l'IA. Audit, systèmes et formation. Basé à Rouen, partout en France.",
   keywords: [
     "agence IA PME",
     "consultant intelligence artificielle",
@@ -55,7 +55,7 @@ export const metadata: Metadata = {
       "Powamekka aide les dirigeants à automatiser leurs opérations et intégrer l'IA pour diriger avec clarté. Audit, systèmes, formation.",
     images: [
       {
-        url: "/og-image.png",
+        url: "/og-image.jpg",
         width: 1200,
         height: 630,
         alt: "Powamekka — Agence IA & Systèmes Digitaux",
@@ -67,7 +67,7 @@ export const metadata: Metadata = {
     title: "POWAMEKKA — Agence IA & Systèmes Digitaux pour PME",
     description:
       "Automatisation, IA et systèmes digitaux pour les dirigeants de PME. Basé à Rouen, intervient partout en France.",
-    images: ["/og-image.png"],
+    images: ["/og-image.jpg"],
   },
   robots: {
     index: true,

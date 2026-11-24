@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     url: '/services/audit',
     title: TITLE,
     description: DESCRIPTION,
-    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'Powamekka — Audit Stratégique' }],
+    images: [{ url: '/og-image.jpg', width: 1200, height: 630, alt: 'Powamekka — Audit Stratégique' }],
   },
 };
 
