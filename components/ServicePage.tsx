@@ -74,7 +74,7 @@ export default function ServicePage({
       {/* HERO */}
       <section style={{ borderBottom: '1px solid var(--line)', paddingTop: 'clamp(80px,13vh,150px)', paddingBottom: 'clamp(60px,10vh,120px)' }}>
         <div className="wrap">
-          <Link href="/#services" style={{ fontFamily: 'var(--font-mono)', fontSize: 12, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--gold)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 8, marginBottom: 40 }}>
+          <Link href="/#disciplines" style={{ fontFamily: 'var(--font-mono)', fontSize: 12, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--gold)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 8, marginBottom: 40 }}>
             ← Tous les services
           </Link>
           <p className="kicker rv d1" style={{ fontFamily: 'var(--font-mono)', fontSize: 11, letterSpacing: '0.18em', textTransform: 'uppercase', color: 'var(--gold)', marginBottom: 20 }}>
