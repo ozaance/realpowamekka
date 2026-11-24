@@ -3,6 +3,7 @@ import { Newsreader, Hanken_Grotesk, Space_Mono } from "next/font/google";
 import "./globals.css";
 import "../styles/hikari-v2.css";
 import "../styles/cinema.css";
+import "../styles/mobile-menu.css";
 
 const newsreader = Newsreader({
   variable: "--font-newsreader",
