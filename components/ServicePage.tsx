@@ -20,8 +20,13 @@ export default function ServicePage({
   relatedServices,
 }: ServicePageProps) {
   const WA = "https://wa.me/33605715122?text=Bonjour%2C%20je%20souhaite%20en%20savoir%20plus%20sur%20vos%20services.";
-  const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
+  const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error' | 'limited'>('idle');
   const [form, setForm] = useState({ name: '', email: '', message: '' });
+  // Honeypot anti-spam : invisible et hors tabulation, seul un robot le remplit.
+  // Nom volontairement neutre (« hp_extra ») : un nom comme « website » ou « url »
+  // est reconnu et rempli par certains gestionnaires de mots de passe, ce qui ferait
+  // perdre silencieusement la demande d'un vrai visiteur.
+  const [trap, setTrap] = useState('');
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -30,13 +35,13 @@ export default function ServicePage({
       const res = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...form, service: kicker }),
+        body: JSON.stringify({ ...form, service: kicker, hp_extra: trap }),
       });
       if (res.ok) {
         setStatus('sent');
         setForm({ name: '', email: '', message: '' });
       } else {
-        setStatus('error');
+        setStatus(res.status === 429 ? 'limited' : 'error');
       }
     } catch {
       setStatus('error');
@@ -158,22 +163,31 @@ export default function ServicePage({
               <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                   <label htmlFor="name" style={labelStyle}>Nom & prénom</label>
-                  <input id="name" type="text" required placeholder="Jean Dupont" value={form.name}
+                  <input id="name" type="text" required maxLength={100} placeholder="Jean Dupont" value={form.name}
                     onChange={e => setForm(p => ({ ...p, name: e.target.value }))} style={inputStyle} />
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                   <label htmlFor="email" style={labelStyle}>Email professionnel</label>
-                  <input id="email" type="email" required placeholder="jean@entreprise.fr" value={form.email}
+                  <input id="email" type="email" required maxLength={254} placeholder="jean@entreprise.fr" value={form.email}
                     onChange={e => setForm(p => ({ ...p, email: e.target.value }))} style={inputStyle} />
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                   <label htmlFor="message" style={labelStyle}>Votre situation</label>
-                  <textarea id="message" required rows={5} placeholder="Décrivez votre activité et ce que vous cherchez à résoudre..."
+                  <textarea id="message" required rows={5} maxLength={5000} placeholder="Décrivez votre activité et ce que vous cherchez à résoudre..."
                     value={form.message} onChange={e => setForm(p => ({ ...p, message: e.target.value }))}
                     style={{ ...inputStyle, resize: 'vertical' }} />
                 </div>
+                <div aria-hidden="true" style={{ position: 'absolute', left: '-10000px', width: 1, height: 1, overflow: 'hidden' }}>
+                  <label htmlFor="hp-extra">Ne pas remplir ce champ</label>
+                  <input id="hp-extra" name="hp_extra" type="text" tabIndex={-1} autoComplete="off"
+                    data-lpignore="true" data-1p-ignore="true" data-bwignore="true" data-form-type="other"
+                    value={trap} onChange={e => setTrap(e.target.value)} />
+                </div>
+                {status === 'limited' && (
+                  <p role="alert" style={{ fontSize: 13, color: '#c0392b' }}>Trop de demandes envoyées. Réessayez dans quelques minutes ou contactez-nous sur WhatsApp.</p>
+                )}
                 {status === 'error' && (
-                  <p style={{ fontSize: 13, color: '#c0392b' }}>Une erreur est survenue. Réessayez ou contactez-nous sur WhatsApp.</p>
+                  <p role="alert" style={{ fontSize: 13, color: '#c0392b' }}>Une erreur est survenue. Réessayez ou contactez-nous sur WhatsApp.</p>
                 )}
                 <button type="submit" disabled={status === 'sending'} className="btn"
                   style={{ alignSelf: 'flex-start', marginTop: 8, borderRadius: 18, opacity: status === 'sending' ? 0.6 : 1 }}>

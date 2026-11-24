@@ -3,13 +3,15 @@ import { NextResponse } from 'next/server';
 import { getStripe } from '@/lib/stripe';
 import { formatPrice } from '@/lib/offers';
 import { notifyOrder, type PaidOrder } from '@/lib/notify-order';
+import { describeEmailError } from '@/lib/email';
 
 /**
  * Webhook Stripe : notifie Powamekka dès qu'une commande est payée.
  *
  * À déclarer dans le dashboard Stripe sur https://www.powamekka.com/api/stripe/webhook
- * avec l'événement `checkout.session.completed`, puis renseigner le secret de
- * signature dans STRIPE_WEBHOOK_SECRET.
+ * avec les événements `checkout.session.completed`,
+ * `checkout.session.async_payment_succeeded` et `checkout.session.async_payment_failed`,
+ * puis renseigner le secret de signature dans STRIPE_WEBHOOK_SECRET.
  */
 export async function POST(req: Request) {
   const secret = process.env.STRIPE_WEBHOOK_SECRET;
@@ -30,11 +32,27 @@ export async function POST(req: Request) {
   try {
     event = await getStripe().webhooks.constructEventAsync(payload, signature, secret);
   } catch (err) {
-    console.error('[webhook] signature invalide', err);
+    // Uniquement le message : l'objet d'erreur Stripe embarque le payload brut,
+    // donc les coordonnées du client.
+    console.error('[webhook] signature invalide', err instanceof Error ? err.message : 'erreur inconnue');
     return NextResponse.json({ error: 'Signature invalide' }, { status: 400 });
   }
 
-  if (event.type === 'checkout.session.completed') {
+  // `checkout.session.completed` arrive aussi pour un paiement différé (SEPA,
+  // virement…) avec payment_status « unpaid » : l'argent n'est pas encore là.
+  // On ne notifie qu'un paiement effectivement encaissé, soit immédiatement,
+  // soit plus tard via `checkout.session.async_payment_succeeded`.
+  if (
+    event.type === 'checkout.session.async_payment_failed' &&
+    event.data.object.metadata?.source === 'powamekka.com'
+  ) {
+    console.warn('[webhook] paiement différé échoué', event.data.object.id);
+  }
+
+  if (
+    event.type === 'checkout.session.completed' ||
+    event.type === 'checkout.session.async_payment_succeeded'
+  ) {
     const session = event.data.object;
 
     // Le compte Stripe est partagé avec d'autres produits (Ozance) : on ignore
@@ -43,12 +61,19 @@ export async function POST(req: Request) {
       return NextResponse.json({ received: true, ignored: true });
     }
 
+    if (session.payment_status !== 'paid') {
+      console.info('[webhook] session terminée, paiement en attente', session.id);
+      return NextResponse.json({ received: true, pending: true });
+    }
+
     try {
       await notifyOrder(toPaidOrder(session));
     } catch (err) {
-      // On accuse quand même réception : le paiement est encaissé, seul l'email
-      // a échoué. Stripe ne doit pas rejouer l'événement indéfiniment.
-      console.error('[webhook] notification échouée', err);
+      // Le paiement est encaissé mais Powamekka n'a pas été prévenu : on répond
+      // en erreur pour que Stripe rejoue l'événement (jusqu'à 3 jours). La clé
+      // d'idempotence de notifyOrder empêche tout doublon d'email.
+      console.error('[webhook] notification échouée', session.id, describeEmailError(err));
+      return NextResponse.json({ error: 'Notification échouée' }, { status: 500 });
     }
   }
 
