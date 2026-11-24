@@ -2,6 +2,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState, useRef } from 'react';
+import MobileMenu from '@/components/MobileMenu';
 
 const services = [
   { label: 'Audit Stratégique', href: '/services/audit' },
@@ -89,6 +90,7 @@ export default function Navbar() {
             <a href="/#contact">Contact</a>
           </div>
         </div>
+        <MobileMenu />
         <a className="nav-cta" href="https://wa.me/33605715122?text=Bonjour%2C%20je%20souhaite%20demander%20un%20audit%20pour%20mon%20entreprise." target="_blank" rel="noopener noreferrer" style={{ borderRadius: 18 }}>Demander un audit</a>
       </nav>
     </div>

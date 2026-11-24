@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import MobileMenu from '@/components/MobileMenu';
 
 /**
  * Navigation du récit.
@@ -61,6 +62,8 @@ export default function CineNav() {
           Journal
         </Link>
       </div>
+
+      <MobileMenu />
 
       <a
         className="cn-nav-cta"
