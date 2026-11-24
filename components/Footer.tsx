@@ -31,7 +31,7 @@ export default function Footer() {
           {/* Ancres préfixées par « / » : elles doivent ramener à l'accueil
               depuis n'importe quelle page du site, pas chercher la section
               sur la page courante. */}
-          <a href="/#approche">Approche</a>
+          <a href="/#manifeste">Approche</a>
           <a href="/#methode">Méthode</a>
           <Link href="/offres">Offres</Link>
           <Link href="/faq">FAQ</Link>
