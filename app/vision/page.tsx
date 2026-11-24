@@ -24,7 +24,7 @@ export default function VisionPage() {
 
         {/* CONSTAT */}
         <section style={{ padding: 'clamp(60px,10vh,120px) 0', borderBottom: '1px solid var(--line)' }}>
-          <div className="wrap" style={{ display: 'grid', gridTemplateColumns: '1fr 1.6fr', gap: 'clamp(30px,6vw,80px)', alignItems: 'start' }}>
+          <div className="wrap split split-16" style={{ display: 'grid', gap: 'clamp(30px,6vw,80px)', alignItems: 'start' }}>
             <p style={{ fontFamily: 'var(--font-mono)', fontSize: 11, letterSpacing: '0.16em', textTransform: 'uppercase', color: 'var(--ink-dim)', paddingTop: 8 }}>Le constat</p>
             <div>
               <p style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(20px,2.2vw,28px)', lineHeight: 1.5, color: 'var(--ink)', fontWeight: 400, marginBottom: 24 }}>
@@ -39,7 +39,7 @@ export default function VisionPage() {
 
         {/* POURQUOI POWAMEKKA */}
         <section style={{ padding: 'clamp(60px,10vh,120px) 0', borderBottom: '1px solid var(--line)' }}>
-          <div className="wrap" style={{ display: 'grid', gridTemplateColumns: '1fr 1.6fr', gap: 'clamp(30px,6vw,80px)', alignItems: 'start' }}>
+          <div className="wrap split split-16" style={{ display: 'grid', gap: 'clamp(30px,6vw,80px)', alignItems: 'start' }}>
             <p style={{ fontFamily: 'var(--font-mono)', fontSize: 11, letterSpacing: '0.16em', textTransform: 'uppercase', color: 'var(--ink-dim)', paddingTop: 8 }}>Pourquoi nous</p>
             <div>
               <p style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(20px,2.2vw,28px)', lineHeight: 1.5, color: 'var(--ink)', fontWeight: 400, marginBottom: 24 }}>
@@ -59,7 +59,7 @@ export default function VisionPage() {
         <section style={{ padding: 'clamp(60px,10vh,120px) 0', borderBottom: '1px solid var(--line)' }}>
           <div className="wrap">
             <p style={{ fontFamily: 'var(--font-mono)', fontSize: 11, letterSpacing: '0.16em', textTransform: 'uppercase', color: 'var(--ink-dim)', marginBottom: 48 }}>Ce en quoi nous croyons</p>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 1, background: 'var(--line)', border: '1px solid var(--line)' }}>
+            <div className="grid-3" style={{ display: 'grid', gap: 1, background: 'var(--line)', border: '1px solid var(--line)' }}>
               {[
                 {
                   no: '01',

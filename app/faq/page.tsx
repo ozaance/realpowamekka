@@ -68,15 +68,15 @@ export default function FaqPage() {
             style={{ padding: 'clamp(50px,8vh,100px) 0', borderBottom: '1px solid var(--line)' }}
           >
             <div
-              className="wrap"
+              className="wrap split split-19"
               style={{
                 display: 'grid',
-                gridTemplateColumns: '1fr 1.9fr',
                 gap: 'clamp(30px,6vw,80px)',
                 alignItems: 'start',
               }}
             >
               <h2
+                className="sticky-desk"
                 style={{
                   fontFamily: 'var(--font-mono)',
                   fontSize: 11,
@@ -84,8 +84,6 @@ export default function FaqPage() {
                   textTransform: 'uppercase',
                   color: 'var(--ink-dim)',
                   fontWeight: 400,
-                  position: 'sticky',
-                  top: 100,
                 }}
               >
                 {section.title}

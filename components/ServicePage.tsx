@@ -74,12 +74,16 @@ export default function ServicePage({
       {/* HERO */}
       <section style={{ borderBottom: '1px solid var(--line)', paddingTop: 'clamp(80px,13vh,150px)', paddingBottom: 'clamp(60px,10vh,120px)' }}>
         <div className="wrap">
-          <Link href="/#disciplines" style={{ fontFamily: 'var(--font-mono)', fontSize: 12, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--gold)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 8, marginBottom: 40 }}>
-            ← Tous les services
-          </Link>
-          <p className="kicker rv d1" style={{ fontFamily: 'var(--font-mono)', fontSize: 11, letterSpacing: '0.18em', textTransform: 'uppercase', color: 'var(--gold)', marginBottom: 20 }}>
-            {kicker}
-          </p>
+          {/* Lien retour et rubrique : même ligne quand la place le permet, sinon l'un sous l'autre.
+              paddingTop conserve la position verticale de l'ancienne mise en ligne. */}
+          <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'baseline', columnGap: 28, rowGap: 12, paddingTop: 3, marginBottom: 40 }}>
+            <Link href="/#disciplines" style={{ fontFamily: 'var(--font-mono)', fontSize: 12, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--gold)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+              ← Tous les services
+            </Link>
+            <p className="kicker rv d1" style={{ fontFamily: 'var(--font-mono)', fontSize: 11, letterSpacing: '0.18em', textTransform: 'uppercase', color: 'var(--gold)', marginBottom: 0 }}>
+              {kicker}
+            </p>
+          </div>
           <h1 className="display rv d2" style={{ maxWidth: '16ch', marginBottom: 28 }}>{title}</h1>
           <p className="lede rv d3" style={{ maxWidth: '44ch' }}>{lede}</p>
           <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap', marginTop: 40 }} className="rv d4">
@@ -95,7 +99,7 @@ export default function ServicePage({
 
       {/* INTRO */}
       <section style={{ padding: 'clamp(60px,10vh,120px) 0', borderBottom: '1px solid var(--line)' }}>
-        <div className="wrap" style={{ display: 'grid', gridTemplateColumns: '1fr 1.6fr', gap: 'clamp(30px,6vw,80px)', alignItems: 'start' }}>
+        <div className="wrap split split-16" style={{ display: 'grid', gap: 'clamp(30px,6vw,80px)', alignItems: 'start' }}>
           <div>
             <p style={{ fontFamily: 'var(--font-mono)', fontSize: 11, letterSpacing: '0.16em', textTransform: 'uppercase', color: 'var(--ink-dim)' }}>Pourquoi ce service</p>
           </div>
@@ -109,7 +113,7 @@ export default function ServicePage({
       <section style={{ padding: 'clamp(60px,10vh,120px) 0', borderBottom: '1px solid var(--line)' }}>
         <div className="wrap">
           <p style={{ fontFamily: 'var(--font-mono)', fontSize: 11, letterSpacing: '0.16em', textTransform: 'uppercase', color: 'var(--ink-dim)', marginBottom: 48 }}>Ce que vous obtenez</p>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 1, background: 'var(--line)', border: '1px solid var(--line)' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(280px, 100%), 1fr))', gap: 1, background: 'var(--line)', border: '1px solid var(--line)' }}>
             {points.map((pt, i) => (
               <div key={i} style={{ background: 'var(--paper)', padding: 'clamp(28px,3vw,42px)', display: 'flex', flexDirection: 'column', gap: 14 }}>
                 <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--gold)', letterSpacing: '0.1em' }}>0{i + 1}</span>
@@ -139,7 +143,7 @@ export default function ServicePage({
 
       {/* CONTACT */}
       <section id="contact" style={{ padding: 'clamp(70px,12vh,150px) 0' }}>
-        <div className="wrap" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'clamp(40px,6vw,100px)', alignItems: 'start' }}>
+        <div className="wrap split" style={{ display: 'grid', gap: 'clamp(40px,6vw,100px)', alignItems: 'start' }}>
           <div>
             <h2 className="display" style={{ maxWidth: '14ch', marginBottom: 24 }}>Parlons de votre projet.</h2>
             <p style={{ fontSize: 15, lineHeight: 1.7, color: 'var(--ink-dim)', marginBottom: 32 }}>

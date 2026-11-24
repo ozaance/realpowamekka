@@ -511,7 +511,7 @@ html.preload .d3{animation-delay:.28s}html.preload .d4{animation-delay:.4s}html.
 .blog-kicker { font-family: var(--font-mono, monospace); font-size: 11px; letter-spacing: 0.18em; color: var(--gold); text-transform: uppercase; margin-bottom: 16px; }
 .blog-title { font-family: var(--font-display); font-size: clamp(36px, 5vw, 64px); font-weight: 400; color: var(--ink); margin-bottom: 16px; }
 .blog-subtitle { font-size: 17px; color: var(--ink-soft); }
-.blog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 24px; }
+.blog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(320px, 100%), 1fr)); gap: 24px; }
 .blog-card { display: block; background: var(--paper-light, #f8f8f5); border: 1px solid var(--line, rgba(0,0,0,0.08)); border-radius: 4px; padding: 32px; text-decoration: none; transition: border-color 0.2s, transform 0.2s; }
 .blog-card:hover { border-color: var(--gold); transform: translateY(-2px); }
 .blog-card-cat { font-family: var(--font-mono, monospace); font-size: 10px; letter-spacing: 0.15em; color: var(--gold); text-transform: uppercase; }
@@ -648,3 +648,16 @@ html.preload .d3{animation-delay:.28s}html.preload .d4{animation-delay:.4s}html.
 @keyframes co-fade{from{opacity:0}}
 @keyframes co-rise{from{opacity:0;transform:translateY(24px)}}
 @media (prefers-reduced-motion:reduce){.co-overlay,.co-panel{animation:none}}
+
+/* ---------- RESPONSIVE : grilles de mise en page ----------
+   Remplacent les gridTemplateColumns en style inline, qui ne pouvaient pas
+   s'adapter : identiques à partir de 760 px, une seule colonne en dessous. */
+.split{grid-template-columns:1fr 1fr}
+.split.split-16{grid-template-columns:1fr 1.6fr}
+.split.split-19{grid-template-columns:1fr 1.9fr}
+.grid-3{grid-template-columns:repeat(3,1fr)}
+.sticky-desk{position:sticky;top:100px}
+@media (max-width:759px){
+  .split,.split.split-16,.split.split-19,.grid-3{grid-template-columns:minmax(0,1fr)}
+  .sticky-desk{position:static}
+}
