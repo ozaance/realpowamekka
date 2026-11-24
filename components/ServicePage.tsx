@@ -53,7 +53,6 @@ export default function ServicePage({
     border: '1px solid var(--line)',
     borderRadius: 18,
     padding: '12px 16px',
-    fontSize: 14,
     color: 'var(--ink)',
     outline: 'none',
     fontFamily: 'inherit',
@@ -63,7 +62,6 @@ export default function ServicePage({
 
   const labelStyle = {
     fontFamily: 'var(--font-mono)',
-    fontSize: 11,
     letterSpacing: '0.12em',
     textTransform: 'uppercase' as const,
     color: 'var(--ink-dim)',
@@ -77,7 +75,7 @@ export default function ServicePage({
           {/* Lien retour et rubrique : même ligne quand la place le permet, sinon l'un sous l'autre.
               paddingTop conserve la position verticale de l'ancienne mise en ligne. */}
           <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'baseline', columnGap: 28, rowGap: 12, paddingTop: 3, marginBottom: 40 }}>
-            <Link href="/#disciplines" style={{ fontFamily: 'var(--font-mono)', fontSize: 12, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--gold)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+            <Link href="/#disciplines" className="tap-zone" style={{ fontFamily: 'var(--font-mono)', fontSize: 12, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--gold)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 8 }}>
               ← Tous les services
             </Link>
             <p className="kicker rv d1" style={{ fontFamily: 'var(--font-mono)', fontSize: 11, letterSpacing: '0.18em', textTransform: 'uppercase', color: 'var(--gold)', marginBottom: 0 }}>
@@ -131,7 +129,7 @@ export default function ServicePage({
           <p style={{ fontFamily: 'var(--font-mono)', fontSize: 11, letterSpacing: '0.16em', textTransform: 'uppercase', color: 'var(--ink-dim)', marginBottom: 32 }}>Nos autres services</p>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12 }}>
             {relatedServices.map((s) => (
-              <Link key={s.href} href={s.href} style={{ fontFamily: 'var(--font-mono)', fontSize: 12, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--ink-soft)', border: '1px solid var(--line)', borderRadius: 100, padding: '9px 18px', textDecoration: 'none', transition: 'color 0.3s, border-color 0.3s' }}
+              <Link key={s.href} href={s.href} className="tap-zone" style={{ fontFamily: 'var(--font-mono)', fontSize: 12, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--ink-soft)', border: '1px solid var(--line)', borderRadius: 100, padding: '9px 18px', textDecoration: 'none', transition: 'color 0.3s, border-color 0.3s' }}
                 onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--gold)'; (e.currentTarget as HTMLElement).style.borderColor = 'var(--gold)'; }}
                 onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--ink-soft)'; (e.currentTarget as HTMLElement).style.borderColor = 'var(--line)'; }}>
                 {s.label}
@@ -153,7 +151,7 @@ export default function ServicePage({
               WhatsApp direct →
             </a>
             <p style={{ marginTop: 20, fontSize: 13, color: 'var(--ink-dim)' }}>
-              Ou par email : <a href="mailto:contact@powamekka.com" style={{ color: 'var(--gold)' }}>contact@powamekka.com</a>
+              Ou par email : <a href="mailto:contact@powamekka.com" className="tap-zone" style={{ color: 'var(--gold)' }}>contact@powamekka.com</a>
             </p>
           </div>
 
@@ -166,20 +164,20 @@ export default function ServicePage({
             ) : (
               <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                  <label htmlFor="name" style={labelStyle}>Nom & prénom</label>
+                  <label htmlFor="name" className="svc-label" style={labelStyle}>Nom & prénom</label>
                   <input id="name" type="text" required maxLength={100} placeholder="Jean Dupont" value={form.name}
-                    onChange={e => setForm(p => ({ ...p, name: e.target.value }))} style={inputStyle} />
+                    onChange={e => setForm(p => ({ ...p, name: e.target.value }))} className="svc-field" style={inputStyle} />
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                  <label htmlFor="email" style={labelStyle}>Email professionnel</label>
+                  <label htmlFor="email" className="svc-label" style={labelStyle}>Email professionnel</label>
                   <input id="email" type="email" required maxLength={254} placeholder="jean@entreprise.fr" value={form.email}
-                    onChange={e => setForm(p => ({ ...p, email: e.target.value }))} style={inputStyle} />
+                    onChange={e => setForm(p => ({ ...p, email: e.target.value }))} className="svc-field" style={inputStyle} />
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                  <label htmlFor="message" style={labelStyle}>Votre situation</label>
+                  <label htmlFor="message" className="svc-label" style={labelStyle}>Votre situation</label>
                   <textarea id="message" required rows={5} maxLength={5000} placeholder="Décrivez votre activité et ce que vous cherchez à résoudre..."
                     value={form.message} onChange={e => setForm(p => ({ ...p, message: e.target.value }))}
-                    style={{ ...inputStyle, resize: 'vertical' }} />
+                    className="svc-field" style={{ ...inputStyle, resize: 'vertical' }} />
                 </div>
                 <div aria-hidden="true" style={{ position: 'absolute', left: '-10000px', width: 1, height: 1, overflow: 'hidden' }}>
                   <label htmlFor="hp-extra">Ne pas remplir ce champ</label>

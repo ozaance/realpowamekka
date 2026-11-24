@@ -67,9 +67,9 @@ export default function OffersGrid({
               </h2>
               {offer.featured && (
                 <span
+                  className="offer-badge"
                   style={{
                     fontFamily: 'var(--font-mono)',
-                    fontSize: 10,
                     letterSpacing: '0.12em',
                     textTransform: 'uppercase',
                     color: 'var(--gold)',
@@ -113,9 +113,9 @@ export default function OffersGrid({
             </ul>
 
             <p
+              className="offer-note"
               style={{
                 fontFamily: 'var(--font-mono)',
-                fontSize: 11,
                 letterSpacing: '0.1em',
                 textTransform: 'uppercase',
                 color: 'var(--ink-dim)',
