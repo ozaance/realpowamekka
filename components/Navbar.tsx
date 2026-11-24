@@ -29,7 +29,7 @@ export default function Navbar() {
     <div className="navbar wrap">
       <nav className="v-nav barre" style={{ display: 'flex' }}>
         <Link className="brand" href="/">
-          <Image src="/logo-mark-ink.png" alt="POWAMEKKA" width={27} height={27} />
+          <Image src="/logo-mark-ink.png" alt="POWAMEKKA" width={25} height={27} />
           <span className="wm">POWAMEKKA</span>
         </Link>
         <div className="center">

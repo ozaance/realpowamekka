@@ -89,3 +89,33 @@
   .mm-panel { animation: mm-in 0.35s var(--cn-ease-cine, cubic-bezier(0.22, 1, 0.36, 1)) both; }
   @keyframes mm-in { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: none; } }
 }
+
+/* ------------------------------------------------------------
+   BARRE DE NAVIGATION — proportions, zones tactiles, 320 px
+   ------------------------------------------------------------ */
+/* Logo P (image 506 × 552) : seule la hauteur est fixée par la feuille de
+   style, la largeur doit suivre. Sans cela il restait carré sur ordinateur
+   (27 × 27) et écrasé sur mobile (27 × 22). */
+.brand img { width: auto; }
+
+/* Zones tactiles de 44 px de haut sans changer l'aspect des boutons :
+   une zone invisible, centrée, prolonge la cible au-dessus et en dessous. */
+.brand, .cn-nav-brand, .mm-trigger, .nav-cta, .cn-nav-cta { position: relative; }
+.brand::before, .cn-nav-brand::before,
+.mm-trigger::before, .nav-cta::before, .cn-nav-cta::before {
+  content: ""; position: absolute; left: 0; right: 0; top: 50%;
+  height: 44px; min-width: 44px; transform: translateY(-50%);
+}
+
+/* 320 px : la barre (marque + Menu + « Demander un audit ») dépassait de
+   13 px sur les pages internes et le bouton était coupé de 9 px sur
+   l'accueil. On resserre les espacements, sans masquer ni renommer. */
+@media (max-width: 349px) {
+  .navbar { padding: 0 16px; }
+  .cn-nav { padding-left: 16px; padding-right: 16px; gap: 6px; }
+  .v-nav { gap: 6px; }
+  .brand, .cn-nav-brand { gap: 8px; }
+  .cn-nav-wm, .brand .wm { font-size: 11px; letter-spacing: 0.02em; padding-left: 0.02em; }
+  .mm-trigger { padding: 8px 8px; }
+  .cn-nav-cta, .nav-cta { padding: 8px 8px; }
+}

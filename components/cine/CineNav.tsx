@@ -59,7 +59,7 @@ export default function CineNav() {
           Offres
         </Link>
         <Link className="cn-nav-link" href="/blog">
-          Journal
+          Blog
         </Link>
       </div>
 
