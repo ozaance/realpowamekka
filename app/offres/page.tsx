@@ -8,7 +8,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Offres & tarifs — Powamekka | Sites web et applications sur mesure',
   description:
-    'Landing page, site vitrine, prototype MVP et applications SaaS sur mesure. Tarifs clairs, commande en ligne et paiement sécurisé par Stripe ou Mollie.',
+    'Landing page, site vitrine, prototype MVP et applications SaaS sur mesure. Tarifs clairs, commande en ligne et paiement sécurisé par Mollie.',
   alternates: { canonical: '/offres' },
   openGraph: {
     title: 'Offres & tarifs — Powamekka',
@@ -59,7 +59,7 @@ export default async function OffresPage({
             </h1>
             <p className="lede rv d3" style={{ maxWidth: '48ch' }}>
               Choisissez le format adapté à votre situation et lancez le projet immédiatement.
-              Paiement sécurisé par Stripe ou Mollie, démarrage dès réception de vos informations.
+              Paiement sécurisé par Mollie, démarrage dès réception de vos informations.
             </p>
           </div>
         </section>
