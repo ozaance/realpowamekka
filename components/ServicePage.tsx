@@ -19,7 +19,10 @@ export default function ServicePage({
   points,
   relatedServices,
 }: ServicePageProps) {
-  const WA = "https://wa.me/33605715122?text=Bonjour%2C%20je%20souhaite%20en%20savoir%20plus%20sur%20vos%20services.";
+  // Même message que partout sur le site, avec le service consulté pour le contexte.
+  const WA = `https://wa.me/33605715122?text=${encodeURIComponent(
+    `Bonjour, je souhaite un premier échange au sujet de mon entreprise. Je m'intéresse à : ${kicker}.`,
+  )}`;
   const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error' | 'limited'>('idle');
   const [form, setForm] = useState({ name: '', email: '', message: '' });
   // Honeypot anti-spam : invisible et hors tabulation, seul un robot le remplit.
@@ -86,7 +89,7 @@ export default function ServicePage({
           <p className="lede rv d3" style={{ maxWidth: '44ch' }}>{lede}</p>
           <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap', marginTop: 40 }} className="rv d4">
             <a href="#contact" className="btn" style={{ borderRadius: 18 }}>
-              Demander un audit <span className="ar">→</span>
+              Demander un premier échange <span className="ar">→</span>
             </a>
             <a href={WA} target="_blank" rel="noopener noreferrer" className="btn-ghost" style={{ borderRadius: 18, border: '1px solid var(--ink)', padding: '12px 24px', fontFamily: 'var(--font-mono)', fontSize: 12, letterSpacing: '0.1em', textTransform: 'uppercase', textDecoration: 'none', color: 'var(--ink)', display: 'inline-flex', alignItems: 'center', gap: 8 }}>
               WhatsApp →
@@ -145,7 +148,7 @@ export default function ServicePage({
           <div>
             <h2 className="display" style={{ maxWidth: '14ch', marginBottom: 24 }}>Parlons de votre projet.</h2>
             <p style={{ fontSize: 15, lineHeight: 1.7, color: 'var(--ink-dim)', marginBottom: 32 }}>
-              Un premier échange suffit pour identifier vos leviers de croissance. Aucun engagement.
+              Un premier échange, gratuit et sans engagement, suffit pour identifier vos leviers de croissance.
             </p>
             <a href={WA} target="_blank" rel="noopener noreferrer" className="btn" style={{ borderRadius: 18 }}>
               WhatsApp direct →
@@ -159,7 +162,7 @@ export default function ServicePage({
             {status === 'sent' ? (
               <div style={{ padding: 40, border: '1px solid var(--line)', borderRadius: 18, textAlign: 'center' }}>
                 <p style={{ fontFamily: 'var(--font-display)', fontSize: 22, color: 'var(--ink)', marginBottom: 12 }}>Message envoyé.</p>
-                <p style={{ fontSize: 14, color: 'var(--ink-dim)' }}>On revient vers vous sous 24h.</p>
+                <p style={{ fontSize: 14, color: 'var(--ink-dim)' }}>Nous l&apos;avons bien reçu et vous répondrons personnellement.</p>
               </div>
             ) : (
               <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
