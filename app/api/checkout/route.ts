@@ -57,6 +57,14 @@ function parseCustomer(raw: unknown): Customer | null {
   return customer;
 }
 
+/**
+ * Stripe est temporairement fermé aux nouvelles commandes : ses prix sont ceux
+ * de l'ancienne grille. L'intégration est conservée (fonction stripeCheckout,
+ * webhook Stripe, confirmation des anciennes commandes sur /merci) ; il suffit
+ * de repasser cette constante à true pour la rouvrir.
+ */
+const STRIPE_CHECKOUT_OPEN = false;
+
 export async function POST(req: Request) {
   if (!rateLimit(`checkout:${clientIp(req)}`, RATE.limit, RATE.windowMs)) {
     return NextResponse.json(
@@ -83,6 +91,14 @@ export async function POST(req: Request) {
         return NextResponse.json({ error: 'Nom et email valides requis' }, { status: 400 });
       }
       return NextResponse.json({ url: await mollieCheckout(offer, details, origin) });
+    }
+
+    // Toute autre demande que Mollie relève de Stripe : refusée sans appel à Stripe.
+    if (!STRIPE_CHECKOUT_OPEN) {
+      return NextResponse.json(
+        { error: 'Ce moyen de paiement est temporairement indisponible.' },
+        { status: 403 }
+      );
     }
 
     return NextResponse.json({ url: await stripeCheckout(offer, origin) });
