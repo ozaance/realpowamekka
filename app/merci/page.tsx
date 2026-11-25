@@ -7,7 +7,7 @@ import { formatPrice } from '@/lib/offers';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Commande confirmée — Powamekka',
+  title: 'Commande confirmée | Powamekka',
   description: 'Confirmation de votre commande Powamekka.',
   robots: { index: false, follow: false },
 };
@@ -20,19 +20,37 @@ type Confirmation = {
   provider: 'Stripe' | 'Mollie';
 };
 
+/**
+ * Cette page est accessible à toute personne qui possède son adresse (l'identifiant
+ * du paiement y figure). On n'y affiche donc qu'une adresse e-mail masquée, calculée
+ * côté serveur : l'adresse complète n'est jamais envoyée au navigateur.
+ * Ex. « jean.dupont@entreprise.fr » devient « j•••@entreprise.fr ».
+ */
+function maskEmail(email: string | null | undefined): string | null {
+  if (!email) return null;
+  const at = email.lastIndexOf('@');
+  if (at < 1) return null;
+  return `${email[0]}•••${email.slice(at)}`;
+}
+
+/* Formats des identifiants de paiement : une valeur différente n'est pas
+   transmise à Mollie ou à Stripe, la page affiche le message générique. */
+const MOLLIE_ID = /^tr_[A-Za-z0-9]{4,}$/;
+const STRIPE_SESSION_ID = /^cs_(live|test)_[A-Za-z0-9]{8,}$/;
+
 async function loadConfirmation(
   sessionId: string | undefined,
   mollieId: string | undefined
 ): Promise<Confirmation | null> {
-  if (mollieId) return loadMollieConfirmation(mollieId);
-  if (!sessionId) return null;
+  if (mollieId) return MOLLIE_ID.test(mollieId) ? loadMollieConfirmation(mollieId) : null;
+  if (!sessionId || !STRIPE_SESSION_ID.test(sessionId)) return null;
   try {
     const session = await getStripe().checkout.sessions.retrieve(sessionId);
     return {
       paid: session.payment_status === 'paid',
       offerName: session.metadata?.offer_name || 'votre commande',
       amount: session.amount_total !== null ? formatPrice(session.amount_total) : '',
-      email: session.customer_details?.email ?? null,
+      email: maskEmail(session.customer_details?.email),
       provider: 'Stripe',
     };
   } catch (err) {
@@ -48,7 +66,7 @@ async function loadMollieConfirmation(id: string): Promise<Confirmation | null> 
       paid: payment.status === 'paid',
       offerName: payment.metadata?.offer_name || 'votre commande',
       amount: formatPrice(fromMollieAmount(payment.amount.value)),
-      email: payment.metadata?.email ?? null,
+      email: maskEmail(payment.metadata?.email),
       provider: 'Mollie',
     };
   } catch (err) {
@@ -100,7 +118,7 @@ export default async function MerciPage({
                 bien été reçu.{' '}
                 {confirmation.provider === 'Stripe'
                   ? `Un reçu Stripe vient de partir${confirmation.email ? ` sur ${confirmation.email}` : ''}.`
-                  : `Nous vous écrivons${confirmation.email ? ` sur ${confirmation.email}` : ''} sous 24h.`}
+                  : `Nous vous écrivons${confirmation.email ? ` sur ${confirmation.email}` : ''} pour organiser la suite.`}
               </p>
             ) : (
               <p className="lede" style={{ marginBottom: 40 }}>
@@ -140,7 +158,7 @@ export default async function MerciPage({
                 }}
               >
                 {[
-                  'Nous vous contactons sous 24h pour réunir vos informations : contenus, logo, références.',
+                  'Nous vous contactons pour réunir vos informations : contenus, logo, références.',
                   'Le travail démarre dès réception de ces éléments.',
                   'Vous validez une première version avant la mise en ligne.',
                 ].map((step, i) => (

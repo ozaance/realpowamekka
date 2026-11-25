@@ -2,6 +2,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState, useRef } from 'react';
+import MobileMenu from '@/components/MobileMenu';
 
 const services = [
   { label: 'Audit Stratégique', href: '/services/audit' },
@@ -28,12 +29,12 @@ export default function Navbar() {
     <div className="navbar wrap">
       <nav className="v-nav barre" style={{ display: 'flex' }}>
         <Link className="brand" href="/">
-          <Image src="/logo-mark-ink.png" alt="POWAMEKKA" width={27} height={27} />
+          <Image src="/logo-mark-ink.png" alt="POWAMEKKA" width={25} height={27} />
           <span className="wm">POWAMEKKA</span>
         </Link>
         <div className="center">
           <div className="navlinks">
-            <a href="/#approche">Approche</a>
+            <a href="/#manifeste">Approche</a>
             <Link href="/vision">Vision</Link>
 
             <div
@@ -41,7 +42,7 @@ export default function Navbar() {
               onMouseEnter={handleEnter}
               onMouseLeave={handleLeave}
             >
-              <a href="/#services" style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+              <a href="/#disciplines" style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
                 Services
                 <svg width="10" height="6" viewBox="0 0 10 6" fill="none" style={{ opacity: 0.5, transition: 'transform 0.2s', transform: open ? 'rotate(180deg)' : 'rotate(0deg)' }}>
                   <path d="M1 1l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
@@ -89,7 +90,11 @@ export default function Navbar() {
             <a href="/#contact">Contact</a>
           </div>
         </div>
-        <a className="nav-cta" href="https://wa.me/33605715122?text=Bonjour%2C%20je%20souhaite%20demander%20un%20audit%20pour%20mon%20entreprise." target="_blank" rel="noopener noreferrer" style={{ borderRadius: 18 }}>Demander un audit</a>
+        <MobileMenu />
+        <a className="nav-cta" href="https://wa.me/33605715122?text=Bonjour%2C%20je%20souhaite%20un%20premier%20%C3%A9change%20au%20sujet%20de%20mon%20entreprise." target="_blank" rel="noopener noreferrer" style={{ borderRadius: 18 }}>
+          <span className="cta-long">Demander un premier échange</span>
+          <span className="cta-short">Premier échange</span>
+        </a>
       </nav>
     </div>
   );

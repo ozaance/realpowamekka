@@ -2,16 +2,17 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import OffersGrid from '@/components/OffersGrid';
 import ServicesCatalog from '@/components/ServicesCatalog';
-import { getOfferViews, getServiceViews, serviceCategories } from '@/lib/offers';
+import { offers as rawOffers, getOfferViews, getServiceViews, serviceCategories } from '@/lib/offers';
+import { jsonLdScript, offerCatalogJsonLd } from '@/lib/schema';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Offres & tarifs — Powamekka | Sites web et applications sur mesure',
+  title: 'Offres & tarifs : sites web sur mesure | Powamekka',
   description:
-    'Landing page, site vitrine, prototype MVP et applications SaaS sur mesure. Tarifs clairs, commande en ligne et paiement sécurisé par Stripe ou Mollie.',
+    'Landing page, site vitrine, prototype MVP et applications SaaS sur mesure. Tarifs clairs, commande en ligne et paiement sécurisé par Mollie.',
   alternates: { canonical: '/offres' },
   openGraph: {
-    title: 'Offres & tarifs — Powamekka',
+    title: 'Offres & tarifs | Powamekka',
     description:
       'Landing page, site vitrine, prototype MVP et applications SaaS sur mesure. Tarifs clairs et paiement sécurisé.',
     url: 'https://www.powamekka.com/offres',
@@ -28,8 +29,14 @@ export default async function OffresPage({
   const offers = getOfferViews();
   const services = getServiceViews();
 
+  const offerCatalogSchema = offerCatalogJsonLd(rawOffers);
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(offerCatalogSchema) }}
+      />
       <Navbar />
       <main>
         {/* HERO */}
@@ -59,7 +66,7 @@ export default async function OffresPage({
             </h1>
             <p className="lede rv d3" style={{ maxWidth: '48ch' }}>
               Choisissez le format adapté à votre situation et lancez le projet immédiatement.
-              Paiement sécurisé par Stripe ou Mollie, démarrage dès réception de vos informations.
+              Paiement sécurisé par Mollie, démarrage dès réception de vos informations.
             </p>
           </div>
         </section>
@@ -113,10 +120,9 @@ export default async function OffresPage({
         {/* HORS CATALOGUE */}
         <section style={{ padding: 'clamp(60px,10vh,120px) 0' }}>
           <div
-            className="wrap"
+            className="wrap split split-16"
             style={{
               display: 'grid',
-              gridTemplateColumns: '1fr 1.6fr',
               gap: 'clamp(30px,6vw,80px)',
               alignItems: 'start',
             }}

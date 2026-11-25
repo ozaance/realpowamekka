@@ -12,22 +12,22 @@ import { motion, useMotionValueEvent, useScroll, useTransform } from 'framer-mot
 
 const STEPS = [
   {
-    no: '01 — Audit',
+    no: '01. Audit',
     title: 'Comprendre',
     text: 'Nous analysons vos opérations, vos données et vos objectifs avant toute solution.',
   },
   {
-    no: '02 — Conception',
+    no: '02. Conception',
     title: 'Architecturer',
     text: 'Nous dessinons le système juste, sans superflu, aligné sur votre réalité.',
   },
   {
-    no: '03 — Déploiement',
+    no: '03. Déploiement',
     title: 'Mettre en œuvre',
     text: "Nous déployons l'IA et les automatisations qui créent une valeur réelle.",
   },
   {
-    no: '04 — Pilotage',
+    no: '04. Pilotage',
     title: 'Piloter la croissance',
     text: 'Nous mesurons, ajustons et accompagnons votre montée en maîtrise.',
   },

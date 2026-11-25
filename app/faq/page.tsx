@@ -5,16 +5,19 @@ import { faqSections, faqJsonLd } from '@/lib/faq';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Questions fréquentes — IA, automatisation et systèmes digitaux pour PME | Powamekka',
+  title: 'Questions fréquentes IA & automatisation PME | Powamekka',
   description:
-    "Combien coûte un site pour une PME, quelles tâches automatiser en premier, comment se déroule un audit, l'IA remplace-t-elle les salariés : les réponses aux questions que posent les dirigeants.",
+    "Combien coûte un site, quelles tâches automatiser en premier, comment se déroule un audit : les réponses aux questions que posent les dirigeants de PME.",
   alternates: { canonical: '/faq' },
   openGraph: {
-    title: 'Questions fréquentes — Powamekka',
+    title: 'Questions fréquentes | Powamekka',
     description:
       "Les réponses aux questions que posent les dirigeants de PME sur l'IA, l'automatisation, les systèmes digitaux et nos tarifs.",
     url: 'https://www.powamekka.com/faq',
     type: 'website',
+    // Un openGraph de page remplace celui du layout : sans cette ligne, /faq
+    // était partagée sans image.
+    images: [{ url: '/og-image.jpg', width: 1200, height: 630, alt: 'Powamekka : questions fréquentes' }],
   },
 };
 
@@ -65,15 +68,15 @@ export default function FaqPage() {
             style={{ padding: 'clamp(50px,8vh,100px) 0', borderBottom: '1px solid var(--line)' }}
           >
             <div
-              className="wrap"
+              className="wrap split split-19"
               style={{
                 display: 'grid',
-                gridTemplateColumns: '1fr 1.9fr',
                 gap: 'clamp(30px,6vw,80px)',
                 alignItems: 'start',
               }}
             >
               <h2
+                className="sticky-desk"
                 style={{
                   fontFamily: 'var(--font-mono)',
                   fontSize: 11,
@@ -81,8 +84,6 @@ export default function FaqPage() {
                   textTransform: 'uppercase',
                   color: 'var(--ink-dim)',
                   fontWeight: 400,
-                  position: 'sticky',
-                  top: 100,
                 }}
               >
                 {section.title}

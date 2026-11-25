@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { fromMollieAmount, getPayment } from '@/lib/mollie';
 import { formatPrice } from '@/lib/offers';
 import { notifyOrder } from '@/lib/notify-order';
+import { describeEmailError } from '@/lib/email';
 
 /**
  * Webhook Mollie : notifie Powamekka dès qu'une commande est payée.
@@ -41,16 +42,18 @@ export async function POST(req: Request) {
         reference: payment.id,
         offerName: meta.offer_name || 'Offre inconnue',
         amount: formatPrice(fromMollieAmount(payment.amount.value)),
-        name: meta.name || '—',
+        name: meta.name || 'Non renseigné',
         email: meta.email || null,
-        phone: meta.phone || '—',
-        company: meta.company || '—',
+        phone: meta.phone || 'Non renseigné',
+        company: meta.company || 'Non renseigné',
         dashboardUrl: `https://my.mollie.com/dashboard/payments/${payment.id}`,
       });
     } catch (err) {
-      // On accuse quand même réception : le paiement est encaissé, seul l'email
-      // a échoué. Mollie ne doit pas rejouer l'événement indéfiniment.
-      console.error('[mollie-webhook] notification échouée', err);
+      // Le paiement est encaissé mais Powamekka n'a pas été prévenu : on répond
+      // en erreur pour que Mollie rejoue l'appel (10 tentatives sur ~26 h). La
+      // clé d'idempotence de notifyOrder empêche tout doublon d'email.
+      console.error('[mollie-webhook] notification échouée', payment.id, describeEmailError(err));
+      return NextResponse.json({ error: 'Notification échouée' }, { status: 500 });
     }
   }
 

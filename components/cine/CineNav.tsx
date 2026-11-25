@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import MobileMenu from '@/components/MobileMenu';
 
 /**
  * Navigation du récit.
@@ -15,7 +16,10 @@ import { useEffect, useState } from 'react';
  */
 export default function CineNav() {
   const [solid, setSolid] = useState(false);
-  const [overArt, setOverArt] = useState(false);
+  /* L'accueil s'ouvre sur le tableau plein écran : la barre démarre en
+     clair, dès le rendu serveur. Le héros corrige ensuite (ouverture de
+     première visite, mouvement réduit, scroll). */
+  const [overArt, setOverArt] = useState(true);
 
   useEffect(() => {
     const onScroll = () => setSolid(window.scrollY > 40);
@@ -58,17 +62,20 @@ export default function CineNav() {
           Offres
         </Link>
         <Link className="cn-nav-link" href="/blog">
-          Journal
+          Blog
         </Link>
       </div>
 
+      <MobileMenu />
+
       <a
         className="cn-nav-cta"
-        href="https://wa.me/33605715122?text=Bonjour%2C%20je%20souhaite%20demander%20un%20audit%20pour%20mon%20entreprise."
+        href="https://wa.me/33605715122?text=Bonjour%2C%20je%20souhaite%20un%20premier%20%C3%A9change%20au%20sujet%20de%20mon%20entreprise."
         target="_blank"
         rel="noopener noreferrer"
       >
-        Demander un audit
+        <span className="cta-long">Demander un premier échange</span>
+        <span className="cta-short">Premier échange</span>
       </a>
     </nav>
   );

@@ -59,7 +59,32 @@ export function blogPostingJsonLd({
     url: `${BASE}/blog/${slug}`,
     author: { '@id': ORG_ID },
     publisher: { '@id': ORG_ID },
-    image: `${BASE}/og-image.png`,
+    image: `${BASE}/og-image.jpg`,
+  };
+}
+
+export function offerCatalogJsonLd(
+  offers: { id: string; name: string; tagline: string; price: number }[]
+) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'OfferCatalog',
+    name: 'Offres Powamekka',
+    url: `${BASE}/offres`,
+    itemListElement: offers.map((offer) => ({
+      // `position` n'existe pas sur Offer (il appartient à ListItem) : retiré
+      // par rapport à la PR #10 pour un balisage valide.
+      '@type': 'Offer',
+      url: `${BASE}/offres#${offer.id}`,
+      seller: { '@id': ORG_ID },
+      priceCurrency: 'EUR',
+      price: (offer.price / 100).toFixed(2),
+      itemOffered: {
+        '@type': 'Service',
+        name: offer.name,
+        description: offer.tagline,
+      },
+    })),
   };
 }
 
