@@ -1,7 +1,7 @@
 ---
 title: "Combien coûte vraiment l'automatisation d'une PME en 2026"
 date: "2026-11-23"
-description: "Prix réels par type de projet, ce qui fait varier la facture, et les automatisations qui ne valent pas le coup tout de suite. Pas de fourchette vague."
+description: "Ordres de grandeur par type de projet, ce qui fait varier la facture, et les automatisations qui ne valent pas le coup tout de suite."
 category: "IA & Automatisation"
 readTime: "7 min de lecture"
 ---
@@ -24,9 +24,9 @@ La troisième, c'est un système sur mesure : une application ou un outil intern
 
 Ces trois formats n'ont ni le même prix ni le même délai. Confondre les trois est la première cause de devis qui semblent incohérents d'un prestataire à l'autre.
 
-## Une automatisation ponctuelle : à partir de 200 à 300 €
+## Une automatisation ponctuelle : quelques centaines d'euros
 
-Pour une tâche unique et bien définie, automatiser coûte moins cher qu'on ne l'imagine. Un chatbot qui répond aux questions fréquentes de vos clients, une séquence de relance e-mail automatique, un plan d'automatisation qui liste les tâches à traiter en priorité : ce sont des prestations ponctuelles, qui démarrent autour de 200 à 300 €.
+Pour une tâche unique et bien définie, automatiser coûte moins cher qu'on ne l'imagine. Un chatbot qui répond aux questions fréquentes de vos clients, une séquence de relance e-mail automatique, un plan d'automatisation qui liste les tâches à traiter en priorité : ce sont des prestations ponctuelles, dont le budget se compte en quelques centaines d'euros.
 
 Ce format convient quand le problème est clair. Vous savez que vous perdez du temps sur les relances, ou sur la prise de rendez-vous, et vous voulez une solution sur ce point précis, sans engagement plus large. Le détail de ces prestations est visible sur la page [offres](/offres), avec les tarifs affichés, pas des « à partir de » vagues.
 
@@ -36,13 +36,13 @@ Ce qui limite ce format : il traite un symptôme, pas la cause. Si vos outils ne
 
 Quand on cherche à gagner du temps, le premier réflexe est souvent de chercher un nouvel outil. Un [audit stratégique](/services/audit) permet de vérifier d'abord si le besoin réel n'est pas ailleurs : réorganiser un processus existant, ou supprimer un outil redondant, avant d'ajouter quoi que ce soit.
 
-Un audit coûte lui-même peu, autour de 200 €, mais il change le prix de tout ce qui suit. Sans lui, le risque est de payer pour automatiser un processus mal conçu : vous allez plus vite vers le mauvais résultat. Avec lui, chaque euro dépensé ensuite cible un point identifié.
+Un audit coûte lui-même peu au regard d'un projet, mais il change le prix de tout ce qui suit. Sans lui, le risque est de payer pour automatiser un processus mal conçu : vous allez plus vite vers le mauvais résultat. Avec lui, chaque euro dépensé ensuite cible un point identifié.
 
 C'est la raison pour laquelle, chez Powamekka, l'audit précède presque toujours le reste. Pas pour vendre une étape de plus : parce qu'un projet cadré coûte, au total, moins cher qu'un projet qu'il faut corriger après coup.
 
-## Un système sur mesure : ce qui fait varier la facture de 2 500 € à 10 000 €
+## Un système sur mesure : ce qui fait varier la facture
 
-Quand aucun outil du marché ne couvre votre besoin, ou que vous voulez un outil qui vous appartient entièrement, on entre dans le développement sur mesure. Les ordres de grandeur, visibles sur [offres](/offres), vont de 2 500 € pour un prototype qui valide une idée avant d'investir, à 10 000 € pour une application métier au périmètre étendu, avec intégrations à vos outils existants.
+Quand aucun outil du marché ne couvre votre besoin, ou que vous voulez un outil qui vous appartient entièrement, on entre dans le développement sur mesure. Les ordres de grandeur, visibles sur [offres](/offres), se comptent en milliers d'euros : du prototype qui valide une idée avant d'investir à l'application métier au périmètre étendu, avec intégrations à vos outils existants.
 
 Trois facteurs font varier ce prix, dans cet ordre d'impact :
 
@@ -72,7 +72,7 @@ Enfin, automatiser un processus qui dépend d'un jugement humain fin, un recrute
 
 ## Par où commencer sans se tromper de budget
 
-Si vous avez un problème précis et identifié, une prestation ponctuelle à 200-300 € suffit souvent. Si vous sentez que quelque chose ne va pas sans savoir quoi, l'audit stratégique est le point de départ le moins cher et le plus utile : il évite de dépenser sur la mauvaise cible.
+Si vous avez un problème précis et identifié, une prestation ponctuelle suffit souvent. Si vous sentez que quelque chose ne va pas sans savoir quoi, l'audit stratégique est le point de départ le moins cher et le plus utile : il évite de dépenser sur la mauvaise cible.
 
 Dans les deux cas, le réflexe à éviter est de demander un devis pour « automatiser l'entreprise » sans périmètre. Aucun prestataire sérieux ne peut chiffrer ça correctement, et celui qui le fait quand même devine, à vos frais.
 
