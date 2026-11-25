@@ -42,10 +42,10 @@ export async function POST(req: Request) {
         reference: payment.id,
         offerName: meta.offer_name || 'Offre inconnue',
         amount: formatPrice(fromMollieAmount(payment.amount.value)),
-        name: meta.name || '—',
+        name: meta.name || 'Non renseigné',
         email: meta.email || null,
-        phone: meta.phone || '—',
-        company: meta.company || '—',
+        phone: meta.phone || 'Non renseigné',
+        company: meta.company || 'Non renseigné',
         dashboardUrl: `https://my.mollie.com/dashboard/payments/${payment.id}`,
       });
     } catch (err) {

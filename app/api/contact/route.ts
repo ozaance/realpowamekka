@@ -66,11 +66,11 @@ export async function POST(req: Request) {
   try {
     await sendMail({
       replyTo: email,
-      subject: `Nouvelle demande — ${service || 'Site web'}`,
+      subject: `Nouvelle demande : ${service || 'Site web'}`,
       html: `
         <div style="font-family:sans-serif;max-width:600px;margin:0 auto;padding:32px">
           <h2 style="color:#1c1813;margin-bottom:8px">Nouvelle demande de contact</h2>
-          <p style="color:#888;font-size:13px;margin-bottom:32px">Via powamekka.com${s ? ' — ' + s : ''}</p>
+          <p style="color:#888;font-size:13px;margin-bottom:32px">Via powamekka.com${s ? ', ' + s : ''}</p>
           <table style="width:100%;border-collapse:collapse">
             <tr><td style="padding:12px 0;border-bottom:1px solid #eee;color:#888;font-size:13px;width:120px">Nom</td><td style="padding:12px 0;border-bottom:1px solid #eee;color:#1c1813">${n}</td></tr>
             <tr><td style="padding:12px 0;border-bottom:1px solid #eee;color:#888;font-size:13px">Email</td><td style="padding:12px 0;border-bottom:1px solid #eee"><a href="mailto:${e}" style="color:#b8975a">${e}</a></td></tr>

@@ -85,11 +85,11 @@ function toPaidOrder(session: Stripe.Checkout.Session): PaidOrder {
     provider: 'Stripe',
     reference: session.id,
     offerName: session.metadata?.offer_name || 'Offre inconnue',
-    amount: session.amount_total !== null ? formatPrice(session.amount_total) : '—',
-    name: session.customer_details?.name || '—',
+    amount: session.amount_total !== null ? formatPrice(session.amount_total) : 'Non renseigné',
+    name: session.customer_details?.name || 'Non renseigné',
     email: session.customer_details?.email ?? null,
-    phone: session.customer_details?.phone || '—',
-    company: session.custom_fields?.find((f) => f.key === 'entreprise')?.text?.value || '—',
+    phone: session.customer_details?.phone || 'Non renseigné',
+    company: session.custom_fields?.find((f) => f.key === 'entreprise')?.text?.value || 'Non renseigné',
     dashboardUrl: 'https://dashboard.stripe.com/payments',
   };
 }

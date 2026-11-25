@@ -131,7 +131,7 @@ async function mollieCheckout(offer: Offer, customer: Customer, origin: string):
   const payment = await createPayment({
     // Pour Mollie, le montant facturé est celui du catalogue (`offer.price`).
     amount: toMollieAmount(offer.price),
-    description: `Powamekka — ${offer.name}`,
+    description: `Powamekka : ${offer.name}`,
     redirectUrl: `${origin}/merci`,
     cancelUrl: `${origin}/offres?annule=1`,
     webhookUrl,
