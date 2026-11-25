@@ -44,8 +44,12 @@ const AT_ORDER = 'à la commande';
 export const FINAL_PAYMENT_RULE =
   'Le dernier paiement est encaissé avant la mise en production et la remise des accès définitifs.';
 
+/** Projets sur devis uniquement (MVP, SaaS) : la commande en ligne est refusée ;
+    la première échéance est due à l'acceptation du devis, non « à la commande ». */
+const AT_QUOTE = "sur devis, à l'acceptation du devis";
+
 const PROJECT_40_40_20: Tranche[] = [
-  { percent: 40, due: AT_ORDER },
+  { percent: 40, due: AT_QUOTE },
   { percent: 40, due: 'après validation de la conception' },
   { percent: 20, due: 'avant livraison finale' },
 ];
@@ -113,7 +117,7 @@ export const SERVICES_GRID_2026: GridService[] = [
     id: 'maintenance-site',
     gridName: 'Maintenance de site (1 mois)',
     priceHT: 22900,
-    // Aucun volume d'heures fixé : à décider avant toute mention.
+    // Aucun volume horaire n'est inclus : ne jamais mentionner d'heures.
     tagline:
       "Une intervention ponctuelle d'un mois : mises à jour et corrections de votre site. Distincte de l'abonnement d'hébergement et de maintenance.",
   },
