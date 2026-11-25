@@ -86,9 +86,12 @@ export const GRID_2026: GridOffer[] = [
 export type GridService = {
   /** Identifiant de la prestation dans `lib/offers.ts` (services). */
   id: string;
-  /** Nom tel qu'il figure dans la grille validée. */
+  /** Nom tel qu'il figure dans la grille validée (affiché à la bascule). */
   gridName: string;
   priceHT: number;
+  /** Nouvelle description, lorsque le périmètre change ; sinon, la description
+      actuelle de `lib/offers.ts` est conservée. */
+  tagline?: string;
 };
 
 /** Paiement des prestations à la carte, lorsque le périmètre est défini. */
@@ -96,12 +99,24 @@ export const SERVICE_SCHEDULE: Tranche[] = [{ percent: 100, due: AT_ORDER }];
 
 export const SERVICES_GRID_2026: GridService[] = [
   // Sites & design
-  { id: 'refonte-site', gridName: "Refonte d'une page existante", priceHT: 39000 },
+  {
+    id: 'refonte-site',
+    gridName: "Refonte d'une page existante",
+    priceHT: 39000,
+    tagline: 'Une page existante de votre site repensée : structure, design et lisibilité.',
+  },
   { id: 'design-ui-page', gridName: "Design UI d'une page", priceHT: 25000 },
   { id: 'optimisation-page-vente', gridName: 'Optimisation page de vente', priceHT: 35000 },
   { id: 'charte-graphique', gridName: 'Charte graphique express', priceHT: 35000 },
   { id: 'migration-site', gridName: 'Migration et mise en ligne', priceHT: 25000 },
-  { id: 'maintenance-site', gridName: 'Maintenance de site (1 mois)', priceHT: 22900 },
+  {
+    id: 'maintenance-site',
+    gridName: 'Maintenance de site (1 mois)',
+    priceHT: 22900,
+    // Aucun volume d'heures fixé : à décider avant toute mention.
+    tagline:
+      "Une intervention ponctuelle d'un mois : mises à jour et corrections de votre site. Distincte de l'abonnement d'hébergement et de maintenance.",
+  },
   // SEO & visibilité
   { id: 'optimisation-seo', gridName: 'Optimisation SEO', priceHT: 29000 },
   { id: 'pack-seo-local', gridName: 'Pack SEO local', priceHT: 25000 },
@@ -112,9 +127,21 @@ export const SERVICES_GRID_2026: GridService[] = [
   { id: 'audit-ia', gridName: "Audit IA d'entreprise", priceHT: 20500 },
   { id: 'plan-automatisation', gridName: "Plan d'automatisation", priceHT: 29000 },
   { id: 'chatbot-ia-basique', gridName: 'Chatbot IA basique', priceHT: 39000 },
-  { id: 'integration-chatbot', gridName: "Intégration d'un chatbot", priceHT: 29000 },
+  {
+    id: 'integration-chatbot',
+    gridName: "Intégration d'un chatbot",
+    priceHT: 29000,
+    tagline:
+      "L'installation et la configuration sur votre site d'un chatbot déjà conçu. La conception du chatbot n'est pas comprise.",
+  },
   { id: 'automatisation-emails', gridName: 'Automatisation e-mails et relances', priceHT: 39000 },
-  { id: 'formation-ia', gridName: 'Formation IA de 2 heures', priceHT: 25000 },
+  {
+    id: 'formation-ia',
+    gridName: 'Formation IA de 2 heures',
+    priceHT: 25000,
+    // Format conservé : 2 heures en visioconférence, pour une équipe.
+    tagline: "Deux heures en visioconférence pour que votre équipe utilise l'IA au quotidien, sur vos cas réels.",
+  },
   // Audit & mesure
   { id: 'audit-ux', gridName: 'Audit UX et conversion', priceHT: 29000 },
   { id: 'audit-performance', gridName: 'Audit performance et vitesse', priceHT: 19000 },
