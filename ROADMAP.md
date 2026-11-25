@@ -2,24 +2,32 @@
 
 > Statuts au 25 novembre 2026, à partir de `main` (`7621d49`, déployé en production). Ils peuvent être périmés : vérifier l'état réel avant de s'y fier. Ce document ne vaut pas validation d'une modification du site ni des paiements. Il remplace la première version du 23 novembre, devenue en partie obsolète.
 
-**Légende**
-- ✅ **Réalisé et vérifié** : fusionné sur `main`, donc présent dans la production actuelle, et contrôlé. Le contrôle est indiqué : **(prod)** sondé sur le site en production le 25 novembre ; **(CI)** couvert par un test automatisé exécuté à chaque PR. Aucun paiement réel n'a été effectué pour ces contrôles.
-- 🟡 **Réalisé, non revérifié** : fusionné donc en production, mais non contrôlé lors de la revue du 25 novembre.
+## Légende
+
+**États**
 - ⏳ **En attente** : PR ouverte, ou validation du responsable requise.
 - 📌 **Décidé, non implémenté** : la décision est prise, mais le site ne la reflète pas encore.
 - 🔲 **Prévu, non décidé** : à étudier ou à planifier, sans décision de détail.
+
+**Réalisé : trois natures de vérification, à ne pas confondre.** Une même ligne peut en cumuler plusieurs ; chacune est indiquée séparément et aucune ne remplace les autres. Aucun paiement réel n'a été effectué pour ces contrôles.
+- ✅ **Code fusionné sur `main`, vérifié sur le site en production** : le comportement a été constaté sur https://www.powamekka.com le 25 novembre. Marque : **(prod)**.
+- 🧪 **Contrôle automatisé vérifié dans la CI** : le comportement du code est prouvé par un test exécuté par la CI GitHub, dans l'environnement de test (réseau sortant verrouillé, Mollie et Resend simulés). **Ce n'est pas une preuve de fonctionnement réel en production.** Marque : **(CI)**.
+- ⚙️ **Configuration externe vérifiée sur sa plateforme** : réglage ou exécution situé sur GitHub ou sur Vercel, hors du code du site (ruleset, workflows, Previews, déploiement automatique), relu depuis la plateforme elle-même le 25 novembre. Cela ne dit rien du comportement du site. Marques : **(GitHub)** ou **(Vercel)**.
+- 🟡 **Réalisé, non revérifié** : code fusionné, donc déployé, mais non contrôlé lors de la revue du 25 novembre.
+
+Dans `CLAUDE.md`, « réalisé et vérifié » désigne les marques ✅, 🧪 et ⚙️, chacune avec la portée définie ci-dessus ; « réalisé, non revérifié » désigne 🟡.
 
 ## 1. Décisions validées et leur état réel
 
 | Décision | État | Précision |
 |---|---|---|
 | Clientèle exclusivement professionnelle (B2B), entreprises françaises au lancement | 📌 | Pas encore reflétée dans tous les textes publics. |
-| Mollie est le moyen de paiement actif | ✅ (prod, CI) | La voie Mollie répond en production (erreur de validation sur un client invalide, aucun paiement créé). Création du paiement et montants vérifiés par la CI avec Mollie simulé. **Aucun paiement réel n'a été testé.** |
-| Stripe fermé aux nouvelles commandes | ✅ (prod, CI) | Refus côté serveur (PR #35), masqué dans l'interface (PR #18). Code, webhook et confirmation des anciennes commandes conservés. |
-| Prototype MVP, SaaS Standard, SaaS Premium : sur devis uniquement | ✅ (prod, CI) | Commande en ligne refusée par le serveur, bouton « Demander un devis » (PR #36). |
+| Mollie est le moyen de paiement actif | 🧪 (CI), ✅ (prod, voie seule) | En production, la voie Mollie répond (erreur de validation sur un client invalide, aucun paiement créé). La création du paiement et les montants sont vérifiés **uniquement par la CI**, avec Mollie simulé. **Aucun paiement réel Mollie n'a été testé.** |
+| Stripe fermé aux nouvelles commandes | ✅ (prod), 🧪 (CI) | Refus côté serveur constaté en production (PR #35), également couvert par la CI. Masqué dans l'interface (PR #18). Code, webhook et confirmation des anciennes commandes conservés. |
+| Prototype MVP, SaaS Standard, SaaS Premium : sur devis uniquement | ✅ (prod), 🧪 (CI) | Commande en ligne refusée par le serveur et bouton « Demander un devis » constatés en production (PR #36), également couverts par la CI. |
 | Paiement des offres sur devis en 3 échéances (40 %, 40 %, 20 %) par factures et liens de paiement Mollie | 📌 | Non automatisé : se fait hors du site. |
 | Site vitrine payé en 2 fois (50 %, 50 %) ; dernier paiement avant la mise en production pour toutes les offres | 📌 | Aujourd'hui, Mollie encaisse le prix complet en un seul paiement. L'échéancier n'existe que dans le module préparé par la PR #32. |
-| Délais affichés : « Délai confirmé après cadrage » | ✅ (prod) | PR #33. |
+| Délais affichés : « Délai confirmé après cadrage » | ✅ (prod) | PR #33. Texte constaté en production sur les cinq cartes d'offres de la page Offres ; anciens délais (« Livrée en 24h », « Livré en 5 jours », « Cadrage sous 48h ») absents. |
 | Grille tarifaire 2026 (5 offres, 20 prestations à la carte, abonnement d'hébergement) | ⏳ | Préparée dans la PR #32 (`lib/pricing.ts`, pas encore sur `main`), **non publiée et non branchée** : le site affiche et Mollie encaisse les prix actuels de `lib/offers.ts`. |
 | Prix principal en HT, TTC en dessous, TVA 20 % | 📌 | Prévu pour la bascule de la grille. Aujourd'hui, la page Offres n'affiche aucune mention HT ou TTC (constaté en production). |
 | Hébergement 12 mois inclus (Landing page, Site vitrine), puis abonnement sur acceptation écrite préalable, sans reconduction automatique | 📌 | Aucun mécanisme d'abonnement n'existe ; conditions détaillées en cours de validation. |
@@ -31,30 +39,34 @@
 
 ## 2. Réalisé
 
-**Flux de développement**
-- ✅ Tests d'intégration versionnés, sans appel réel (PR #34) : réseau sortant verrouillé, Mollie et Resend simulés. 75 tests au minimum exigés (CI).
-- ✅ CI sur chaque PR, sans secret (PR #37), rendue stricte (PR #38) : un fichier de test manquant, un test en échec ou moins de 75 tests réussis font échouer le contrôle (CI, exécutée sur chaque PR depuis).
-- ✅ Ruleset « Protéger main » actif : PR obligatoire, contrôles `Types, build et tests` et `Vercel`, branche à jour, fusion par commit de fusion uniquement, aucun contournement (configuration relue depuis GitHub le 25 novembre).
-- 🟡 Previews Vercel sur chaque branche.
+**Plateformes et flux de développement**
+- ⚙️ (GitHub) Ruleset « Protéger main » : actif, relu depuis GitHub le 25 novembre. Il impose une PR, les contrôles `Types, build et tests` et `Vercel`, une branche à jour, la fusion par commit de fusion uniquement, sans contournement ; quatre règles sont appliquées à `main`. Il n'impose pas l'autorisation du responsable.
+- ⚙️ (GitHub) CI sur chaque PR, sans secret (PR #37), rendue stricte (PR #38) : workflow actif, dernières exécutions réussies (dont celle de la tête de la PR #13). Un fichier de test manquant, un test en échec ou moins de 75 tests réussis font échouer le contrôle.
+- 🧪 (CI) Tests d'intégration versionnés, sans appel réel (PR #34) : réseau sortant verrouillé, Mollie et Resend simulés, 75 tests au minimum exigés.
+- ⚙️ (Vercel) Previews : une Preview prête, liée au commit, pour chacune des PR ouvertes #13, #17 et #32.
+- ⚙️ (Vercel) Mise en production automatique à chaque fusion sur `main` : un déploiement de production réussi pour chacune des six fusions du 25 novembre (PR #35, #36, #33, #34, #37 et #38).
 
 **Sécurité et fiabilité**
-- ✅ Formulaire de contact : échappement HTML, limitation de débit, champ piège anti-spam, expéditeur Resend `notifications@powamekka.com` (PR #14, CI).
-- ✅ Paiement : le prix vient toujours du catalogue serveur, jamais de la requête ; limitation de débit ; webhooks Stripe et Mollie testés (signature Stripe, pas de doublon à la relecture d'un événement) (CI).
-- ✅ En-têtes de sécurité HTTP (PR #30) (prod, CI). Page `/merci` : e-mail masqué et identifiants de paiement vérifiés (PR #31) (CI).
+- 🧪 (CI) Formulaire de contact : échappement HTML, limitation de débit, champ piège anti-spam, expéditeur Resend `notifications@powamekka.com` (PR #14). Non vérifié en production : aucun envoi réel de formulaire n'a été fait.
+- 🧪 (CI) Paiement : le prix vient toujours du catalogue serveur, jamais de la requête ; limitation de débit ; webhooks Stripe et Mollie testés (signature Stripe, pas de doublon à la relecture d'un événement). Non vérifié en production.
+- ✅ (prod), 🧪 (CI) En-têtes de sécurité HTTP (PR #30) : présents en production.
+- 🧪 (CI) Page `/merci` : e-mail masqué et identifiants de paiement vérifiés (PR #31). Non vérifié en production : aucun paiement réel n'a été fait.
 
 **Paiement et offres**
-- ✅ Mollie (PR #6) (CI avec Mollie simulé ; aucun paiement réel testé). Services à la carte (PR #7) (prod : la page Offres affiche 22 boutons « Commander », soit la Landing page, le Site vitrine et les 20 prestations).
-- ✅ Stripe fermé côté serveur (PR #35) et offres MVP et SaaS sur devis (PR #36) (prod, CI). 🟡 Stripe masqué dans l'interface (PR #18).
+- 🧪 (CI) Mollie (PR #6), avec Mollie simulé. **Aucun paiement réel Mollie n'a été testé.**
+- ✅ (prod) Services à la carte (PR #7) : la page Offres affiche 22 boutons « Commander », soit la Landing page, le Site vitrine et les 20 prestations.
+- ✅ (prod), 🧪 (CI) Stripe fermé côté serveur (PR #35) et offres MVP et SaaS sur devis (PR #36).
+- 🟡 Stripe masqué dans l'interface (PR #18).
 
 **Textes, conversion et interface**
-- ✅ Délais « confirmés après cadrage » (PR #33) (prod).
+- ✅ (prod) Délais « confirmés après cadrage » (PR #33).
 - 🟡 Premier écran commercial lisible (PR #27). Boutons « Demander un premier échange » (PR #28, PR #29), remplacés sur MVP et SaaS par « Demander un devis » (PR #36).
 - 🟡 Libellé Mollie et e-mails sans tirets longs (PR #26).
 - 🟡 Ancres, menu mobile, grilles, navigation et accessibilité mobiles (PR #19 à #23).
 - 🟡 Polices auto-hébergées (PR #24), optimisation des médias (PR #25).
 
 **SEO**
-- ✅ Export Search Console planifié (PR #2 à #5) : workflow actif, trois dernières exécutions hebdomadaires réussies (9, 16 et 23 novembre).
+- ⚙️ (GitHub) Export Search Console planifié (PR #2 à #5) : workflow actif, trois dernières exécutions hebdomadaires réussies (9, 16 et 23 novembre). Le contenu exporté n'a pas été revérifié.
 - 🟡 Domaine canonique `www` (PR #1), contenus et consolidation SEO (PR #9, PR #15). La procédure SEO est dans `.claude/skills/seo/SKILL.md`.
 
 ## 3. En attente
