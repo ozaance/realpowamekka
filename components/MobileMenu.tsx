@@ -25,7 +25,7 @@ const SERVICES: Item[] = [
 ];
 
 const WHATSAPP =
-  'https://wa.me/33605715122?text=Bonjour%2C%20je%20souhaite%20demander%20un%20audit%20pour%20mon%20entreprise.';
+  'https://wa.me/33605715122?text=Bonjour%2C%20je%20souhaite%20un%20premier%20%C3%A9change%20au%20sujet%20de%20mon%20entreprise.';
 
 const FOCUSABLE = 'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
@@ -153,7 +153,7 @@ export default function MobileMenu() {
             </nav>
 
             <a className="mm-cta" href={WHATSAPP} target="_blank" rel="noopener noreferrer" onClick={close}>
-              Demander un audit <span aria-hidden>→</span>
+              Demander un premier échange <span aria-hidden>→</span>
             </a>
           </div>,
           document.body
