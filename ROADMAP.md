@@ -1,83 +1,95 @@
-# Feuille de route POWAMEKKA — première version
+# Feuille de route POWAMEKKA
 
-> Document de cadrage initial fondé sur l'état du dépôt `main` consulté le 23 novembre 2026. Ce document ne vaut pas validation d'une modification du site ni des paiements.
+> Mise à jour le 25 novembre 2026 à partir de `main` (`7621d49`). Ce document ne vaut pas validation d'une modification du site ni des paiements. Il remplace la première version du 23 novembre, devenue en partie obsolète.
 
-## Objectif général
+**Légende**
+- ✅ **Réalisé** : fusionné sur `main`.
+- ⏳ **En attente** : PR ouverte, ou validation du responsable requise.
+- 📌 **Décidé, non implémenté** : la décision est prise, mais le site ne la reflète pas encore.
+- 🔲 **Prévu** : à étudier ou à planifier, pas encore décidé en détail.
 
-Faire de POWAMEKKA un site d'agence premium qui transforme clairement les visites en demandes qualifiées : conseil en IA, automatisation et systèmes digitaux pour PME, avec une priorité commerciale BTP et services.
+## 1. Décisions validées et leur état réel
 
-## Phase 0 — Assainir le flux de développement
+| Décision | État | Précision |
+|---|---|---|
+| Clientèle exclusivement professionnelle (B2B), entreprises françaises au lancement | 📌 | Pas encore reflétée dans tous les textes publics. |
+| Mollie est le moyen de paiement actif | ✅ | Seul moyen proposé et accepté pour les nouvelles commandes. |
+| Stripe fermé aux nouvelles commandes | ✅ | Refus côté serveur (PR #35), masqué dans l'interface (PR #18). Code, webhook et confirmation des anciennes commandes conservés. |
+| Prototype MVP, SaaS Standard, SaaS Premium : sur devis uniquement | ✅ | Commande en ligne refusée par le serveur, bouton « Demander un devis » (PR #36). |
+| Paiement des offres sur devis en 3 échéances (40 %, 40 %, 20 %) par factures et liens de paiement Mollie | 📌 | Non automatisé : se fait hors du site. |
+| Délais affichés : « Délai confirmé après cadrage » | ✅ | PR #33. |
+| Grille tarifaire 2026 (5 offres, 20 prestations à la carte, abonnement d'hébergement) | ⏳ | Préparée dans la PR #32 (`lib/pricing.ts`, pas encore sur `main`), **non branchée** : le site affiche et Mollie encaisse toujours les prix actuels de `lib/offers.ts`. |
+| Prix principal en HT, TTC en dessous, TVA 20 % | 📌 | Prévu pour la bascule de la grille. Aujourd'hui, la page Offres n'affiche aucune mention HT ou TTC. |
+| Hébergement 12 mois inclus (Landing page, Site vitrine), puis abonnement sur acceptation écrite préalable, sans reconduction automatique | 📌 | Aucun mécanisme d'abonnement n'existe ; conditions détaillées en cours de validation. |
+| Maintenance ponctuelle distincte de l'abonnement d'hébergement | ⏳ | Distinction prévue dans la grille de la PR #32 ; non publiée. |
+| Facturation : dénomination, SIREN et adresse de facturation obligatoires ; TVA intracommunautaire facultative ; aucun système de facturation maison | 📌 | Rien n'est collecté ni transmis aujourd'hui ; outil externe à choisir. |
+| Conditions générales de vente publiées **avant** la bascule des tarifs | ⏳ | Rédaction en validation ; rien n'est publié. Les documents juridiques de travail sont conservés hors du dépôt public. |
+| Aucune PR fusionnée sans autorisation explicite du responsable | ✅ | Règle de travail, voir `COLLABORATION.md` ; fusion technique protégée par le ruleset de `main`. |
 
-**Priorité immédiate — avant toute nouvelle refonte**
+## 2. Réalisé (✅)
 
-- [ ] Examiner les PR SEO ouvertes #10, #11 et #12 : comparer leurs diffs, repérer les changements qui se recouvrent et ne conserver que les changements validés.
-- [ ] Examiner les branches historiques `feat/refonte-cinematique`, `feat/services-a-la-carte`, `feat/stripe-checkout` et `feat/mollie-checkout` ; déterminer si elles sont déjà intégrées, obsolètes ou encore utiles. Ne pas fusionner à l'aveugle.
-- [ ] Confirmer dans Vercel que `main` est bien la branche de production et que les autres branches créent des déploiements Preview.
-- [ ] Mettre en place une règle d'équipe : toute évolution passe par une branche et une PR ; aucun déploiement de production sans validation.
-- [ ] Ajouter une vérification automatique de build sur les PR (GitHub Actions) après validation de la commande de build et des variables nécessaires.
+**Flux de développement**
+- Toute évolution passe par une branche et une PR ; Previews Vercel systématiques.
+- Tests d'intégration versionnés, sans appel réel (PR #34) : réseau sortant verrouillé, Mollie et Resend simulés, 75 tests au minimum exigés.
+- CI sur chaque PR, sans secret (PR #37), rendue stricte (PR #38) : un fichier de test manquant, un test en échec ou moins de 75 tests réussis font échouer le contrôle.
+- Ruleset « Protéger main » actif : PR obligatoire, contrôles `Types, build et tests` et `Vercel`, branche à jour, fusion par commit de fusion uniquement, aucun contournement.
 
-**Livrable :** historique Git lisible, PR en attente réconciliées, Preview Vercel utilisée systématiquement.
+**Sécurité et fiabilité**
+- Formulaire de contact : échappement HTML, limitation de débit, champ piège anti-spam ; expéditeur Resend `notifications@powamekka.com` (PR #14).
+- Paiement : le prix vient toujours du catalogue serveur, jamais de la requête ; limitation de débit ; webhooks Stripe et Mollie testés (signature Stripe, pas de doublon à la relecture d'un événement).
+- En-têtes de sécurité HTTP (PR #30). Page `/merci` : e-mail masqué et identifiants de paiement vérifiés (PR #31).
 
-## Phase 1 — Fiabilité et sécurité
+**Paiement et offres**
+- Mollie (PR #6), services à la carte (PR #7), Stripe masqué (PR #18) puis fermé côté serveur (PR #35), offres MVP et SaaS sur devis (PR #36).
 
-**Priorité très élevée — protéger les demandes entrantes et les paiements**
+**Textes, conversion et interface**
+- Premier écran commercial lisible (PR #27), boutons « Demander un premier échange » (PR #28, PR #29), délais « confirmés après cadrage » (PR #33), libellé Mollie et e-mails sans tirets longs (PR #26).
+- Ancres, menu mobile, grilles, navigation et accessibilité mobiles (PR #19 à #23).
+- Polices auto-hébergées (PR #24), optimisation des médias (PR #25).
 
-- [ ] Revoir `app/api/contact/route.ts` : les champs utilisateur sont injectés dans le HTML de l'email sans échappement HTML visible dans le code consulté. Échapper toutes les valeurs, valider les formats et limiter les longueurs avant envoi.
-- [ ] Ajouter une protection anti-spam proportionnée au formulaire (limitation de débit et/ou honeypot), sans bloquer les vrais prospects.
-- [ ] Vérifier la configuration Resend : domaine expéditeur vérifié, adresse d'envoi, gestion des erreurs et délivrabilité. Le code actuel utilise `onboarding@resend.dev`.
-- [ ] Auditer le flux de paiement Stripe et Mollie : prix exclusivement déterminés côté serveur, signature des webhooks, idempotence, gestion des échecs/annulations et redirections autorisées.
-- [ ] Tester les parcours de paiement en mode test avant tout changement en production ; ne pas modifier les identifiants ou tarifs pendant cet audit.
-- [ ] Ajouter ou documenter les commandes de qualité (lint, typecheck, tests) ; le `package.json` consulté expose actuellement `dev`, `build` et `start`.
+**SEO**
+- Domaine canonique `www` (PR #1), export Search Console planifié (PR #2 à #5), contenus et consolidation SEO (PR #9, PR #15). La procédure SEO est dans `.claude/skills/seo/SKILL.md`.
 
-**Critère de sortie :** formulaires et paiements testés de bout en bout, erreurs maîtrisées, aucun secret dans Git, build validé.
+## 3. En attente (⏳)
 
-## Phase 2 — Positionnement et conversion
+- **PR #32** : grille tarifaire 2026 préparée, non branchée. Elle ne modifie aucun prix affiché, aucun montant encaissé ni aucun parcours de paiement.
+- **PR #17** : retrait du dépôt public de six documents de travail (brouillons juridiques et rapport d'analyse). Des copies sont conservées hors du dépôt.
+- **PR #13** : cette documentation, en Draft.
+- **Validations du responsable** : conditions générales de vente, mentions légales et politique de confidentialité ; conditions de l'abonnement d'hébergement ; choix de l'outil de facturation.
 
-**Priorité élevée — faire comprendre l'offre en quelques secondes**
+## 4. Prévu
 
-- [ ] Rendre la promesse d'accueil plus concrète : à qui POWAMEKKA s'adresse, quels problèmes sont résolus, quels résultats opérationnels sont recherchés.
-- [ ] Garder la signature « Building the future of business », mais accompagner le message éditorial « Bâtir des entreprises plus claires » d'une explication très concrète : automatiser l'administratif, fiabiliser le suivi client, connecter les outils, exploiter les données.
-- [ ] Clarifier la hiérarchie des offres : 1) audit et conseil IA, 2) automatisation et intégration, 3) systèmes digitaux sur mesure ; présenter sites premium et formation comme offres complémentaires selon le besoin.
-- [ ] Construire un parcours BTP lisible (exemples de processus : devis, relances, comptes rendus, suivi d'intervention), sans enfermer l'agence dans ce seul secteur.
-- [ ] Créer une preuve de compétence pour chaque offre : démonstration, capture, schéma avant/après ou étude de cas réelle autorisée. Aucun chiffre ni témoignage ne doit être inventé.
-- [ ] Vérifier que les CTA conduisent à une action simple et mesurable : audit, prise de rendez-vous ou formulaire qualifiant. Comparer le parcours WhatsApp au formulaire existant.
-- [ ] Harmoniser les pages Services, Offres, Vision, FAQ et Blog avec cette hiérarchie et éviter les promesses trop générales.
+### Phase A : bascule de la grille 2026 (priorité)
+Une seule PR de bascule, après les étapes 1 et 2, et avec validation explicite.
+1. 📌 Valider puis publier les conditions de vente, mentions légales et politique de confidentialité, adaptées à une clientèle professionnelle. **La publication précède la bascule.**
+2. 📌 Collecter à la commande la dénomination, le SIREN (avec contrôle de validité) et l'adresse de facturation ; numéro de TVA facultatif ; choisir l'outil de facturation externe.
+3. 📌 Bascule : affichage HT et TTC, montants Mollie (première échéance pour les offres en plusieurs paiements), données structurées, FAQ et mentions d'acompte, **mis à jour ensemble** pour éviter tout écart entre prix affiché et montant encaissé.
+4. 📌 Tests de paiement en mode test Mollie, avec une clé de test uniquement, avant toute mise en production.
+5. 🔲 Abonnement d'hébergement : mécanisme d'encaissement mensuel à choisir (facture et lien de paiement, ou prélèvement), après validation des conditions de résiliation, de préavis et de transfert.
 
-**Critère de sortie :** un visiteur comprend la cible, les problèmes traités, les prestations et l'étape suivante sans devoir interpréter le discours.
+### Phase B : qualité continue
+- 🔲 Étudier l'ajout d'un lint (aucune commande de lint n'existe aujourd'hui dans `package.json`).
+- 🔲 Adapter la lecture des prix des tests (expression régulière sur `lib/offers.ts`) lors de la bascule de la grille.
+- Ne jamais baisser le plancher de 75 tests ni assouplir la CI sans décision explicite.
 
-## Phase 3 — Expérience, performance et accessibilité
+### Phase C : positionnement et conversion (non revérifié depuis le 23 novembre)
+- 🔲 Rendre la promesse d'accueil plus concrète : à qui POWAMEKKA s'adresse, quels problèmes sont résolus.
+- 🔲 Clarifier la hiérarchie des offres : audit et conseil IA, automatisation et intégration, systèmes digitaux sur mesure ; sites premium et formation en complément.
+- 🔲 Construire un parcours BTP lisible (devis, relances, comptes rendus, suivi d'intervention) sans enfermer l'agence dans ce secteur.
+- 🔲 Créer une preuve de compétence par offre : démonstration, schéma avant / après ou étude de cas réelle autorisée. Aucun chiffre ni témoignage ne doit être inventé.
+- 🔲 Vérifier que chaque appel à l'action mène à une action simple et mesurable.
 
-**Priorité élevée — préserver le premium sans pénaliser l'usage**
+### Phase D : expérience, performance, mesure (non revérifié depuis le 23 novembre)
+- 🔲 Tester le parcours complet sur mobile réel ; mesurer le héros cinématique et la galerie à défilement long ; vérifier `prefers-reduced-motion`, clavier, focus, contrastes.
+- 🔲 Mesurer les Core Web Vitals et identifier les ressources les plus lourdes.
+- 🔲 Vérifier Search Console (propriété, indexation, requêtes hors marque) et l'état de la mesure d'audience ; suivre des événements utiles (clic WhatsApp, formulaire, début de commande, achat confirmé).
 
-- [ ] Tester le parcours complet sur mobile réel : navigation, ancres, menus, CTA, lecture, formulaire et paiement.
-- [ ] Mesurer l'effet du héros cinématique et de la galerie à défilement long. Le code actuel réserve 420svh au héros sur grand écran et 300svh sur petit écran ; la galerie réserve environ 490svh sur grand écran et 380svh sur petit écran.
-- [ ] Garder une expérience cohérente avec `prefers-reduced-motion` et vérifier les interactions clavier, focus, contrastes et lecteurs d'écran.
-- [ ] Mesurer les Core Web Vitals et identifier les ressources les plus lourdes. Le PR #12 signale notamment deux vidéos de 9,4 Mo et 3,1 Mo, encore à examiner.
-- [ ] Optimiser les images et vidéos sans dégrader le rendu de marque ; contrôler le rendu final dans la Preview.
-- [ ] Vérifier les titres, descriptions, canonicals, Open Graph, sitemap, robots et données structurées après consolidation des PR SEO.
-
-**Critère de sortie :** site rapide et utilisable sur mobile, animation non bloquante, accessibilité de base vérifiée.
-
-## Phase 4 — Mesure et acquisition
-
-**Priorité moyenne — piloter avec des données fiables**
-
-- [ ] Vérifier Search Console : propriété du domaine, indexation des pages de service, erreurs et requêtes non-marque.
-- [ ] Activer et vérifier une mesure d'audience respectueuse de la configuration choisie. Le PR #12 rapporte un retour 404 de Vercel Web Analytics ; activation à confirmer dans le tableau de bord.
-- [ ] Suivre des événements utiles : clic WhatsApp, envoi du formulaire, début de checkout, achat confirmé.
-- [ ] Définir un tableau de bord mensuel : visites qualifiées, sources, clics CTA, demandes, rendez-vous et ventes.
-- [ ] Construire le calendrier éditorial à partir des questions clients et des données réelles, pas d'un volume d'articles sans intention commerciale.
-
-**Critère de sortie :** POWAMEKKA sait quelles pages et sources génèrent des demandes, et peut prioriser les améliorations à partir de données.
-
-## Ordre recommandé des 5 premières tâches
-
-1. Réconcilier les PR #10–#12 et les branches de paiement/refonte.
-2. Sécuriser et fiabiliser le formulaire de contact.
-3. Auditer les paiements Stripe/Mollie sans modifier les tarifs.
-4. Clarifier la promesse et les offres de la page d'accueil.
-5. Tester mobile, performance et accessibilité du parcours cinématique.
+## 5. Ordre recommandé des prochaines tâches
+1. Valider et publier les documents légaux adaptés au B2B.
+2. Choisir l'outil de facturation et définir les informations à collecter à la commande.
+3. Préparer la PR de bascule de la grille 2026, avec tests en mode test Mollie.
+4. Reprendre l'audit mobile, performance et accessibilité du parcours cinématique.
+5. Produire les premières preuves de compétence réelles et autorisées.
 
 ## Règle de validation
-
-Chaque tâche produit une PR indépendante avec critères d'acceptation, build vérifié, résumé des changements et URL Preview. La fusion dans `main` reste une décision humaine.
+Chaque tâche produit une PR indépendante avec critères d'acceptation, `npx tsc --noEmit`, `npm run build` et `npm run test:integration` exécutés, résumé des changements et URL de la Preview. La fusion dans `main`, qui déclenche la production, n'a lieu que sur autorisation explicite du responsable pour cette PR.
