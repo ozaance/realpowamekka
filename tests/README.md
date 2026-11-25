@@ -7,16 +7,48 @@ npm run build
 npm run test:integration
 ```
 
-Le lanceur (`tests/run.mjs`) démarre le site construit avec :
-- un faux Resend (`tests/mock-resend.mjs`) : aucun e-mail n'est envoyé ;
-- un faux Mollie et un blocage de Stripe (`tests/fake-payments.mjs`) : aucun paiement n'est
-  créé, aucune requête ne part vers Mollie ni Stripe ;
-- des clés de test imposées, qui priment sur un éventuel `.env.local`. Le faux Mollie refuse
-  toute clé qui ne commence pas par `test_`.
+Le lanceur (`tests/run.mjs`) fait, dans l'ordre :
 
-Couverture : formulaire de contact, webhooks Stripe et Mollie, commande Mollie (montant,
-libellé, métadonnées, retour), montant encaissé égal au prix du catalogue pour les 25 offres
-et prestations, page `/merci` (e-mail masqué), pages principales, en-têtes de sécurité.
+1. **Refuse de démarrer si un port est déjà occupé** (3190 pour le site, 4010 pour le faux Resend) :
+   sinon les tests tourneraient contre un autre serveur, peut-être avec de vraies clés.
+2. **Teste le garde-fou réseau** (`tests/garde-fous.mjs`) : si le verrouillage ne bloque pas tout, rien ne démarre.
+3. Démarre le site construit avec :
+   - un faux Resend (`tests/mock-resend.mjs`) : aucun e-mail n'est envoyé ;
+   - un **réseau sortant verrouillé** (`tests/fake-payments.mjs`, préchargé par `NODE_OPTIONS`) :
+     - Mollie est simulé et refuse toute clé qui ne commence pas par `test_` ;
+     - **tout autre appel sortant est bloqué et journalisé**, par `fetch` comme par `node:http` et
+       `node:https`. Cette seconde voie est celle du SDK Stripe, qui n'utilise pas `fetch` ;
+     - seul le réseau local (127.0.0.1) reste ouvert ;
+   - des clés et URL de test imposées, qui priment sur un éventuel `.env.local`.
+4. Lance `tests/integration.mjs`.
+
+Les appels simulés ou bloqués sont consignés dans l'état partagé (`calls`) : les tests s'en servent
+pour prouver qu'**aucun appel à Stripe ni à un service externe** n'a eu lieu.
+
+### Couverture
+
+- formulaire de contact, webhooks Stripe et Mollie ;
+- commande Mollie : montant, libellé, métadonnées, retour vers `/merci` ;
+- **montant encaissé égal au prix du catalogue** pour les 22 offres et prestations commandables en ligne ;
+- **Prototype MVP, SaaS Standard, SaaS Premium : refusés côté serveur** (403), quel que soit le
+  prestataire demandé ou le montant envoyé, sans aucun appel à Mollie ni à Stripe ;
+- **Stripe fermé aux nouvelles commandes** : 403, jamais de repli sur Stripe par défaut ;
+- page `/merci` (e-mail masqué), pages principales, en-têtes de sécurité.
+
+### Ces tests décrivent l'état de `main` après les PR #35 et #36
+
+Ils supposent que Stripe est fermé aux nouvelles commandes (#35) et que les trois offres
+Prototype MVP / SaaS sont réservées au devis (#36). Fusionnés avant elles, ils échouent, et c'est
+voulu : ils signalent que ces protections manquent.
+
+### Limites connues
+
+- Les prix attendus sont lus dans `lib/offers.ts` par expression régulière : si la structure de ce
+  fichier change (par exemple au branchement de la grille 2026), adapter la lecture.
+- Le nombre d'identifiants (25) est vérifié explicitement : toute offre ajoutée ou retirée doit
+  être répercutée ici.
+- Le verrouillage couvre `fetch`, `node:http` et `node:https`. Il ne couvre pas un module qui
+  ouvrirait directement une socket (`node:net`), ce que le code actuel ne fait pas.
 
 ## Test Mollie en mode test (optionnel)
 
@@ -25,5 +57,6 @@ npm run build
 MOLLIE_TEST_API_KEY=test_xxx npm run test:mollie
 ```
 
-Utilise l'API Mollie en mode test (aucun argent réel). Le script refuse de s'exécuter avec une
-clé qui ne commence pas par `test_`. Ne jamais y mettre la clé de production.
+Utilise l'API Mollie en **mode test** (aucun argent réel) : ce test, lui, contacte vraiment Mollie.
+Le script refuse de s'exécuter avec une clé qui ne commence pas par `test_`, et avec un port déjà
+occupé (3191, variable `TEST_MOLLIE_PORT`). Ne jamais y mettre la clé de production.

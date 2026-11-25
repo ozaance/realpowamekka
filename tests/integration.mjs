@@ -141,18 +141,84 @@ check('métadonnées : offre et source', created?.metadata?.offer_id === 'landin
 check('retour vers /merci avec l’identifiant du paiement', created?.redirectUrl?.endsWith(`/merci?mollie_id=${created?.id}`), created?.redirectUrl);
 check('aucun appel à Stripe', !st.calls.some((c) => c.api === 'stripe'));
 
-// Garde-fou de la grille : chaque offre et prestation encaisse exactement son prix de catalogue.
+// Offres sur devis uniquement : jamais de commande en ligne (voir la section suivante).
+const QUOTE_ONLY = ['prototype-mvp', 'saas-standard', 'saas-premium'];
+
+// Garde-fou de la grille : chaque offre et prestation commandable en ligne encaisse exactement son
+// prix de catalogue. Les 3 offres sur devis sont exclues de ce contrôle, elles sont refusées.
 const ids = Object.keys(prices);
+const orderable = ids.filter((id) => !QUOTE_ONLY.includes(id));
 const mismatches = [];
 let ip = 10;
-for (const id of ids) {
+for (const id of orderable) {
   const before = Object.keys(fakeState().payments).length;
   const res = await co({ offerId: id, provider: 'mollie', customer }, `10.3.${ip++}.1`);
   const after = fakeState();
   const p = Object.values(after.payments).at(-1);
   if (res.status !== 200 || Object.keys(after.payments).length !== before + 1 || p.amount.value !== (prices[id] / 100).toFixed(2)) mismatches.push(`${id}: ${res.status} ${p?.amount?.value}`);
 }
-check(`montant encaissé = prix du catalogue pour les ${ids.length} offres et prestations`, ids.length === 25 && mismatches.length === 0, JSON.stringify(mismatches) + ` (${ids.length} identifiants)`);
+check(`catalogue : ${ids.length} identifiants, dont ${QUOTE_ONLY.length} offres sur devis`, ids.length === 25 && QUOTE_ONLY.every((id) => ids.includes(id)));
+check(`montant encaissé = prix du catalogue pour les ${orderable.length} offres et prestations commandables en ligne`, orderable.length === 22 && mismatches.length === 0, JSON.stringify(mismatches) + ` (${orderable.length} identifiants)`);
+
+console.log('\n== Offres sur devis uniquement (Prototype MVP, SaaS Standard, SaaS Premium)');
+const beforeQuote = fakeState();
+const quoteRefused = [];
+let qip = 10;
+for (const id of QUOTE_ONLY) {
+  for (const body of [
+    { offerId: id, provider: 'mollie', customer },
+    { offerId: id, provider: 'stripe' },
+    { offerId: id },
+    { offerId: id, provider: 'paypal', customer },
+    { offerId: id, provider: ['mollie'], customer },
+    { offerId: id, provider: 'MOLLIE', customer },
+    // Tentatives de contournement par les paramètres : le serveur n'en lit aucun autre que l'identifiant.
+    { offerId: id, provider: 'mollie', customer, amount: 1, price: 100, priceId: 'price_x', price_data: { unit_amount: 100 }, quoteOnly: false },
+  ]) {
+    const res = await co(body, `10.5.${qip++}.1`);
+    const json = await res.json().catch(() => ({}));
+    if (res.status !== 403 || typeof json.error !== 'string' || json.url) quoteRefused.push(`${id} ${JSON.stringify(Object.keys(body))}: ${res.status}`);
+  }
+}
+const afterQuote = fakeState();
+check('3 offres x 7 types de requête (Mollie, Stripe, sans moyen, autres prestataires, paramètres falsifiés) → 403 sans adresse de paiement', quoteRefused.length === 0, JSON.stringify(quoteRefused));
+check('aucun paiement créé pour ces refus', Object.keys(afterQuote.payments).length === Object.keys(beforeQuote.payments).length);
+check('aucun appel à Mollie ni à Stripe pour ces refus', afterQuote.calls.length === beforeQuote.calls.length, JSON.stringify(afterQuote.calls.slice(beforeQuote.calls.length)));
+
+// Identifiants approchants : refusés comme offre inconnue (liste blanche stricte), jamais acceptés.
+const variants = ['PROTOTYPE-MVP', ' prototype-mvp', 'prototype-mvp ', 'prototype-mvp\u0000', 'saas-standard/', 'Saas-Premium', ['prototype-mvp'], { id: 'prototype-mvp' }, null];
+const variantStatus = [];
+for (const v of variants) variantStatus.push((await co({ offerId: v, provider: 'mollie', customer }, `10.6.${qip++}.1`)).status);
+const afterVariants = fakeState();
+check('identifiants approchants (casse, espaces, tableau, objet, null) → 400 offre inconnue', variantStatus.every((x) => x === 400), JSON.stringify(variantStatus));
+check('aucun appel à Mollie ni à Stripe pour ces variantes', afterVariants.calls.length === afterQuote.calls.length && Object.keys(afterVariants.payments).length === Object.keys(afterQuote.payments).length);
+
+// Les autres offres restent commandables, et le montant ne vient jamais de la requête.
+const callsBeforeOthers = fakeState().calls.length;
+r = await co({ offerId: 'site-vitrine', provider: 'mollie', customer, amount: 1, price: 100, priceId: 'price_x' }, '10.7.0.1');
+const vitrine = Object.values(fakeState().payments).at(-1);
+check('Site vitrine reste commandable (200) et le montant de la requête est ignoré', r.status === 200 && vitrine.amount.value === (prices['site-vitrine'] / 100).toFixed(2), `${r.status} ${vitrine?.amount?.value}`);
+check('Landing page reste commandable', (await co({ offerId: 'landing-page', provider: 'mollie', customer }, '10.7.1.1')).status === 200);
+check('une prestation à la carte reste commandable', (await co({ offerId: 'audit-ia', provider: 'mollie', customer }, '10.7.2.1')).status === 200);
+check('ces commandes passent bien par Mollie, pas par Stripe', fakeState().calls.slice(callsBeforeOthers).every((c) => c.api === 'mollie'));
+
+console.log('\n== Stripe fermé aux nouvelles commandes (offre commandable)');
+{
+  const stripeCalls = () => fakeState().calls.filter((c) => c.api === 'stripe').length;
+  const before = stripeCalls();
+  const nb = Object.keys(fakeState().payments).length;
+  let res = await co({ offerId: 'landing-page', provider: 'stripe' }, '10.8.0.1');
+  const j = await res.json();
+  check('demande Stripe → 403 et message clair', res.status === 403 && j.error === 'Ce moyen de paiement est temporairement indisponible.', `(reçu ${res.status} ${JSON.stringify(j)})`);
+  res = await co({ offerId: 'landing-page' }, '10.8.0.2');
+  check('demande sans moyen de paiement → 403 (jamais Stripe par défaut)', res.status === 403, `(reçu ${res.status})`);
+  res = await co({ offerId: 'landing-page', provider: 'paypal' }, '10.8.0.3');
+  check('prestataire inconnu → 403, pas de repli sur Stripe', res.status === 403, `(reçu ${res.status})`);
+  check('aucun appel à l’API Stripe (SDK Stripe verrouillé par le garde-fou)', stripeCalls() === before, JSON.stringify(fakeState().calls.filter((c) => c.api === 'stripe')));
+  check('aucun appel sortant inattendu pendant toute la suite', !fakeState().calls.some((c) => c.api === 'externe'), JSON.stringify(fakeState().calls.filter((c) => c.api === 'externe')));
+  res = await co({ offerId: 'landing-page', provider: 'mollie', customer }, '10.8.0.4');
+  check('Mollie fonctionne toujours', res.status === 200 && Object.keys(fakeState().payments).length === nb + 1);
+}
 
 setFake((s) => { s.failNext = true; });
 r = await co({ offerId: 'site-vitrine', provider: 'mollie', customer }, '10.4.0.1');

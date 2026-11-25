@@ -8,6 +8,7 @@
 import { spawn } from 'node:child_process';
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
+import net from 'node:net';
 
 const KEY = process.env.MOLLIE_TEST_API_KEY || '';
 if (!KEY.startsWith('test_')) {
@@ -17,7 +18,14 @@ if (!KEY.startsWith('test_')) {
 const ROOT = new URL('..', import.meta.url).pathname;
 if (!existsSync(join(ROOT, '.next', 'BUILD_ID'))) { console.error('Lancez d’abord « npm run build ».'); process.exit(1); }
 
-const PORT = 3191;
+const PORT = Number(process.env.TEST_MOLLIE_PORT || 3191);
+// Un port déjà occupé ferait envoyer la commande à un autre serveur (peut-être avec de vraies clés).
+const free = await new Promise((resolve) => {
+  const srv = net.createServer();
+  srv.once('error', () => resolve(false));
+  srv.listen(PORT, '127.0.0.1', () => srv.close(() => resolve(true)));
+});
+if (!free) { console.error(`Le port ${PORT} est déjà utilisé : arrêt (variable TEST_MOLLIE_PORT pour en changer).`); process.exit(1); }
 const wait = (ms) => new Promise((r) => setTimeout(r, ms));
 const app = spawn(join(ROOT, 'node_modules', '.bin', 'next'), ['start', '-p', String(PORT)], {
   cwd: ROOT,
@@ -27,9 +35,11 @@ const app = spawn(join(ROOT, 'node_modules', '.bin', 'next'), ['start', '-p', St
 });
 const stop = () => { try { app.kill(); } catch {} };
 process.on('exit', stop);
+let appExited = false;
+app.on('exit', () => { appExited = true; });
 
 let ok = false;
-for (let i = 0; i < 80 && !ok; i++) { await wait(250); try { ok = (await fetch(`http://127.0.0.1:${PORT}/robots.txt`)).ok; } catch {} }
+for (let i = 0; i < 80 && !ok && !appExited; i++) { await wait(250); try { ok = (await fetch(`http://127.0.0.1:${PORT}/robots.txt`)).ok; } catch {} }
 if (!ok) { console.error('Le serveur n’a pas démarré.'); process.exit(1); }
 
 const catalogue = readFileSync(join(ROOT, 'lib', 'offers.ts'), 'utf8');

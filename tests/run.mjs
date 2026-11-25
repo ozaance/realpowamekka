@@ -1,8 +1,9 @@
 // Lance les tests d'intégration de bout en bout, sans aucun appel réel :
-// faux Resend, faux Mollie et Stripe bloqué (tests/fake-payments.mjs).
+// faux Resend, faux Mollie et réseau sortant verrouillé (tests/fake-payments.mjs).
 // Prérequis : un build de production (npm run build).
 // Usage : npm run test:integration
-import { spawn } from 'node:child_process';
+import { spawn, spawnSync } from 'node:child_process';
+import net from 'node:net';
 import { existsSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -18,6 +19,20 @@ if (!existsSync(join(ROOT, '.next', 'BUILD_ID'))) {
   process.exit(1);
 }
 
+/** Un port déjà occupé par un autre serveur ferait tourner les tests contre CE serveur. */
+const portIsFree = (port) =>
+  new Promise((resolve) => {
+    const srv = net.createServer();
+    srv.once('error', () => resolve(false));
+    srv.listen(port, '127.0.0.1', () => srv.close(() => resolve(true)));
+  });
+for (const [port, nom] of [[APP_PORT, 'TEST_APP_PORT'], [MOCK_PORT, 'MOCK_RESEND_PORT']]) {
+  if (!(await portIsFree(port))) {
+    console.error(`Le port ${port} est déjà utilisé : arrêt, pour ne pas tester un autre serveur (variable ${nom} pour en changer).`);
+    process.exit(1);
+  }
+}
+
 writeFileSync(STATE, JSON.stringify({ payments: {}, calls: [], failNext: false }));
 
 // Valeurs de test imposées : elles priment sur un éventuel .env.local.
@@ -29,9 +44,22 @@ const env = {
   MOLLIE_API_KEY: 'test_fake',
   STRIPE_SECRET_KEY: 'sk_test_fake',
   STRIPE_WEBHOOK_SECRET: 'whsec_test_fake',
+  // Résultats indépendants de .env.local et de l'environnement de l'appelant.
+  NEXT_PUBLIC_SITE_URL: 'https://www.powamekka.com',
+  VERCEL_URL: '',
+  VERCEL_BRANCH_URL: '',
   FAKE_PAYMENTS_STATE: STATE,
   NODE_OPTIONS: `--import ${join(ROOT, 'tests', 'fake-payments.mjs')}`,
 };
+
+// Le garde-fou réseau est testé avant le site : s'il ne bloque pas tout, rien ne démarre.
+const garde = spawnSync('node', ['--import', join(ROOT, 'tests', 'fake-payments.mjs'), join(ROOT, 'tests', 'garde-fous.mjs')], { cwd: ROOT, stdio: 'inherit', env });
+if (garde.status !== 0) {
+  console.error('Le garde-fou réseau est en échec : les tests ne sont pas lancés.');
+  rmSync(STATE, { force: true });
+  process.exit(1);
+}
+writeFileSync(STATE, JSON.stringify({ payments: {}, calls: [], failNext: false }));
 
 const children = [];
 const start = (cmd, args, extraEnv) => {
@@ -46,10 +74,12 @@ process.on('SIGINT', () => { stopAll(); process.exit(130); });
 start('node', [join(ROOT, 'tests', 'mock-resend.mjs')], { ...process.env, MOCK_RESEND_PORT: String(MOCK_PORT) });
 const app = start(join(ROOT, 'node_modules', '.bin', 'next'), ['start', '-p', String(APP_PORT)], env);
 let appLog = '';
+let appExited = false;
 app.stdout.on('data', (b) => (appLog += b)); app.stderr.on('data', (b) => (appLog += b));
+app.on('exit', () => { appExited = true; });
 
 let ready = false;
-for (let i = 0; i < 80 && !ready; i++) {
+for (let i = 0; i < 80 && !ready && !appExited; i++) {
   await wait(250);
   try { ready = (await fetch(`http://127.0.0.1:${APP_PORT}/robots.txt`)).ok && (await fetch(`http://127.0.0.1:${MOCK_PORT}/__state`, { method: 'POST' })).ok; } catch {}
 }
