@@ -119,3 +119,17 @@
   .mm-trigger { padding: 8px 8px; }
   .cn-nav-cta, .nav-cta { padding: 8px 8px; }
 }
+
+/* Bouton de la navigation : libellé complet, raccourci quand la place manque
+   (même action, même lien). Mesuré : la barre tient de 320 à 1440 px.
+   - accueil : sous 640 px ;
+   - pages internes : sous 1080 px, leur barre ayant plus de liens. */
+.cta-short { display: none; }
+@media (max-width: 640px) {
+  .cta-long { display: none; }
+  .cta-short { display: inline; }
+}
+@media (max-width: 1080px) {
+  .nav-cta .cta-long { display: none; }
+  .nav-cta .cta-short { display: inline; }
+}
