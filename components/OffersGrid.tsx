@@ -3,6 +3,27 @@ import { useCallback, useState } from 'react';
 import type { OfferView } from '@/lib/offers';
 import CheckoutDialog, { type CheckoutItem } from './CheckoutDialog';
 
+/* Offres à partir de 2 500 € : on en parle d'abord. Le bouton principal ouvre
+   WhatsApp avec le nom de l'offre ; « Commander » reste possible en second.
+   Liste explicite : les autres offres ne changent pas. */
+const TALK_FIRST = new Set(['prototype-mvp', 'saas-standard', 'saas-premium']);
+
+const TALK_BUTTON = {
+  borderRadius: 18,
+  flex: '1 1 100%',
+  justifyContent: 'center',
+  textAlign: 'center',
+  whiteSpace: 'normal',
+  paddingLeft: 18,
+  paddingRight: 18,
+} as const;
+
+function firstCallLink(offerName: string) {
+  return `https://wa.me/33605715122?text=${encodeURIComponent(
+    `Bonjour, je souhaite un premier échange au sujet de votre offre ${offerName}.`,
+  )}`;
+}
+
 export default function OffersGrid({
   offers,
   canceled,
@@ -132,14 +153,39 @@ export default function OffersGrid({
               {offer.delivery}
             </p>
 
-            <button
-              type="button"
-              className="btn"
-              onClick={() => setSelected(offer)}
-              style={{ alignSelf: 'flex-start', borderRadius: 18, border: 'none', cursor: 'pointer' }}
-            >
-              Commander <span className="ar">→</span>
-            </button>
+            {TALK_FIRST.has(offer.id) ? (
+              /* Les deux boutons occupent la largeur de la carte et le libellé
+                 peut passer à la ligne : la carte ne fait que 214 px de large
+                 à l'intérieur sur un écran de 320 px. */
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
+                <a
+                  className="btn"
+                  href={firstCallLink(offer.name)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={TALK_BUTTON}
+                >
+                  Demander un premier échange <span className="ar">→</span>
+                </a>
+                <button
+                  type="button"
+                  className="btn ghost"
+                  onClick={() => setSelected(offer)}
+                  style={{ ...TALK_BUTTON, cursor: 'pointer' }}
+                >
+                  Commander <span className="ar">→</span>
+                </button>
+              </div>
+            ) : (
+              <button
+                type="button"
+                className="btn"
+                onClick={() => setSelected(offer)}
+                style={{ alignSelf: 'flex-start', borderRadius: 18, border: 'none', cursor: 'pointer' }}
+              >
+                Commander <span className="ar">→</span>
+              </button>
+            )}
           </div>
         ))}
       </div>
