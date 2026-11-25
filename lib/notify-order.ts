@@ -28,7 +28,7 @@ export async function notifyOrder(order: PaidOrder) {
     ['Montant', order.amount],
     ['Paiement', order.provider],
     ['Client', order.name],
-    ['Email', order.email || '—'],
+    ['Email', order.email || 'Non renseigné'],
     ['Téléphone', order.phone],
     ['Entreprise', order.company],
   ];
@@ -36,11 +36,11 @@ export async function notifyOrder(order: PaidOrder) {
   return sendMail({
     idempotencyKey: `commande-payee/${order.provider}/${order.reference}`,
     replyTo: order.email || undefined,
-    subject: `Commande payée — ${order.offerName} (${order.amount})`,
+    subject: `Commande payée : ${order.offerName} (${order.amount})`,
     html: `
       <div style="font-family:sans-serif;max-width:600px;margin:0 auto;padding:32px">
         <h2 style="color:#1c1813;margin-bottom:8px">Nouvelle commande payée</h2>
-        <p style="color:#888;font-size:13px;margin-bottom:32px">Via powamekka.com — ${escapeHtml(order.reference)}</p>
+        <p style="color:#888;font-size:13px;margin-bottom:32px">Via powamekka.com, référence ${escapeHtml(order.reference)}</p>
         <table style="width:100%;border-collapse:collapse">
           ${rows
             .map(
