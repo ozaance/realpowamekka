@@ -85,12 +85,12 @@ export const faqSections: FaqSection[] = [
       {
         question: 'Combien coûte un site internet pour une PME ?',
         answer:
-          "Une landing page, page unique pensée pour convertir, coûte 149 €. Un site vitrine de 3 à 5 pages coûte 499 €. Ces tarifs sont affichés et se règlent en ligne. Les projets sur mesure, comme une application métier, sont chiffrés après un premier échange.",
+          "Les tarifs de nos offres web, de la landing page (une page unique pensée pour convertir) au site vitrine de 3 à 5 pages, sont affichés sur la page Offres. Les projets sur mesure, comme une application métier, sont chiffrés après un premier échange.",
       },
       {
         question: 'En combien de temps un site est-il livré ?',
         answer:
-          "Une landing page est livrée sous 24 heures, un site vitrine en 5 jours, à compter de la réception de vos informations : contenus, logo, références. Le délai dépend donc en partie de la rapidité avec laquelle vous nous transmettez ces éléments.",
+          "Le délai de livraison est confirmé après un premier cadrage de votre projet. Il dépend aussi de la rapidité avec laquelle vous nous transmettez vos informations : contenus, logo, références.",
       },
       {
         question: 'Peut-on commander et payer en ligne ?',
