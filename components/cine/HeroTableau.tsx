@@ -45,8 +45,8 @@ const HERO_CONTENT = (
       plus claires.
     </h1>
     <p className="cn-hero-lede">
-      Powamekka prend en charge la gestion du quotidien — opérations, données,
-      automatisations — pour que vous puissiez diriger.
+      Powamekka prend en charge la gestion du quotidien, des opérations aux
+      données et aux automatisations, pour que vous puissiez diriger.
     </p>
     <div className="cn-hero-actions">
       <a
@@ -283,7 +283,7 @@ export default function HeroTableau() {
 
         {/* Légende de musée, avant l'entrée dans le tableau */}
         <motion.div className="cn-hero-caption" style={{ opacity: captionOpacity }}>
-          <span className="l">Powamekka — Atelier des systèmes</span>
+          <span className="l">Powamekka, atelier des systèmes</span>
           <span className="cn-scroll-hint" aria-hidden="true">
             <i />
           </span>

@@ -106,7 +106,13 @@ export default function OffersGrid({
                     gap: 10,
                   }}
                 >
-                  <span style={{ color: 'var(--gold)', flexShrink: 0 }}>—</span>
+                  {/* Puce sur la largeur de l'ancien tiret (1,059 em) : mêmes retours à la ligne. */}
+                  <span
+                    style={{ color: 'var(--gold)', flexShrink: 0, width: '1.05903em', textAlign: 'center' }}
+                    aria-hidden="true"
+                  >
+                    •
+                  </span>
                   {feature}
                 </li>
               ))}

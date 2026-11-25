@@ -7,7 +7,7 @@ import { formatPrice } from '@/lib/offers';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Commande confirmée — Powamekka',
+  title: 'Commande confirmée | Powamekka',
   description: 'Confirmation de votre commande Powamekka.',
   robots: { index: false, follow: false },
 };

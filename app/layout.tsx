@@ -68,7 +68,7 @@ const spaceMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "POWAMEKKA — Agence IA & Systèmes Digitaux pour PME",
+  title: "POWAMEKKA | Agence IA & Systèmes Digitaux pour PME",
   description:
     "Powamekka aide les dirigeants de PME à automatiser leurs tâches administratives et intégrer l'IA. Audit, systèmes et formation. Basé à Rouen, partout en France.",
   keywords: [
@@ -91,7 +91,7 @@ export const metadata: Metadata = {
     locale: "fr_FR",
     url: "https://www.powamekka.com",
     siteName: "Powamekka",
-    title: "POWAMEKKA — Agence IA & Systèmes Digitaux pour PME",
+    title: "POWAMEKKA | Agence IA & Systèmes Digitaux pour PME",
     description:
       "Powamekka aide les dirigeants à automatiser leurs opérations et intégrer l'IA pour diriger avec clarté. Audit, systèmes, formation.",
     images: [
@@ -99,13 +99,13 @@ export const metadata: Metadata = {
         url: "/og-image.jpg",
         width: 1200,
         height: 630,
-        alt: "Powamekka — Agence IA & Systèmes Digitaux",
+        alt: "Powamekka : Agence IA & Systèmes Digitaux",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "POWAMEKKA — Agence IA & Systèmes Digitaux pour PME",
+    title: "POWAMEKKA | Agence IA & Systèmes Digitaux pour PME",
     description:
       "Automatisation, IA et systèmes digitaux pour les dirigeants de PME. Basé à Rouen, intervient partout en France.",
     images: ["/og-image.jpg"],

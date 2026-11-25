@@ -7,12 +7,12 @@ import { jsonLdScript, offerCatalogJsonLd } from '@/lib/schema';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Offres & tarifs — Sites web sur mesure | Powamekka',
+  title: 'Offres & tarifs : sites web sur mesure | Powamekka',
   description:
     'Landing page, site vitrine, prototype MVP et applications SaaS sur mesure. Tarifs clairs, commande en ligne et paiement sécurisé par Mollie.',
   alternates: { canonical: '/offres' },
   openGraph: {
-    title: 'Offres & tarifs — Powamekka',
+    title: 'Offres & tarifs | Powamekka',
     description:
       'Landing page, site vitrine, prototype MVP et applications SaaS sur mesure. Tarifs clairs et paiement sécurisé.',
     url: 'https://www.powamekka.com/offres',

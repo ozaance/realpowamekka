@@ -198,7 +198,7 @@ function Slide({
       <div className="cn-slide-veil" />
       <motion.div className="cn-slide-body" style={{ opacity: textOpacity }}>
         <div className="cn-slide-no">
-          {data.no} — Discipline
+          Discipline {data.no}
         </div>
         <h3 className="cn-slide-title">{data.title}</h3>
         <p className="cn-slide-lede">{data.lede}</p>
