@@ -8,11 +8,6 @@
  *
  * Montants en centimes d'euro, HT. Le TTC est calculé (TVA 20 %) et vérifié
  * contre la grille de référence fournie.
- *
- * Restent à fournir avant branchement :
- * - la grille des prestations à la carte ;
- * - le périmètre de la maintenance ;
- * - le moment de chaque échéance de paiement (à la commande, à la livraison…).
  */
 
 /** Taux de TVA facturé, en pourcentage. */
@@ -23,88 +18,152 @@ export function toTTC(centsHT: number): number {
   return Math.round((centsHT * (100 + VAT_RATE_PERCENT)) / 100);
 }
 
-/** Une échéance de paiement : part du prix, et moment où elle est due. */
-export type Tranche = {
-  percent: number;
-  /** null tant que le moment de l'échéance n'a pas été précisé. */
-  due: string | null;
-};
+const eurWhole = new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 });
+const eurCents = new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', minimumFractionDigits: 2 });
+
+/** « 1 188 € » ou « 274,80 € » : centimes affichés seulement s'ils existent. */
+export function formatEuros(cents: number): string {
+  return (cents % 100 === 0 ? eurWhole : eurCents).format(cents / 100);
+}
+
+/** Libellés sans ambiguïté, prêts à afficher : « 390 € HT » et « 468 € TTC ». */
+export function priceLabels(centsHT: number): { ht: string; ttc: string } {
+  return { ht: `${formatEuros(centsHT)} HT`, ttc: `${formatEuros(toTTC(centsHT))} TTC` };
+}
+
+/* ------------------------------------------------------------------ */
+/* Paiements                                                           */
+/* ------------------------------------------------------------------ */
+
+/** Une échéance de paiement : part du prix et moment où elle est due. */
+export type Tranche = { percent: number; due: string };
+
+const AT_ORDER = 'à la commande';
+
+/** Règle commune aux projets en plusieurs échéances. */
+export const FINAL_PAYMENT_RULE =
+  'Le dernier paiement est encaissé avant la mise en production et la remise des accès définitifs.';
+
+const PROJECT_40_40_20: Tranche[] = [
+  { percent: 40, due: AT_ORDER },
+  { percent: 40, due: 'après validation de la conception' },
+  { percent: 20, due: 'avant livraison finale' },
+];
+
+/* ------------------------------------------------------------------ */
+/* Offres principales                                                  */
+/* ------------------------------------------------------------------ */
 
 export type GridOffer = {
   /** Identifiant de l'offre dans `lib/offers.ts`. */
   id: 'landing-page' | 'site-vitrine' | 'prototype-mvp' | 'saas-standard' | 'saas-premium';
   priceHT: number;
   schedule: Tranche[];
-  /** Hébergement inclus, le cas échéant. */
+  /** Mois d'hébergement inclus, le cas échéant. */
   hostingIncludedMonths?: number;
 };
 
-/** Hébergement après la période incluse (Landing page et Site vitrine). */
-export const HOSTING_AFTER_INCLUDED = {
-  monthlyHT: 14900,
-  fromMonth: 13,
-} as const;
-
-/** Mention à faire figurer quand les coûts tiers ne sont pas inclus. */
-export const THIRD_PARTY_EXCLUSION =
-  'Coûts des services tiers (nom de domaine, API, abonnements) non inclus, sauf mention contraire.';
-
 export const GRID_2026: GridOffer[] = [
-  {
-    id: 'landing-page',
-    priceHT: 39000,
-    schedule: [{ percent: 100, due: 'à la commande' }],
-    hostingIncludedMonths: 12,
-  },
+  { id: 'landing-page', priceHT: 39000, schedule: [{ percent: 100, due: AT_ORDER }], hostingIncludedMonths: 12 },
   {
     id: 'site-vitrine',
     priceHT: 99000,
     schedule: [
-      { percent: 50, due: null },
-      { percent: 50, due: null },
+      { percent: 50, due: AT_ORDER },
+      { percent: 50, due: 'avant livraison' },
     ],
     hostingIncludedMonths: 12,
   },
-  {
-    id: 'prototype-mvp',
-    priceHT: 300000,
-    schedule: [
-      { percent: 40, due: null },
-      { percent: 40, due: null },
-      { percent: 20, due: null },
-    ],
-  },
-  {
-    id: 'saas-standard',
-    priceHT: 600000,
-    schedule: [
-      { percent: 40, due: null },
-      { percent: 40, due: null },
-      { percent: 20, due: null },
-    ],
-  },
-  {
-    id: 'saas-premium',
-    priceHT: 1200000,
-    schedule: [
-      { percent: 40, due: null },
-      { percent: 40, due: null },
-      { percent: 20, due: null },
-    ],
-  },
+  { id: 'prototype-mvp', priceHT: 300000, schedule: PROJECT_40_40_20 },
+  { id: 'saas-standard', priceHT: 600000, schedule: PROJECT_40_40_20 },
+  { id: 'saas-premium', priceHT: 1200000, schedule: PROJECT_40_40_20 },
 ];
+
+/* ------------------------------------------------------------------ */
+/* Prestations à la carte                                              */
+/* ------------------------------------------------------------------ */
+
+export type GridService = {
+  /** Identifiant de la prestation dans `lib/offers.ts` (services). */
+  id: string;
+  /** Nom tel qu'il figure dans la grille validée. */
+  gridName: string;
+  priceHT: number;
+};
+
+/** Paiement des prestations à la carte, lorsque le périmètre est défini. */
+export const SERVICE_SCHEDULE: Tranche[] = [{ percent: 100, due: AT_ORDER }];
+
+export const SERVICES_GRID_2026: GridService[] = [
+  // Sites & design
+  { id: 'refonte-site', gridName: "Refonte d'une page existante", priceHT: 39000 },
+  { id: 'design-ui-page', gridName: "Design UI d'une page", priceHT: 25000 },
+  { id: 'optimisation-page-vente', gridName: 'Optimisation page de vente', priceHT: 35000 },
+  { id: 'charte-graphique', gridName: 'Charte graphique express', priceHT: 35000 },
+  { id: 'migration-site', gridName: 'Migration et mise en ligne', priceHT: 25000 },
+  { id: 'maintenance-site', gridName: 'Maintenance de site (1 mois)', priceHT: 22900 },
+  // SEO & visibilité
+  { id: 'optimisation-seo', gridName: 'Optimisation SEO', priceHT: 29000 },
+  { id: 'pack-seo-local', gridName: 'Pack SEO local', priceHT: 25000 },
+  { id: 'google-business', gridName: 'Optimisation Google Business', priceHT: 15000 },
+  { id: 'redaction-seo', gridName: 'Rédaction de 5 pages SEO', priceHT: 49000 },
+  { id: 'strategie-instagram', gridName: 'Stratégie de contenu Instagram', priceHT: 29000 },
+  // IA & automatisation
+  { id: 'audit-ia', gridName: "Audit IA d'entreprise", priceHT: 20500 },
+  { id: 'plan-automatisation', gridName: "Plan d'automatisation", priceHT: 29000 },
+  { id: 'chatbot-ia-basique', gridName: 'Chatbot IA basique', priceHT: 39000 },
+  { id: 'integration-chatbot', gridName: "Intégration d'un chatbot", priceHT: 29000 },
+  { id: 'automatisation-emails', gridName: 'Automatisation e-mails et relances', priceHT: 39000 },
+  { id: 'formation-ia', gridName: 'Formation IA de 2 heures', priceHT: 25000 },
+  // Audit & mesure
+  { id: 'audit-ux', gridName: 'Audit UX et conversion', priceHT: 29000 },
+  { id: 'audit-performance', gridName: 'Audit performance et vitesse', priceHT: 19000 },
+  { id: 'tracking-analytics', gridName: 'Tracking et analytics', priceHT: 29000 },
+];
+
+/* ------------------------------------------------------------------ */
+/* Hébergement et maintenance                                          */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Abonnement après les 12 mois d'hébergement inclus (Landing page, Site
+ * vitrine). Distinct de la prestation ponctuelle « Maintenance de site
+ * (1 mois) » du catalogue à la carte.
+ */
+export const HOSTING_SUBSCRIPTION = {
+  appliesTo: ['landing-page', 'site-vitrine'] as const,
+  includedMonths: 12,
+  fromMonth: 13,
+  monthlyHT: 14900,
+  includes: [
+    'Hébergement',
+    'Suivi technique',
+    'Sauvegardes, lorsque disponibles',
+    "Petites corrections et mises à jour, dans la limite d'une heure par mois",
+    'Support par e-mail',
+  ],
+  excludes: ['Nouvelles fonctionnalités', 'Refontes', 'Licences', 'Noms de domaine', "Consommations d'API"],
+} as const;
+
+/** Mention à faire figurer quand les coûts tiers ne sont pas inclus. */
+export const THIRD_PARTY_EXCLUSION =
+  'Coûts des services tiers (nom de domaine, licences, API) non inclus, sauf mention contraire.';
+
+/* ------------------------------------------------------------------ */
+/* Calculs                                                             */
+/* ------------------------------------------------------------------ */
 
 /**
  * Montants HT et TTC de chaque échéance. La dernière absorbe un éventuel
  * arrondi, pour que la somme des échéances égale exactement le total.
  */
-export function scheduleAmounts(offer: GridOffer): { percent: number; due: string | null; ht: number; ttc: number }[] {
-  const totalTTC = toTTC(offer.priceHT);
+export function scheduleAmounts(priceHT: number, schedule: Tranche[]): { percent: number; due: string; ht: number; ttc: number }[] {
+  const totalTTC = toTTC(priceHT);
   let paidHT = 0;
   let paidTTC = 0;
-  return offer.schedule.map((t, i) => {
-    const last = i === offer.schedule.length - 1;
-    const ht = last ? offer.priceHT - paidHT : Math.round((offer.priceHT * t.percent) / 100);
+  return schedule.map((t, i) => {
+    const last = i === schedule.length - 1;
+    const ht = last ? priceHT - paidHT : Math.round((priceHT * t.percent) / 100);
     const ttc = last ? totalTTC - paidTTC : Math.round((totalTTC * t.percent) / 100);
     paidHT += ht;
     paidTTC += ttc;
