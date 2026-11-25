@@ -1,0 +1,49 @@
+/* ------------------------------------------------------------
+   ACCESSIBILITÉ MOBILE — champs, zones tactiles, petits textes
+   Les tailles « ordinateur » sont reprises telles quelles : rien ne
+   change au-dessus de 760 px avec une souris.
+   ------------------------------------------------------------ */
+
+/* Tailles par défaut, sorties des styles en ligne pour pouvoir les adapter */
+.svc-field { font-size: 14px; }
+.svc-label { font-size: 11px; }
+.offer-badge { font-size: 10px; }
+.offer-note { font-size: 11px; }
+
+/* C2 — champs à 16 px sur mobile et sur tout écran tactile (tablettes
+   comprises) : en dessous, iOS zoome automatiquement à la saisie. */
+@media (max-width: 759px), (pointer: coarse) {
+  .svc-field { font-size: 16px; }
+}
+
+/* I7 — zones tactiles de 44 px de haut sur les liens isolés trop fins.
+   Zone invisible et centrée : l'aspect et la mise en page ne changent pas.
+   Les liens empilés du pied de page (28 px, au-dessus du minimum de 24 px)
+   ne sont pas concernés : une zone de 44 px y chevaucherait le lien voisin. */
+@media (max-width: 759px), (pointer: coarse) {
+  .tap-zone, .blog-back, .foot-bottom a, .cn-slide-link { position: relative; }
+  .tap-zone::before, .blog-back::before, .foot-bottom a::before, .cn-slide-link::before {
+    content: ""; position: absolute; left: 0; right: 0; top: 50%;
+    height: 44px; transform: translateY(-50%);
+  }
+  /* Dernière ligne de la page : la zone remonte au lieu de dépasser sous
+     le pied de page, ce qui ajouterait un défilement vide. */
+  .foot-bottom a::before { top: auto; bottom: 0; transform: none; }
+}
+
+/* M1 — textes de 10 à 11 px qui portent une information, portés à 12 px
+   sur mobile. Les surtitres décoratifs (rubriques, numéros) restent à
+   11 px pour garder la hiérarchie ; la barre de navigation n'est pas
+   concernée (validée dans la PR #22). */
+@media (max-width: 759px) {
+  .svc-label,                 /* libellés du formulaire */
+  .offer-note,                /* délai de livraison des offres */
+  .offer-badge,               /* « Le plus choisi » */
+  .blog-card-cat,             /* catégorie des articles */
+  .foot-col h5,               /* titres de colonnes du pied de page */
+  .foot-bottom,               /* © et adresse e-mail */
+  .cn-slide-link,             /* « Voir la discipline » */
+  .cn-manifeste-label,        /* accueil : « Ce que nous faisons » */
+  .cn-method-step .no,        /* accueil : « 01 — Audit » */
+  .cn-cta-eyebrow { font-size: 12px; } /* accueil : « Parlons de votre entreprise » */
+}

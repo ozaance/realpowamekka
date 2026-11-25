@@ -3,6 +3,22 @@ import { useCallback, useState } from 'react';
 import type { OfferView } from '@/lib/offers';
 import CheckoutDialog, { type CheckoutItem } from './CheckoutDialog';
 
+/* Prototype MVP et SaaS : sur devis uniquement. Pas de commande en ligne ; le
+   bouton ouvre WhatsApp avec une demande de devis pré-remplie au nom de
+   l'offre. Le refus est aussi appliqué côté serveur (API de paiement). */
+const QUOTE_BUTTON = {
+  borderRadius: 18,
+  alignSelf: 'flex-start',
+  whiteSpace: 'normal',
+  textAlign: 'center',
+} as const;
+
+function quoteLink(offerName: string) {
+  return `https://wa.me/33605715122?text=${encodeURIComponent(
+    `Bonjour, je souhaite demander un devis pour votre offre ${offerName}.`,
+  )}`;
+}
+
 export default function OffersGrid({
   offers,
   canceled,
@@ -33,7 +49,7 @@ export default function OffersGrid({
       <div
         style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(min(300px, 100%), 1fr))',
           gap: 1,
           background: 'var(--line)',
           border: '1px solid var(--line)',
@@ -42,6 +58,7 @@ export default function OffersGrid({
         {offers.map((offer) => (
           <div
             key={offer.id}
+            id={offer.id}
             style={{
               background: offer.featured
                 ? 'color-mix(in oklab, var(--plaster) 45%, var(--paper))'
@@ -66,9 +83,9 @@ export default function OffersGrid({
               </h2>
               {offer.featured && (
                 <span
+                  className="offer-badge"
                   style={{
                     fontFamily: 'var(--font-mono)',
-                    fontSize: 10,
                     letterSpacing: '0.12em',
                     textTransform: 'uppercase',
                     color: 'var(--gold)',
@@ -105,16 +122,22 @@ export default function OffersGrid({
                     gap: 10,
                   }}
                 >
-                  <span style={{ color: 'var(--gold)', flexShrink: 0 }}>—</span>
+                  {/* Puce sur la largeur de l'ancien tiret (1,059 em) : mêmes retours à la ligne. */}
+                  <span
+                    style={{ color: 'var(--gold)', flexShrink: 0, width: '1.05903em', textAlign: 'center' }}
+                    aria-hidden="true"
+                  >
+                    •
+                  </span>
                   {feature}
                 </li>
               ))}
             </ul>
 
             <p
+              className="offer-note"
               style={{
                 fontFamily: 'var(--font-mono)',
-                fontSize: 11,
                 letterSpacing: '0.1em',
                 textTransform: 'uppercase',
                 color: 'var(--ink-dim)',
@@ -125,14 +148,26 @@ export default function OffersGrid({
               {offer.delivery}
             </p>
 
-            <button
-              type="button"
-              className="btn"
-              onClick={() => setSelected(offer)}
-              style={{ alignSelf: 'flex-start', borderRadius: 18, border: 'none', cursor: 'pointer' }}
-            >
-              Commander <span className="ar">→</span>
-            </button>
+            {offer.quoteOnly ? (
+              <a
+                className="btn"
+                href={quoteLink(offer.name)}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={QUOTE_BUTTON}
+              >
+                Demander un devis <span className="ar">→</span>
+              </a>
+            ) : (
+              <button
+                type="button"
+                className="btn"
+                onClick={() => setSelected(offer)}
+                style={{ alignSelf: 'flex-start', borderRadius: 18, border: 'none', cursor: 'pointer' }}
+              >
+                Commander <span className="ar">→</span>
+              </button>
+            )}
           </div>
         ))}
       </div>

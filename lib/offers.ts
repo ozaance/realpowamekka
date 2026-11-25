@@ -47,7 +47,7 @@ export const offers: Offer[] = [
     name: 'Landing page',
     tagline: "Une page unique, pensée pour convertir. Le format le plus rapide pour exister en ligne.",
     price: 14900,
-    delivery: 'Livrée en 24h',
+    delivery: 'Délai confirmé après cadrage',
     features: [
       '1 page web professionnelle',
       'Design moderne adapté à votre activité',
@@ -61,7 +61,7 @@ export const offers: Offer[] = [
     name: 'Site vitrine',
     tagline: "Un site complet qui présente votre activité, vos services et votre positionnement.",
     price: 49900,
-    delivery: 'Livré en 5 jours',
+    delivery: 'Délai confirmé après cadrage',
     features: [
       '3 à 5 pages : Accueil, Services, À propos, Contact',
       'Design moderne adapté à votre secteur',
@@ -76,7 +76,7 @@ export const offers: Offer[] = [
     name: 'Prototype MVP',
     tagline: "Une application sur mesure réduite à l'essentiel, pour valider votre idée avant d'investir.",
     price: 250000,
-    delivery: 'Cadrage sous 48h',
+    delivery: 'Délai confirmé après cadrage',
     features: [
       'Application SaaS MVP sur mesure',
       'Fonctionnalités essentielles au lancement',
@@ -90,7 +90,7 @@ export const offers: Offer[] = [
     name: 'SaaS Standard',
     tagline: "Une application métier complète, conçue autour de vos processus réels.",
     price: 500000,
-    delivery: 'Cadrage sous 48h',
+    delivery: 'Délai confirmé après cadrage',
     features: [
       'Développement sur mesure',
       'Interface moderne et fonctionnalités personnalisées',
@@ -104,7 +104,7 @@ export const offers: Offer[] = [
     name: 'SaaS Premium',
     tagline: "Le format le plus large : périmètre étendu, intégrations et accompagnement renforcé.",
     price: 1000000,
-    delivery: 'Cadrage sous 48h',
+    delivery: 'Délai confirmé après cadrage',
     features: [
       'Développement sur mesure, périmètre étendu',
       'Intégrations avec vos outils existants',
@@ -144,6 +144,18 @@ export const services: Service[] = [
   { id: 'audit-performance', category: 'audit', name: 'Audit performance & vitesse', tagline: 'Un diagnostic de la vitesse de votre site et les leviers pour l’accélérer.', price: 20500, priceId: 'price_1U3zgzAmS2hPu7V998tgeKaQ' },
   { id: 'tracking-analytics', category: 'audit', name: 'Tracking & analytics', tagline: 'Des mesures fiables pour savoir d’où viennent vos clients et ce qu’ils font.', price: 23900, priceId: 'price_1UH3stAmS2hPu7V9MYFoaFtZ' },
 ];
+
+/**
+ * Offres vendues uniquement sur devis : jamais de commande ni de paiement en
+ * ligne. Facturées en trois échéances (40 %, 40 %, 20 %) par facture et lien
+ * de paiement, hors du site. Liste serveur unique : elle commande à la fois le
+ * refus dans l'API de paiement et l'affichage du bouton « Demander un devis ».
+ */
+const QUOTE_ONLY_IDS: ReadonlySet<string> = new Set(['prototype-mvp', 'saas-standard', 'saas-premium']);
+
+export function isQuoteOnly(id: string): boolean {
+  return QUOTE_ONLY_IDS.has(id);
+}
 
 /** Variable d'environnement de surcharge pour une offre donnée. */
 function envPriceKey(id: string): string {
@@ -187,6 +199,8 @@ export type OfferView = {
   delivery: string;
   features: string[];
   featured: boolean;
+  /** Vendue sur devis uniquement : pas de commande en ligne. */
+  quoteOnly: boolean;
 };
 
 export function getOfferViews(): OfferView[] {
@@ -198,6 +212,7 @@ export function getOfferViews(): OfferView[] {
     delivery: o.delivery,
     features: o.features,
     featured: o.featured ?? false,
+    quoteOnly: isQuoteOnly(o.id),
   }));
 }
 

@@ -13,7 +13,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const post = await getPost(slug);
   return {
-    title: `${post.title} — Powamekka`,
+    title: `${post.title} | Powamekka`,
     description: post.description,
     alternates: { canonical: `/blog/${slug}` },
     openGraph: {
@@ -22,7 +22,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       url: `/blog/${slug}`,
       type: 'article',
       publishedTime: post.date,
-      images: [{ url: '/og-image.png', width: 1200, height: 630, alt: post.title }],
+      images: [{ url: '/og-image.jpg', width: 1200, height: 630, alt: post.title }],
     },
   };
 }
@@ -70,7 +70,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
         </article>
         <div className="blog-post-cta">
           <p>{cta.text}</p>
-          <a href={`https://wa.me/33605715122?text=${encodeURIComponent(cta.message)}`} target="_blank" rel="noopener noreferrer" className="btn" style={{ borderRadius: 18 }}>Demander un audit gratuit →</a>
+          <a href={`https://wa.me/33605715122?text=${encodeURIComponent(cta.message)}`} target="_blank" rel="noopener noreferrer" className="btn" style={{ borderRadius: 18 }}>Demander un premier échange →</a>
         </div>
       </main>
       <Footer />

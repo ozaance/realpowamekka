@@ -1,0 +1,135 @@
+/* ------------------------------------------------------------
+   MENU MOBILE — partagé par CineNav (accueil) et Navbar (pages internes)
+   Le bouton n'apparaît que là où les liens de la barre sont masqués.
+   ------------------------------------------------------------ */
+.mm-trigger,
+.mm-close {
+  font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+  color: inherit; background: transparent; border: 1px solid currentColor; border-radius: 18px;
+  padding: 9px 15px; cursor: pointer; line-height: 1.2; white-space: nowrap;
+  transition: background 0.3s, color 0.3s, border-color 0.3s;
+}
+.mm-trigger { display: none; margin-left: auto; margin-right: 12px; }
+.mm-trigger:hover,
+.mm-close:hover { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+/* Sur le tableau plein écran de l'accueil, la barre est claire : le survol aussi */
+.cn-nav[data-over-art="true"] .mm-trigger:hover { background: #fff; color: var(--ink); border-color: #fff; }
+
+@media (max-width: 920px) { .cn-nav .mm-trigger { display: inline-flex; } }
+@media (max-width: 980px) {
+  .v-nav .mm-trigger { display: inline-flex; }
+  /* Conteneur des liens, vide sous 980 px mais resté affiché (sa règle
+     « .v-nav.barre .center » l'emporte sur celle qui le masque) : il
+     réservait ~48 px de marge et de gaps dans la barre. */
+  .v-nav.barre .center { display: none; }
+}
+/* Petits écrans : la barre (marque + Menu + « Demander un audit ») doit tenir
+   sans déborder. Sur les pages internes, la barre touchait aussi les bords. */
+@media (max-width: 540px) {
+  .mm-trigger { font-size: 10.5px; padding: 8px 12px; margin-right: 0; }
+  .cn-nav { gap: 10px; }
+  .navbar { padding: 0 18px; }
+}
+@media (max-width: 380px) {
+  .cn-nav-wm, .brand .wm { font-size: 12px; letter-spacing: 0.04em; padding-left: 0.04em; }
+  .mm-trigger { padding: 8px 10px; }
+  .cn-nav-cta, .nav-cta { padding: 8px 10px; }
+}
+
+.mm-panel {
+  position: fixed; inset: 0; z-index: 200;
+  display: flex; flex-direction: column;
+  padding: 0 var(--pad) max(28px, env(safe-area-inset-bottom));
+  background: var(--paper); color: var(--ink);
+  overflow-y: auto; overscroll-behavior: contain;
+}
+.mm-top {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 0; border-bottom: 1px solid var(--line);
+}
+.mm-top-wm {
+  font-family: var(--font-display); font-weight: 500; font-size: 14px;
+  letter-spacing: 0.18em; padding-left: 0.18em;
+}
+.mm-body { flex: 1; padding: 10px 0 6px; }
+.mm-list { list-style: none; margin: 0; padding: 0; }
+.mm-list li { position: relative; }
+/* fil d'or entre les entrées */
+.mm-list li::after {
+  content: ""; position: absolute; left: 0; bottom: 0; width: 100%; height: 1px;
+  background: linear-gradient(90deg, var(--gold), transparent 72%); opacity: 0.45;
+}
+.mm-list a {
+  display: block; padding: 10px 0; color: var(--ink);
+  font-family: var(--font-display); font-weight: 400; font-size: clamp(24px, 6.6vw, 30px); line-height: 1.15;
+  transition: color 0.3s;
+}
+.mm-list a:hover { color: var(--gold); }
+.mm-label {
+  margin: 24px 0 2px; color: var(--gold);
+  font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+}
+.mm-list-sub a { padding: 8px 0; color: var(--ink-soft); font-size: 18px; }
+.mm-cta {
+  display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 18px;
+  position: sticky; bottom: max(16px, env(safe-area-inset-bottom));
+  /* fond plein autour du bouton : le texte qui défile dessous ne le traverse pas */
+  box-shadow: 0 0 0 16px var(--paper), 0 -10px 18px 16px var(--paper);
+  padding: 15px 22px; border-radius: 18px; background: var(--ink); color: var(--paper);
+  font-size: 13px; font-weight: 500; letter-spacing: 0.04em; transition: background 0.3s;
+}
+.mm-cta:hover { background: var(--gold); }
+
+.mm-trigger:focus-visible,
+.mm-close:focus-visible,
+.mm-list a:focus-visible,
+.mm-cta:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .mm-panel { animation: mm-in 0.35s var(--cn-ease-cine, cubic-bezier(0.22, 1, 0.36, 1)) both; }
+  @keyframes mm-in { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: none; } }
+}
+
+/* ------------------------------------------------------------
+   BARRE DE NAVIGATION — proportions, zones tactiles, 320 px
+   ------------------------------------------------------------ */
+/* Logo P (image 506 × 552) : seule la hauteur est fixée par la feuille de
+   style, la largeur doit suivre. Sans cela il restait carré sur ordinateur
+   (27 × 27) et écrasé sur mobile (27 × 22). */
+.brand img { width: auto; }
+
+/* Zones tactiles de 44 px de haut sans changer l'aspect des boutons :
+   une zone invisible, centrée, prolonge la cible au-dessus et en dessous. */
+.brand, .cn-nav-brand, .mm-trigger, .nav-cta, .cn-nav-cta { position: relative; }
+.brand::before, .cn-nav-brand::before,
+.mm-trigger::before, .nav-cta::before, .cn-nav-cta::before {
+  content: ""; position: absolute; left: 0; right: 0; top: 50%;
+  height: 44px; min-width: 44px; transform: translateY(-50%);
+}
+
+/* 320 px : la barre (marque + Menu + « Demander un audit ») dépassait de
+   13 px sur les pages internes et le bouton était coupé de 9 px sur
+   l'accueil. On resserre les espacements, sans masquer ni renommer. */
+@media (max-width: 349px) {
+  .navbar { padding: 0 16px; }
+  .cn-nav { padding-left: 16px; padding-right: 16px; gap: 6px; }
+  .v-nav { gap: 6px; }
+  .brand, .cn-nav-brand { gap: 8px; }
+  .cn-nav-wm, .brand .wm { font-size: 11px; letter-spacing: 0.02em; padding-left: 0.02em; }
+  .mm-trigger { padding: 8px 8px; }
+  .cn-nav-cta, .nav-cta { padding: 8px 8px; }
+}
+
+/* Bouton de la navigation : libellé complet, raccourci quand la place manque
+   (même action, même lien). Mesuré : la barre tient de 320 à 1440 px.
+   - accueil : sous 640 px ;
+   - pages internes : sous 1080 px, leur barre ayant plus de liens. */
+.cta-short { display: none; }
+@media (max-width: 640px) {
+  .cta-long { display: none; }
+  .cta-short { display: inline; }
+}
+@media (max-width: 1080px) {
+  .nav-cta .cta-long { display: none; }
+  .nav-cta .cta-short { display: inline; }
+}

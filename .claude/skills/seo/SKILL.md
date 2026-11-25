@@ -27,12 +27,31 @@ changes, lire `node_modules/next/dist/docs/` avant d'écrire du code** (metadata
 
 ## Déroulé d'un cycle
 
-### 1. Point de départ propre
+### 1. Point de départ propre — vérifier d'abord les PR SEO déjà ouvertes
+
+**Règle (ajoutée le 2026-11-23)** : les cycles des 26/10, 02/11 et 09/11 ont chacun ouvert une PR
+(#10, #11, #12) depuis `main` sans voir les précédentes, encore non fusionnées. Résultat : le même
+article réécrit trois fois et trois PR en conflit. Avant toute création de branche :
 
 ```bash
-git -C /Users/abdoulaye/Powamekka-v2 checkout main && git pull --ff-only
-git checkout -b seo/AAAA-MM-JJ
+git -C /Users/abdoulaye/Powamekka-v2 fetch origin --prune
+# Branches SEO pas encore fusionnées dans main (≈ PR SEO ouvertes) :
+git -C /Users/abdoulaye/Powamekka-v2 branch -r --no-merged origin/main --list 'origin/seo/*'
+# Si gh est disponible, confirmer : gh pr list --state open --search "head:seo/"
 ```
+
+- **Aucune branche SEO en attente** → nouveau cycle normal :
+  ```bash
+  git -C /Users/abdoulaye/Powamekka-v2 checkout main && git pull --ff-only
+  git checkout -b seo/AAAA-MM-JJ
+  ```
+- **Une branche SEO est en attente** → vérifier si le travail du cycle peut s'y ajouter :
+  `git checkout <branche>`, lire son `seo/journal.md` et son `seo/backlog.md` (ils contiennent le
+  travail non fusionné), puis **ajouter un commit sur cette branche** et pousser. La PR existante
+  se met à jour d'elle-même. Ne pas créer de nouvelle PR, ne pas réécrire un article déjà présent
+  dans la branche, et ajouter l'entrée de journal du cycle au-dessus de la précédente.
+- **Plusieurs branches SEO en attente, ou une branche en conflit avec `main`** → ne rien produire
+  de nouveau. Le signaler à Abdoulaye dans le compte rendu : une consolidation humaine est requise.
 
 ### 2. Mesure — d'où on part
 

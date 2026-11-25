@@ -4,8 +4,8 @@ import Footer from '@/components/Footer';
 
 export const metadata: Metadata = {
   alternates: { canonical: '/vision' },
-  title: 'Notre Vision — Powamekka',
-  description: 'Powamekka existe parce que les PME perdent chaque jour des heures sur des tâches que l\'IA peut faire. Nous construisons les systèmes qui rendent ce temps aux dirigeants.',
+  title: 'Notre Vision | Powamekka',
+  description: 'Powamekka existe parce que les PME perdent chaque jour des heures sur des tâches que l\'IA peut faire. Nous construisons les systèmes qui leur rendent ce temps.',
 };
 
 export default function VisionPage() {
@@ -24,7 +24,7 @@ export default function VisionPage() {
 
         {/* CONSTAT */}
         <section style={{ padding: 'clamp(60px,10vh,120px) 0', borderBottom: '1px solid var(--line)' }}>
-          <div className="wrap" style={{ display: 'grid', gridTemplateColumns: '1fr 1.6fr', gap: 'clamp(30px,6vw,80px)', alignItems: 'start' }}>
+          <div className="wrap split split-16" style={{ display: 'grid', gap: 'clamp(30px,6vw,80px)', alignItems: 'start' }}>
             <p style={{ fontFamily: 'var(--font-mono)', fontSize: 11, letterSpacing: '0.16em', textTransform: 'uppercase', color: 'var(--ink-dim)', paddingTop: 8 }}>Le constat</p>
             <div>
               <p style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(20px,2.2vw,28px)', lineHeight: 1.5, color: 'var(--ink)', fontWeight: 400, marginBottom: 24 }}>
@@ -39,7 +39,7 @@ export default function VisionPage() {
 
         {/* POURQUOI POWAMEKKA */}
         <section style={{ padding: 'clamp(60px,10vh,120px) 0', borderBottom: '1px solid var(--line)' }}>
-          <div className="wrap" style={{ display: 'grid', gridTemplateColumns: '1fr 1.6fr', gap: 'clamp(30px,6vw,80px)', alignItems: 'start' }}>
+          <div className="wrap split split-16" style={{ display: 'grid', gap: 'clamp(30px,6vw,80px)', alignItems: 'start' }}>
             <p style={{ fontFamily: 'var(--font-mono)', fontSize: 11, letterSpacing: '0.16em', textTransform: 'uppercase', color: 'var(--ink-dim)', paddingTop: 8 }}>Pourquoi nous</p>
             <div>
               <p style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(20px,2.2vw,28px)', lineHeight: 1.5, color: 'var(--ink)', fontWeight: 400, marginBottom: 24 }}>
@@ -59,7 +59,7 @@ export default function VisionPage() {
         <section style={{ padding: 'clamp(60px,10vh,120px) 0', borderBottom: '1px solid var(--line)' }}>
           <div className="wrap">
             <p style={{ fontFamily: 'var(--font-mono)', fontSize: 11, letterSpacing: '0.16em', textTransform: 'uppercase', color: 'var(--ink-dim)', marginBottom: 48 }}>Ce en quoi nous croyons</p>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 1, background: 'var(--line)', border: '1px solid var(--line)' }}>
+            <div className="grid-3" style={{ display: 'grid', gap: 1, background: 'var(--line)', border: '1px solid var(--line)' }}>
               {[
                 {
                   no: '01',
@@ -95,10 +95,10 @@ export default function VisionPage() {
               Un premier échange suffit pour identifier où votre temps se perd et ce qu'on peut en récupérer.
             </p>
             <div style={{ display: 'flex', gap: 14, justifyContent: 'center', flexWrap: 'wrap' }}>
-              <a href="/services/audit" className="btn" style={{ borderRadius: 18 }}>Demander un audit →</a>
-              <a href="https://wa.me/33605715122" target="_blank" rel="noopener noreferrer"
+              <a href="https://wa.me/33605715122?text=Bonjour%2C%20je%20souhaite%20un%20premier%20%C3%A9change%20au%20sujet%20de%20mon%20entreprise." target="_blank" rel="noopener noreferrer" className="btn" style={{ borderRadius: 18 }}>Demander un premier échange →</a>
+              <a href="/offres"
                 style={{ borderRadius: 18, border: '1px solid var(--ink)', padding: '12px 24px', fontFamily: 'var(--font-mono)', fontSize: 12, letterSpacing: '0.1em', textTransform: 'uppercase', textDecoration: 'none', color: 'var(--ink)', display: 'inline-flex', alignItems: 'center', gap: 8 }}>
-                WhatsApp →
+                Voir les offres et tarifs
               </a>
             </div>
           </div>

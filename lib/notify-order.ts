@@ -1,4 +1,5 @@
-import { Resend } from 'resend';
+import { sendMail } from '@/lib/email';
+import { escapeHtml } from '@/lib/security';
 
 export type PaidOrder = {
   provider: 'Stripe' | 'Mollie';
@@ -12,33 +13,34 @@ export type PaidOrder = {
   dashboardUrl: string;
 };
 
-/** Envoie à contact@powamekka.com le récapitulatif d'une commande payée. */
+/**
+ * Envoie à contact@powamekka.com le récapitulatif d'une commande payée.
+ *
+ * Lève une erreur si l'email n'est pas parti (clé absente ou refus de Resend) :
+ * le webhook appelant répond alors en erreur pour que Stripe / Mollie rejouent
+ * l'événement. La clé d'idempotence, dérivée de la référence du paiement,
+ * garantit qu'un rejeu (ou un événement livré deux fois) n'envoie pas de
+ * doublon pendant 24 h.
+ */
 export async function notifyOrder(order: PaidOrder) {
-  const apiKey = process.env.RESEND_API_KEY;
-  if (!apiKey) {
-    console.error('[webhook] RESEND_API_KEY manquante, notification ignorée');
-    return;
-  }
-
   const rows: [string, string][] = [
     ['Offre', order.offerName],
     ['Montant', order.amount],
     ['Paiement', order.provider],
     ['Client', order.name],
-    ['Email', order.email || '—'],
+    ['Email', order.email || 'Non renseigné'],
     ['Téléphone', order.phone],
     ['Entreprise', order.company],
   ];
 
-  await new Resend(apiKey).emails.send({
-    from: 'Powamekka <onboarding@resend.dev>',
-    to: 'contact@powamekka.com',
+  return sendMail({
+    idempotencyKey: `commande-payee/${order.provider}/${order.reference}`,
     replyTo: order.email || undefined,
-    subject: `Commande payée — ${order.offerName} (${order.amount})`,
+    subject: `Commande payée : ${order.offerName} (${order.amount})`,
     html: `
       <div style="font-family:sans-serif;max-width:600px;margin:0 auto;padding:32px">
         <h2 style="color:#1c1813;margin-bottom:8px">Nouvelle commande payée</h2>
-        <p style="color:#888;font-size:13px;margin-bottom:32px">Via powamekka.com — ${order.reference}</p>
+        <p style="color:#888;font-size:13px;margin-bottom:32px">Via powamekka.com, référence ${escapeHtml(order.reference)}</p>
         <table style="width:100%;border-collapse:collapse">
           ${rows
             .map(
@@ -53,9 +55,4 @@ export async function notifyOrder(order: PaidOrder) {
       </div>
     `,
   });
-}
-
-/** Les coordonnées Mollie sont saisies librement sur le site : on les échappe. */
-function escapeHtml(s: string): string {
-  return s.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
 }

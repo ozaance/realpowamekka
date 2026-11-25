@@ -5,11 +5,19 @@ type Provider = 'stripe' | 'mollie';
 
 export type CheckoutItem = { id: string; name: string; priceLabel: string };
 
+/**
+ * Stripe est masqué (désaccord avec le prestataire) : le parcours passe
+ * directement par Mollie. Le code Stripe (route, webhook, /merci) est conservé,
+ * remettre `true` suffit à réafficher le choix.
+ */
+const STRIPE_ENABLED = false;
+
 const ERROR = "Le paiement n'a pas pu être ouvert. Réessayez ou contactez-nous.";
 
 /**
  * Fenêtre de commande partagée par les offres et les services à la carte :
- * récapitulatif, choix Stripe / Mollie, puis coordonnées si Mollie.
+ * récapitulatif, puis coordonnées et paiement Mollie (choix Stripe / Mollie
+ * réaffiché si STRIPE_ENABLED).
  */
 export default function CheckoutDialog({
   item,
@@ -18,7 +26,9 @@ export default function CheckoutDialog({
   item: CheckoutItem | null;
   onClose: () => void;
 }) {
-  const [provider, setProvider] = useState<Provider | null>(null);
+  // Initialisé à 'mollie' quand Stripe est masqué : évite d'afficher un instant l'écran de choix
+  // avant que l'effet d'ouverture ne s'exécute.
+  const [provider, setProvider] = useState<Provider | null>(STRIPE_ENABLED ? null : 'mollie');
   const [pending, setPending] = useState<Provider | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [customer, setCustomer] = useState({ name: '', email: '', phone: '', company: '' });
@@ -27,7 +37,7 @@ export default function CheckoutDialog({
   // Réinitialise l'étape à chaque ouverture ; les coordonnées saisies sont gardées.
   useEffect(() => {
     if (!item) return;
-    setProvider(null);
+    setProvider(STRIPE_ENABLED ? null : 'mollie');
     setPending(null);
     setError(null);
     panelRef.current?.focus();
@@ -95,16 +105,18 @@ export default function CheckoutDialog({
         {provider !== 'mollie' ? (
           <div className="co-body">
             <p className="co-label">Moyen de paiement</p>
-            <button type="button" className="co-choice" disabled={pending !== null} onClick={() => checkout('stripe')}>
-              <span className="co-choice-name">
-                {pending === 'stripe' ? 'Redirection…' : 'Payer avec Stripe'}
-              </span>
-              <span className="co-choice-note">Carte bancaire, Apple Pay, Google Pay</span>
-              <span className="co-choice-ar" aria-hidden>→</span>
-            </button>
+            {STRIPE_ENABLED && (
+              <button type="button" className="co-choice" disabled={pending !== null} onClick={() => checkout('stripe')}>
+                <span className="co-choice-name">
+                  {pending === 'stripe' ? 'Redirection…' : 'Payer avec Stripe'}
+                </span>
+                <span className="co-choice-note">Carte bancaire, Apple Pay, Google Pay</span>
+                <span className="co-choice-ar" aria-hidden>→</span>
+              </button>
+            )}
             <button type="button" className="co-choice" disabled={pending !== null} onClick={() => setProvider('mollie')}>
               <span className="co-choice-name">Payer avec Mollie</span>
-              <span className="co-choice-note">Carte bancaire, PayPal, Bancontact, virement…</span>
+              <span className="co-choice-note">Carte bancaire, virement, Bancontact, Belfius</span>
               <span className="co-choice-ar" aria-hidden>→</span>
             </button>
           </div>
@@ -125,9 +137,11 @@ export default function CheckoutDialog({
               {pending ? 'Redirection…' : 'Continuer vers Mollie'}
               {!pending && <span className="ar">→</span>}
             </button>
-            <button type="button" className="co-link" disabled={pending !== null} onClick={() => setProvider(null)}>
-              ← Changer de moyen de paiement
-            </button>
+            {STRIPE_ENABLED && (
+              <button type="button" className="co-link" disabled={pending !== null} onClick={() => setProvider(null)}>
+                ← Changer de moyen de paiement
+              </button>
+            )}
           </form>
         )}
 
