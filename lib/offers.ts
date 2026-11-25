@@ -145,6 +145,18 @@ export const services: Service[] = [
   { id: 'tracking-analytics', category: 'audit', name: 'Tracking & analytics', tagline: 'Des mesures fiables pour savoir d’où viennent vos clients et ce qu’ils font.', price: 23900, priceId: 'price_1UH3stAmS2hPu7V9MYFoaFtZ' },
 ];
 
+/**
+ * Offres vendues uniquement sur devis : jamais de commande ni de paiement en
+ * ligne. Facturées en trois échéances (40 %, 40 %, 20 %) par facture et lien
+ * de paiement, hors du site. Liste serveur unique : elle commande à la fois le
+ * refus dans l'API de paiement et l'affichage du bouton « Demander un devis ».
+ */
+const QUOTE_ONLY_IDS: ReadonlySet<string> = new Set(['prototype-mvp', 'saas-standard', 'saas-premium']);
+
+export function isQuoteOnly(id: string): boolean {
+  return QUOTE_ONLY_IDS.has(id);
+}
+
 /** Variable d'environnement de surcharge pour une offre donnée. */
 function envPriceKey(id: string): string {
   return `STRIPE_PRICE_${id.toUpperCase().replace(/-/g, '_')}`;
@@ -187,6 +199,8 @@ export type OfferView = {
   delivery: string;
   features: string[];
   featured: boolean;
+  /** Vendue sur devis uniquement : pas de commande en ligne. */
+  quoteOnly: boolean;
 };
 
 export function getOfferViews(): OfferView[] {
@@ -198,6 +212,7 @@ export function getOfferViews(): OfferView[] {
     delivery: o.delivery,
     features: o.features,
     featured: o.featured ?? false,
+    quoteOnly: isQuoteOnly(o.id),
   }));
 }
 

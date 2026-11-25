@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getStripe } from '@/lib/stripe';
 import { createPayment, toMollieAmount, updatePayment } from '@/lib/mollie';
-import { getOffer } from '@/lib/offers';
+import { getOffer, isQuoteOnly } from '@/lib/offers';
 import { clientIp, rateLimit } from '@/lib/security';
 
 type Offer = NonNullable<ReturnType<typeof getOffer>>;
@@ -73,6 +73,15 @@ export async function POST(req: Request) {
     const offer = getOffer(offerId);
     if (!offer) {
       return NextResponse.json({ error: 'Offre inconnue' }, { status: 400 });
+    }
+
+    // Prototype MVP et SaaS : sur devis uniquement. Refus avant tout appel à
+    // Mollie ou Stripe, quel que soit le moyen de paiement demandé.
+    if (isQuoteOnly(offer.id)) {
+      return NextResponse.json(
+        { error: 'Cette offre se commande sur devis. Demandez un devis depuis la page Offres.' },
+        { status: 403 }
+      );
     }
 
     const origin = resolveOrigin(req);
