@@ -100,7 +100,7 @@ export default async function MerciPage({
                 bien été reçu.{' '}
                 {confirmation.provider === 'Stripe'
                   ? `Un reçu Stripe vient de partir${confirmation.email ? ` sur ${confirmation.email}` : ''}.`
-                  : `Nous vous écrivons${confirmation.email ? ` sur ${confirmation.email}` : ''} sous 24h.`}
+                  : `Nous vous écrivons${confirmation.email ? ` sur ${confirmation.email}` : ''} pour organiser la suite.`}
               </p>
             ) : (
               <p className="lede" style={{ marginBottom: 40 }}>
@@ -140,7 +140,7 @@ export default async function MerciPage({
                 }}
               >
                 {[
-                  'Nous vous contactons sous 24h pour réunir vos informations : contenus, logo, références.',
+                  'Nous vous contactons pour réunir vos informations : contenus, logo, références.',
                   'Le travail démarre dès réception de ces éléments.',
                   'Vous validez une première version avant la mise en ligne.',
                 ].map((step, i) => (

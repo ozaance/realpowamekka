@@ -102,11 +102,11 @@ export default function CTACine() {
         <div className="cn-cta-actions">
           <a
             className="cn-btn-light"
-            href="https://wa.me/33605715122?text=Bonjour%2C%20je%20souhaite%20demander%20un%20audit%20pour%20mon%20entreprise."
+            href="https://wa.me/33605715122?text=Bonjour%2C%20je%20souhaite%20un%20premier%20%C3%A9change%20au%20sujet%20de%20mon%20entreprise."
             target="_blank"
             rel="noopener noreferrer"
           >
-            Demander un audit <span className="ar">→</span>
+            Demander un premier échange <span className="ar">→</span>
           </a>
           <a className="cn-btn-outline" href="mailto:contact@powamekka.com">
             contact@powamekka.com
