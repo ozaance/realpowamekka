@@ -1,0 +1,27 @@
+/* Polices de repli affichées avant le chargement des polices du site
+   (font-display: swap). Métriques reprises à l'identique de celles que
+   next/font/google générait, pour limiter le décalage de mise en page. */
+@font-face {
+  font-family: "Newsreader Fallback";
+  src: local("Times New Roman");
+  ascent-override: 69.68%;
+  descent-override: 25.12%;
+  line-gap-override: 0%;
+  size-adjust: 105.48%;
+}
+@font-face {
+  font-family: "Hanken Grotesk Fallback";
+  src: local("Arial");
+  ascent-override: 99.07%;
+  descent-override: 30.02%;
+  line-gap-override: 0%;
+  size-adjust: 100.94%;
+}
+@font-face {
+  font-family: "Space Mono Fallback";
+  src: local("Arial");
+  ascent-override: 81.58%;
+  descent-override: 26.3%;
+  line-gap-override: 0%;
+  size-adjust: 137.28%;
+}

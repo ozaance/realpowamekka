@@ -1,31 +1,70 @@
 import type { Metadata } from "next";
-import { Newsreader, Hanken_Grotesk, Space_Mono } from "next/font/google";
+import localFont from "next/font/local";
+import "./fonts/fallbacks.css";
 import "./globals.css";
 import "../styles/hikari-v2.css";
 import "../styles/cinema.css";
 import "../styles/mobile-menu.css";
 import "../styles/a11y-mobile.css";
 
-const newsreader = Newsreader({
+// Polices auto-hébergées (app/fonts, licence SIL OFL 1.1). Ce sont les fichiers
+// du sous-ensemble « latin » que next/font/google téléchargeait à chaque build,
+// identiques octet pour octet. next/font/google faisait parfois échouer le build
+// Vercel : quand Google Fonts répond avec des URL /l/font?kit=…&…, Turbopack
+// refuse la requête (« next/font/google queries have exactly one entry »,
+// vercel/next.js#99114). La plage unicode-range est celle du sous-ensemble
+// latin de Google, pour que les caractères hors plage (flèches →, ←) gardent
+// la police de repli, comme avant. Les polices de repli (fallbacks.css)
+// reprennent les métriques exactes que next/font/google générait.
+const newsreader = localFont({
+  src: [
+    { path: "./fonts/newsreader-latin.woff2", weight: "300 500", style: "normal" },
+    { path: "./fonts/newsreader-latin-italic.woff2", weight: "300 500", style: "italic" },
+  ],
   variable: "--font-newsreader",
-  subsets: ["latin"],
-  weight: ["300", "400", "500"],
-  style: ["normal", "italic"],
   display: "swap",
+  adjustFontFallback: false,
+  fallback: ["Newsreader Fallback"],
+  declarations: [
+    {
+      prop: "unicode-range",
+      value:
+        "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
+    },
+  ],
 });
 
-const hankenGrotesk = Hanken_Grotesk({
+const hankenGrotesk = localFont({
+  src: [{ path: "./fonts/hanken-grotesk-latin.woff2", weight: "300 600", style: "normal" }],
   variable: "--font-hanken",
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600"],
   display: "swap",
+  adjustFontFallback: false,
+  fallback: ["Hanken Grotesk Fallback"],
+  declarations: [
+    {
+      prop: "unicode-range",
+      value:
+        "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
+    },
+  ],
 });
 
-const spaceMono = Space_Mono({
+const spaceMono = localFont({
+  src: [
+    { path: "./fonts/space-mono-latin-400.woff2", weight: "400", style: "normal" },
+    { path: "./fonts/space-mono-latin-700.woff2", weight: "700", style: "normal" },
+  ],
   variable: "--font-space-mono",
-  subsets: ["latin"],
-  weight: ["400", "700"],
   display: "swap",
+  adjustFontFallback: false,
+  fallback: ["Space Mono Fallback"],
+  declarations: [
+    {
+      prop: "unicode-range",
+      value:
+        "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
+    },
+  ],
 });
 
 export const metadata: Metadata = {
