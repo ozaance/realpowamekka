@@ -258,5 +258,15 @@ for (const p of ['/', '/offres', '/faq', '/vision', '/blog', '/services/ia', '/s
 r = await fetch(APP + '/');
 check('en-têtes de sécurité présents', r.headers.get('x-frame-options') === 'DENY' && r.headers.get('x-content-type-options') === 'nosniff');
 
+console.log('\n== Page Offres : boutons de commande');
+{
+  const html = await (await fetch(APP + '/offres')).text();
+  const count = (needle) => html.split(needle).length - 1;
+  check('3 boutons « Demander un devis » (Prototype MVP, SaaS Standard, SaaS Premium)', count('Demander un devis <') === 3, `(trouvés ${count('Demander un devis <')})`);
+  check('22 boutons « Commander » (Landing page, Site vitrine, 20 prestations à la carte)', count('Commander <') === 22, `(trouvés ${count('Commander <')})`);
+  const quoteLinks = [...html.matchAll(/href="(https:\/\/wa\.me\/33605715122\?text=[^"]+)"/g)].map((m) => decodeURIComponent(m[1].replace(/&amp;/g, '&')));
+  check('chaque offre sur devis a sa demande de devis WhatsApp pré-remplie', QUOTE_ONLY.every((id) => quoteLinks.some((l) => l.includes('demander un devis pour votre offre ' + names[id]))), JSON.stringify(quoteLinks.map((l) => l.slice(0, 120))));
+}
+
 console.log(`\n${pass} réussis, ${fail} échoués`);
 process.exit(fail ? 1 : 0);
