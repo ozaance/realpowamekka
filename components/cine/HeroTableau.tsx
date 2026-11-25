@@ -8,7 +8,9 @@ import {
   useScroll,
   useTransform,
 } from 'framer-motion';
+import Image from 'next/image';
 import { useScrub } from './scrub';
+import { ART_QUALITY, ART_SIZES } from './art';
 
 /**
  * HÉROS — « Le Tableau »
@@ -43,8 +45,8 @@ const HERO_CONTENT = (
       plus claires.
     </h1>
     <p className="cn-hero-lede">
-      Powamekka prend en charge la gestion du quotidien — opérations, données,
-      automatisations — pour que vous puissiez diriger.
+      Powamekka prend en charge la gestion du quotidien, des opérations aux
+      données et aux automatisations, pour que vous puissiez diriger.
     </p>
     <div className="cn-hero-actions">
       <a
@@ -86,6 +88,9 @@ export default function HeroTableau() {
   const [scrubbable, setScrubbable] = useState(false);
   const [videoReady, setVideoReady] = useState(false);
   const [armed, setArmed] = useState(false);
+  /* Fichier réellement chargé par l'image fixe (AVIF/WebP à la bonne taille),
+     réutilisé comme poster de la vidéo : déjà en cache, aucun octet de plus. */
+  const [poster, setPoster] = useState<string>();
   const reduced = useReducedMotion();
 
   /* Dimensions de la fenêtre : le cadre est animé en pixels pour que sa
@@ -211,14 +216,15 @@ export default function HeroTableau() {
       <section className="cn-hero cn-hero-static">
         <div className="cn-frame-inner">
           <div className="cn-frame-media">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
+            <Image
               src="/art/hero-atelier.jpg"
               alt="Atelier d'architecte baigné de lumière, un fil d'or traverse les plans posés sur la table"
               width={2560}
-              height={1440}
+              height={1429}
+              sizes={ART_SIZES}
+              quality={ART_QUALITY}
+              loading="eager"
               fetchPriority="high"
-              decoding="async"
             />
           </div>
           <div className="cn-frame-veil" />
@@ -243,14 +249,16 @@ export default function HeroTableau() {
             <motion.div className="cn-frame-media" style={{ scale: mediaScale }}>
               {/* Image fixe : premier rendu, poster de la vidéo, et seul
                   visuel sur mobile où le scrub n'est pas fiable. */}
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
+              <Image
                 src="/art/hero-atelier.jpg"
                 alt="Atelier d'architecte baigné de lumière, un fil d'or traverse les plans posés sur la table"
                 width={2560}
-                height={1440}
+                height={1429}
+                sizes={ART_SIZES}
+                quality={ART_QUALITY}
+                loading="eager"
                 fetchPriority="high"
-                decoding="async"
+                onLoad={(e) => setPoster(e.currentTarget.currentSrc)}
               />
               {scrubbable && armed && (
                 <video
@@ -258,7 +266,7 @@ export default function HeroTableau() {
                   className="cn-frame-media cn-frame-video"
                   data-ready={videoReady}
                   src="/art/hero-atelier.mp4"
-                  poster="/art/hero-atelier.jpg"
+                  poster={poster}
                   muted
                   playsInline
                   preload="auto"
@@ -275,7 +283,7 @@ export default function HeroTableau() {
 
         {/* Légende de musée, avant l'entrée dans le tableau */}
         <motion.div className="cn-hero-caption" style={{ opacity: captionOpacity }}>
-          <span className="l">Powamekka — Atelier des systèmes</span>
+          <span className="l">Powamekka, atelier des systèmes</span>
           <span className="cn-scroll-hint" aria-hidden="true">
             <i />
           </span>

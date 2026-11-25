@@ -1,7 +1,20 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import Image from 'next/image';
 import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
+import { ART_QUALITY, ART_SIZES } from './art';
+
+/* Économiseur de données activé ou connexion lente : la vidéo (3 Mo) n'est
+   pas chargée, le tableau fixe reste affiché. */
+function prefersLightMedia() {
+  const conn = (navigator as Navigator & {
+    connection?: { saveData?: boolean; effectiveType?: string };
+  }).connection;
+  if (conn?.saveData) return true;
+  if (conn?.effectiveType && ['slow-2g', '2g', '3g'].includes(conn.effectiveType)) return true;
+  return window.matchMedia('(prefers-reduced-data: reduce)').matches;
+}
 
 /**
  * CTA FINAL — l'atelier en ordre
@@ -10,10 +23,15 @@ import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion
  * parallaxe. La vidéo, elle, se lit normalement (en boucle, sans son)
  * et n'est montée que lorsque la section approche : rien n'est
  * téléchargé tant que le visiteur n'y est pas.
+ *
+ * L'image fixe reste toujours en place sous la vidéo : elle sert d'affiche
+ * (la vidéo est transparente tant qu'aucune image n'est décodée) et de
+ * repli si la vidéo ne peut pas être lue.
  */
 export default function CTACine() {
   const ref = useRef<HTMLElement>(null);
   const [mountVideo, setMountVideo] = useState(false);
+  const [videoFailed, setVideoFailed] = useState(false);
   const reduced = useReducedMotion();
 
   const { scrollYProgress } = useScroll({
@@ -26,7 +44,7 @@ export default function CTACine() {
 
   useEffect(() => {
     const el = ref.current;
-    if (!el || reduced) return;
+    if (!el || reduced || prefersLightMedia()) return;
 
     const io = new IntersectionObserver(
       ([entry]) => {
@@ -45,10 +63,18 @@ export default function CTACine() {
   return (
     <section ref={ref} className="cn-cta" id="contact">
       <motion.div className="cn-cta-media" style={{ y, scale }}>
-        {mountVideo ? (
+        <Image
+          src="/art/cta-atelier.jpg"
+          alt="L'atelier au crépuscule, la table rangée, le fil d'or tendu en ligne droite vers la fenêtre"
+          width={2560}
+          height={1429}
+          sizes={ART_SIZES}
+          quality={ART_QUALITY}
+          loading="lazy"
+        />
+        {mountVideo && !videoFailed && (
           <video
             src="/art/cta-atelier.mp4"
-            poster="/art/cta-atelier.jpg"
             autoPlay
             muted
             loop
@@ -56,16 +82,7 @@ export default function CTACine() {
             preload="none"
             aria-hidden="true"
             tabIndex={-1}
-          />
-        ) : (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src="/art/cta-atelier.jpg"
-            alt="L'atelier au crépuscule, la table rangée, le fil d'or tendu en ligne droite vers la fenêtre"
-            width={2560}
-            height={1440}
-            loading="lazy"
-            decoding="async"
+            onError={() => setVideoFailed(true)}
           />
         )}
       </motion.div>
