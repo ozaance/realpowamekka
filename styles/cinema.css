@@ -497,6 +497,8 @@ body.cn-active { background: var(--paper); }
   width: 100%; height: 100%; object-fit: cover; display: block;
   will-change: transform;
 }
+/* La vidéo se superpose au tableau fixe, qui lui sert d'affiche et de repli. */
+.cn-cta-media video { position: absolute; inset: 0; }
 .cn-cta-veil {
   position: absolute; inset: 0; z-index: -1;
   background: linear-gradient(to bottom, rgba(16, 14, 11, 0.6) 0%, rgba(16, 14, 11, 0.38) 45%, rgba(16, 14, 11, 0.78) 100%);

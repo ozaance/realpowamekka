@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import {
@@ -10,6 +11,7 @@ import {
   type MotionValue,
 } from 'framer-motion';
 import { useScrub } from './scrub';
+import { ART_QUALITY, ART_SIZES } from './art';
 
 /**
  * LES CINQ DISCIPLINES
@@ -183,8 +185,15 @@ function Slide({
   return (
     <motion.div className="cn-slide" style={{ opacity }}>
       <motion.div style={{ scale, position: 'absolute', inset: 0 }}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={data.art} alt={data.alt} width={2560} height={1440} loading="lazy" decoding="async" />
+        <Image
+          src={data.art}
+          alt={data.alt}
+          width={1920}
+          height={1071}
+          sizes={ART_SIZES}
+          quality={ART_QUALITY}
+          loading="lazy"
+        />
       </motion.div>
       <div className="cn-slide-veil" />
       <motion.div className="cn-slide-body" style={{ opacity: textOpacity }}>
