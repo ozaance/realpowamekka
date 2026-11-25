@@ -4,6 +4,7 @@ import "./globals.css";
 import "../styles/hikari-v2.css";
 import "../styles/cinema.css";
 import "../styles/mobile-menu.css";
+import "../styles/a11y-mobile.css";
 
 const newsreader = Newsreader({
   variable: "--font-newsreader",
