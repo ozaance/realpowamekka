@@ -5,7 +5,9 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "test:integration": "node tests/run.mjs",
+    "test:mollie": "node tests/mollie-test-mode.mjs"
   },
   "dependencies": {
     "framer-motion": "^12.40.0",
