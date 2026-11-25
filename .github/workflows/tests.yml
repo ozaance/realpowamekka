@@ -1,0 +1,67 @@
+name: Tests
+
+# Vérifie chaque Pull Request vers main : types, build, tests d'intégration.
+#
+# SÉCURITÉ : ce workflow n'utilise AUCUN secret et AUCUN paiement réel.
+#   - Déclencheur « pull_request » uniquement (jamais « pull_request_target » ni « workflow_run ») :
+#     pour une PR venant d'un fork, GitHub n'injecte aucun secret et rend le jeton en lecture seule.
+#   - Aucune référence à « secrets.* » et aucun « environment: » : ni GSC_SERVICE_ACCOUNT_JSON ni
+#     les environnements Preview / Production ne sont accessibles.
+#   - Jeton limité à « contents: read », identifiants non conservés après le checkout.
+#   - Aucune expression « ${{ … }} » dans les commandes : pas d'injection par titre, nom de branche
+#     ou message de commit.
+#   - Les clés utilisées par les tests sont des fausses clés imposées par tests/run.mjs ; le réseau
+#     sortant est verrouillé pendant les tests (tests/fake-payments.mjs).
+#   - Actions épinglées par empreinte de commit.
+# Si ce fichier change, relire ces points avant de fusionner.
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: tests-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  tests:
+    name: Types, build et tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      NEXT_TELEMETRY_DISABLED: '1'
+    steps:
+      - name: Récupérer le code de la PR
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Installer Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 22
+
+      # Scripts d'installation désactivés : le code d'une PR peut modifier les dépendances.
+      - name: Installer les dépendances
+        run: npm ci --ignore-scripts
+
+      - name: Vérifier les types
+        run: npx tsc --noEmit
+
+      - name: Construire le site
+        run: npm run build
+
+      # Les tests d'intégration arrivent avec la PR « tests » (tests/run.mjs). Tant qu'ils ne sont
+      # pas dans la branche, l'étape est signalée comme ignorée au lieu d'échouer.
+      - name: Tests d'intégration
+        if: hashFiles('tests/run.mjs') != ''
+        run: npm run test:integration
+
+      - name: Tests d'intégration absents (signalement)
+        if: hashFiles('tests/run.mjs') == ''
+        run: |
+          echo "::warning title=Tests d'intégration absents::tests/run.mjs est introuvable dans cette branche : seuls les types et le build ont été vérifiés."
+          echo "Tests d'intégration ignorés : tests/run.mjs est absent de cette branche." >> "$GITHUB_STEP_SUMMARY"
