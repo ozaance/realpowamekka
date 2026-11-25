@@ -1,59 +1,66 @@
 # Feuille de route POWAMEKKA
 
-> Mise à jour le 25 novembre 2026 à partir de `main` (`7621d49`). Ce document ne vaut pas validation d'une modification du site ni des paiements. Il remplace la première version du 23 novembre, devenue en partie obsolète.
+> Statuts au 25 novembre 2026, à partir de `main` (`7621d49`, déployé en production). Ils peuvent être périmés : vérifier l'état réel avant de s'y fier. Ce document ne vaut pas validation d'une modification du site ni des paiements. Il remplace la première version du 23 novembre, devenue en partie obsolète.
 
 **Légende**
-- ✅ **Réalisé** : fusionné sur `main`.
+- ✅ **Réalisé et vérifié** : fusionné sur `main`, donc présent dans la production actuelle, et contrôlé. Le contrôle est indiqué : **(prod)** sondé sur le site en production le 25 novembre ; **(CI)** couvert par un test automatisé exécuté à chaque PR. Aucun paiement réel n'a été effectué pour ces contrôles.
+- 🟡 **Réalisé, non revérifié** : fusionné donc en production, mais non contrôlé lors de la revue du 25 novembre.
 - ⏳ **En attente** : PR ouverte, ou validation du responsable requise.
 - 📌 **Décidé, non implémenté** : la décision est prise, mais le site ne la reflète pas encore.
-- 🔲 **Prévu** : à étudier ou à planifier, pas encore décidé en détail.
+- 🔲 **Prévu, non décidé** : à étudier ou à planifier, sans décision de détail.
 
 ## 1. Décisions validées et leur état réel
 
 | Décision | État | Précision |
 |---|---|---|
 | Clientèle exclusivement professionnelle (B2B), entreprises françaises au lancement | 📌 | Pas encore reflétée dans tous les textes publics. |
-| Mollie est le moyen de paiement actif | ✅ | Seul moyen proposé et accepté pour les nouvelles commandes. |
-| Stripe fermé aux nouvelles commandes | ✅ | Refus côté serveur (PR #35), masqué dans l'interface (PR #18). Code, webhook et confirmation des anciennes commandes conservés. |
-| Prototype MVP, SaaS Standard, SaaS Premium : sur devis uniquement | ✅ | Commande en ligne refusée par le serveur, bouton « Demander un devis » (PR #36). |
+| Mollie est le moyen de paiement actif | ✅ (prod, CI) | La voie Mollie répond en production (erreur de validation sur un client invalide, aucun paiement créé). Création du paiement et montants vérifiés par la CI avec Mollie simulé. **Aucun paiement réel n'a été testé.** |
+| Stripe fermé aux nouvelles commandes | ✅ (prod, CI) | Refus côté serveur (PR #35), masqué dans l'interface (PR #18). Code, webhook et confirmation des anciennes commandes conservés. |
+| Prototype MVP, SaaS Standard, SaaS Premium : sur devis uniquement | ✅ (prod, CI) | Commande en ligne refusée par le serveur, bouton « Demander un devis » (PR #36). |
 | Paiement des offres sur devis en 3 échéances (40 %, 40 %, 20 %) par factures et liens de paiement Mollie | 📌 | Non automatisé : se fait hors du site. |
-| Délais affichés : « Délai confirmé après cadrage » | ✅ | PR #33. |
-| Grille tarifaire 2026 (5 offres, 20 prestations à la carte, abonnement d'hébergement) | ⏳ | Préparée dans la PR #32 (`lib/pricing.ts`, pas encore sur `main`), **non branchée** : le site affiche et Mollie encaisse toujours les prix actuels de `lib/offers.ts`. |
-| Prix principal en HT, TTC en dessous, TVA 20 % | 📌 | Prévu pour la bascule de la grille. Aujourd'hui, la page Offres n'affiche aucune mention HT ou TTC. |
+| Site vitrine payé en 2 fois (50 %, 50 %) ; dernier paiement avant la mise en production pour toutes les offres | 📌 | Aujourd'hui, Mollie encaisse le prix complet en un seul paiement. L'échéancier n'existe que dans le module préparé par la PR #32. |
+| Délais affichés : « Délai confirmé après cadrage » | ✅ (prod) | PR #33. |
+| Grille tarifaire 2026 (5 offres, 20 prestations à la carte, abonnement d'hébergement) | ⏳ | Préparée dans la PR #32 (`lib/pricing.ts`, pas encore sur `main`), **non publiée et non branchée** : le site affiche et Mollie encaisse les prix actuels de `lib/offers.ts`. |
+| Prix principal en HT, TTC en dessous, TVA 20 % | 📌 | Prévu pour la bascule de la grille. Aujourd'hui, la page Offres n'affiche aucune mention HT ou TTC (constaté en production). |
 | Hébergement 12 mois inclus (Landing page, Site vitrine), puis abonnement sur acceptation écrite préalable, sans reconduction automatique | 📌 | Aucun mécanisme d'abonnement n'existe ; conditions détaillées en cours de validation. |
-| Maintenance ponctuelle distincte de l'abonnement d'hébergement | ⏳ | Distinction prévue dans la grille de la PR #32 ; non publiée. |
+| Maintenance ponctuelle distincte de l'abonnement d'hébergement | ⏳ | Distinction préparée dans la PR #32 ; non publiée. |
 | Facturation : dénomination, SIREN et adresse de facturation obligatoires ; TVA intracommunautaire facultative ; aucun système de facturation maison | 📌 | Rien n'est collecté ni transmis aujourd'hui ; outil externe à choisir. |
-| Conditions générales de vente publiées **avant** la bascule des tarifs | ⏳ | Rédaction en validation ; rien n'est publié. Les documents juridiques de travail sont conservés hors du dépôt public. |
-| Aucune PR fusionnée sans autorisation explicite du responsable | ✅ | Règle de travail, voir `COLLABORATION.md` ; fusion technique protégée par le ruleset de `main`. |
+| Conditions générales de vente publiées **avant** la bascule des tarifs | ⏳ | Rédaction en validation ; rien n'est publié. |
+| Mentions légales et politique de confidentialité | ⏳ | Brouillons conservés hors du dépôt public ; informations d'identification de l'éditeur à fournir. Aucune page légale n'est en ligne (constaté en production : `/mentions-legales`, `/cgv`, `/confidentialite` répondent 404). |
+| Aucune PR fusionnée sans autorisation explicite du responsable | 📌 | Règle de travail documentée, **non imposée techniquement** : le ruleset de `main` impose une PR et des contrôles verts, pas l'autorisation du responsable (voir `COLLABORATION.md`). |
 
-## 2. Réalisé (✅)
+## 2. Réalisé
 
 **Flux de développement**
-- Toute évolution passe par une branche et une PR ; Previews Vercel systématiques.
-- Tests d'intégration versionnés, sans appel réel (PR #34) : réseau sortant verrouillé, Mollie et Resend simulés, 75 tests au minimum exigés.
-- CI sur chaque PR, sans secret (PR #37), rendue stricte (PR #38) : un fichier de test manquant, un test en échec ou moins de 75 tests réussis font échouer le contrôle.
-- Ruleset « Protéger main » actif : PR obligatoire, contrôles `Types, build et tests` et `Vercel`, branche à jour, fusion par commit de fusion uniquement, aucun contournement.
+- ✅ Tests d'intégration versionnés, sans appel réel (PR #34) : réseau sortant verrouillé, Mollie et Resend simulés. 75 tests au minimum exigés (CI).
+- ✅ CI sur chaque PR, sans secret (PR #37), rendue stricte (PR #38) : un fichier de test manquant, un test en échec ou moins de 75 tests réussis font échouer le contrôle (CI, exécutée sur chaque PR depuis).
+- ✅ Ruleset « Protéger main » actif : PR obligatoire, contrôles `Types, build et tests` et `Vercel`, branche à jour, fusion par commit de fusion uniquement, aucun contournement (configuration relue depuis GitHub le 25 novembre).
+- 🟡 Previews Vercel sur chaque branche.
 
 **Sécurité et fiabilité**
-- Formulaire de contact : échappement HTML, limitation de débit, champ piège anti-spam ; expéditeur Resend `notifications@powamekka.com` (PR #14).
-- Paiement : le prix vient toujours du catalogue serveur, jamais de la requête ; limitation de débit ; webhooks Stripe et Mollie testés (signature Stripe, pas de doublon à la relecture d'un événement).
-- En-têtes de sécurité HTTP (PR #30). Page `/merci` : e-mail masqué et identifiants de paiement vérifiés (PR #31).
+- ✅ Formulaire de contact : échappement HTML, limitation de débit, champ piège anti-spam, expéditeur Resend `notifications@powamekka.com` (PR #14, CI).
+- ✅ Paiement : le prix vient toujours du catalogue serveur, jamais de la requête ; limitation de débit ; webhooks Stripe et Mollie testés (signature Stripe, pas de doublon à la relecture d'un événement) (CI).
+- ✅ En-têtes de sécurité HTTP (PR #30) (prod, CI). Page `/merci` : e-mail masqué et identifiants de paiement vérifiés (PR #31) (CI).
 
 **Paiement et offres**
-- Mollie (PR #6), services à la carte (PR #7), Stripe masqué (PR #18) puis fermé côté serveur (PR #35), offres MVP et SaaS sur devis (PR #36).
+- ✅ Mollie (PR #6) (CI avec Mollie simulé ; aucun paiement réel testé). Services à la carte (PR #7) (prod : la page Offres affiche 22 boutons « Commander », soit la Landing page, le Site vitrine et les 20 prestations).
+- ✅ Stripe fermé côté serveur (PR #35) et offres MVP et SaaS sur devis (PR #36) (prod, CI). 🟡 Stripe masqué dans l'interface (PR #18).
 
 **Textes, conversion et interface**
-- Premier écran commercial lisible (PR #27), boutons « Demander un premier échange » (PR #28, PR #29), délais « confirmés après cadrage » (PR #33), libellé Mollie et e-mails sans tirets longs (PR #26).
-- Ancres, menu mobile, grilles, navigation et accessibilité mobiles (PR #19 à #23).
-- Polices auto-hébergées (PR #24), optimisation des médias (PR #25).
+- ✅ Délais « confirmés après cadrage » (PR #33) (prod).
+- 🟡 Premier écran commercial lisible (PR #27). Boutons « Demander un premier échange » (PR #28, PR #29), remplacés sur MVP et SaaS par « Demander un devis » (PR #36).
+- 🟡 Libellé Mollie et e-mails sans tirets longs (PR #26).
+- 🟡 Ancres, menu mobile, grilles, navigation et accessibilité mobiles (PR #19 à #23).
+- 🟡 Polices auto-hébergées (PR #24), optimisation des médias (PR #25).
 
 **SEO**
-- Domaine canonique `www` (PR #1), export Search Console planifié (PR #2 à #5), contenus et consolidation SEO (PR #9, PR #15). La procédure SEO est dans `.claude/skills/seo/SKILL.md`.
+- ✅ Export Search Console planifié (PR #2 à #5) : workflow actif, trois dernières exécutions hebdomadaires réussies (9, 16 et 23 novembre).
+- 🟡 Domaine canonique `www` (PR #1), contenus et consolidation SEO (PR #9, PR #15). La procédure SEO est dans `.claude/skills/seo/SKILL.md`.
 
-## 3. En attente (⏳)
+## 3. En attente
 
-- **PR #32** : grille tarifaire 2026 préparée, non branchée. Elle ne modifie aucun prix affiché, aucun montant encaissé ni aucun parcours de paiement.
-- **PR #17** : retrait du dépôt public de six documents de travail (brouillons juridiques et rapport d'analyse). Des copies sont conservées hors du dépôt.
+- **PR #32** : grille tarifaire 2026 préparée, non publiée, non branchée. Elle ne modifie aucun prix affiché, aucun montant encaissé ni aucun parcours de paiement.
+- **PR #17** : retrait du dépôt public de six documents de travail (brouillons juridiques et rapport d'analyse). Une copie identique, vérifiée le 25 novembre, est conservée hors du dépôt sur le poste du responsable.
 - **PR #13** : cette documentation, en Draft.
 - **Validations du responsable** : conditions générales de vente, mentions légales et politique de confidentialité ; conditions de l'abonnement d'hébergement ; choix de l'outil de facturation.
 
@@ -92,4 +99,4 @@ Une seule PR de bascule, après les étapes 1 et 2, et avec validation explicite
 5. Produire les premières preuves de compétence réelles et autorisées.
 
 ## Règle de validation
-Chaque tâche produit une PR indépendante avec critères d'acceptation, `npx tsc --noEmit`, `npm run build` et `npm run test:integration` exécutés, résumé des changements et URL de la Preview. La fusion dans `main`, qui déclenche la production, n'a lieu que sur autorisation explicite du responsable pour cette PR.
+Chaque tâche produit une PR indépendante avec critères d'acceptation, `npx tsc --noEmit`, `npm run build` et `npm run test:integration` exécutés, résumé des changements et URL de la Preview. Pour un changement visuel, la Preview est validée par l'utilisateur. La fusion dans `main`, qui déclenche la production, n'a lieu que sur autorisation explicite du responsable pour cette PR précise.
