@@ -255,12 +255,24 @@ r = await wh(open.id);
 check('paiement non payé → 200 sans notification', r.status === 200 && (await deliveries()).length === 1);
 
 console.log('\n== Pages');
-for (const p of ['/', '/offres', '/faq', '/vision', '/blog', '/services/ia', '/services/audit', '/merci', '/sitemap.xml', '/robots.txt']) {
+for (const p of ['/', '/offres', '/faq', '/vision', '/mentions-legales', '/confidentialite', '/blog', '/services/ia', '/services/audit', '/merci', '/sitemap.xml', '/robots.txt']) {
   r = await fetch(APP + p);
   check(`GET ${p} → 200`, r.status === 200, `(reçu ${r.status})`);
 }
 r = await fetch(APP + '/');
 check('en-têtes de sécurité présents', r.headers.get('x-frame-options') === 'DENY' && r.headers.get('x-content-type-options') === 'nosniff');
+
+console.log('\n== Pages légales');
+{
+  const strip = (h) => h.replace(/<script[\s\S]*?<\/script>/g, ' ').replace(/<[^>]+>/g, ' ').replace(/&#x27;/g, "'").replace(/[\s\u00a0\u202f]+/g, ' ');
+  const ml = strip(await (await fetch(APP + '/mentions-legales')).text());
+  const pc = strip(await (await fetch(APP + '/confidentialite')).text());
+  check('mentions légales : identité, SIREN, SIRET, TVA, adresse, téléphone, hébergeur', ['Osee DIAMPO SENGELE EI', '822 349 841', '822 349 841 00012', 'FR35822349841', "22 rue d'Ottmarsheim", '+33 6 35 09 79 80', 'Vercel Inc.', 'contact@powamekka.com'].every((x) => ml.includes(x)));
+  check('politique de confidentialité : responsable, prestataires, droits, CNIL', ['Osee DIAMPO SENGELE EI', 'Mollie B.V.', 'Resend', 'Vercel Inc.', 'CNIL'].every((x) => pc.includes(x)));
+  check('aucun champ à compléter ni tiret long dans les pages légales', !/\[À|\[A |À FOURNIR|À DÉCIDER|À VALIDER|[—–]/.test(ml + pc));
+  const home = await (await fetch(APP + '/')).text();
+  check('pied de page : liens vers les mentions légales et la confidentialité', home.includes('href="/mentions-legales"') && home.includes('href="/confidentialite"'));
+}
 
 console.log('\n== Page Offres : boutons de commande');
 {
