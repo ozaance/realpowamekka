@@ -95,7 +95,7 @@ export default function VisionPage() {
               Un premier échange suffit pour identifier où votre temps se perd et ce qu'on peut en récupérer.
             </p>
             <div style={{ display: 'flex', gap: 14, justifyContent: 'center', flexWrap: 'wrap' }}>
-              <a href="https://wa.me/33605715122?text=Bonjour%2C%20je%20souhaite%20un%20premier%20%C3%A9change%20au%20sujet%20de%20mon%20entreprise." target="_blank" rel="noopener noreferrer" className="btn" style={{ borderRadius: 18 }}>Demander un premier échange →</a>
+              <a href="https://wa.me/33635097980?text=Bonjour%2C%20je%20souhaite%20un%20premier%20%C3%A9change%20au%20sujet%20de%20mon%20entreprise." target="_blank" rel="noopener noreferrer" className="btn" style={{ borderRadius: 18 }}>Demander un premier échange →</a>
               <a href="/offres"
                 style={{ borderRadius: 18, border: '1px solid var(--ink)', padding: '12px 24px', fontFamily: 'var(--font-mono)', fontSize: 12, letterSpacing: '0.1em', textTransform: 'uppercase', textDecoration: 'none', color: 'var(--ink)', display: 'inline-flex', alignItems: 'center', gap: 8 }}>
                 Voir les offres et tarifs

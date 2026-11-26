@@ -125,7 +125,7 @@ export default function FaqPage() {
             </p>
             <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap' }}>
               <a
-                href="https://wa.me/33605715122?text=Bonjour%2C%20j%27ai%20une%20question%20sur%20vos%20services."
+                href="https://wa.me/33635097980?text=Bonjour%2C%20j%27ai%20une%20question%20sur%20vos%20services."
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn"

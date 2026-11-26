@@ -174,7 +174,7 @@ export default async function MerciPage({
 
             <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap' }}>
               <a
-                href="https://wa.me/33605715122?text=Bonjour%2C%20je%20viens%20de%20passer%20commande%20sur%20votre%20site."
+                href="https://wa.me/33635097980?text=Bonjour%2C%20je%20viens%20de%20passer%20commande%20sur%20votre%20site."
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn"

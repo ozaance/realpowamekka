@@ -20,7 +20,7 @@ export default function ServicePage({
   relatedServices,
 }: ServicePageProps) {
   // Même message que partout sur le site, avec le service consulté pour le contexte.
-  const WA = `https://wa.me/33605715122?text=${encodeURIComponent(
+  const WA = `https://wa.me/33635097980?text=${encodeURIComponent(
     `Bonjour, je souhaite un premier échange au sujet de mon entreprise. Je m'intéresse à : ${kicker}.`,
   )}`;
   const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error' | 'limited'>('idle');

@@ -44,7 +44,7 @@ const OPEN_DURATION = 1.3; // secondes, ouverture du cadre à la première visit
 type Size = { w: number; h: number };
 
 const WHATSAPP_FIRST_CALL =
-  'https://wa.me/33605715122?text=Bonjour%2C%20je%20souhaite%20un%20premier%20%C3%A9change%20au%20sujet%20de%20mon%20entreprise.';
+  'https://wa.me/33635097980?text=Bonjour%2C%20je%20souhaite%20un%20premier%20%C3%A9change%20au%20sujet%20de%20mon%20entreprise.';
 
 /* Le texte du héros est rendu à deux endroits (version scrollée et
    version statique pour « mouvement réduit »). Une seule source. */
