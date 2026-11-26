@@ -28,7 +28,7 @@ export default function VisionPage() {
             <p style={{ fontFamily: 'var(--font-mono)', fontSize: 11, letterSpacing: '0.16em', textTransform: 'uppercase', color: 'var(--ink-dim)', paddingTop: 8 }}>Le constat</p>
             <div>
               <p style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(20px,2.2vw,28px)', lineHeight: 1.5, color: 'var(--ink)', fontWeight: 400, marginBottom: 24 }}>
-                Un dirigeant de PME passe entre 30 et 40% de son temps sur des tâches administratives qui n'ont aucune valeur stratégique.
+                Dans beaucoup de PME, une part importante du temps du dirigeant passe sur des tâches administratives qui n'ont aucune valeur stratégique.
               </p>
               <p style={{ fontSize: 16, lineHeight: 1.75, color: 'var(--ink-soft)' }}>
                 Relances clients, rédaction de devis, mise à jour de tableaux, tri de messages. Ces tâches sont nécessaires. Mais elles n'ont pas besoin d'un dirigeant pour être faites. L'IA peut les prendre en charge aujourd'hui, sans formation lourde et sans budget de grand groupe.

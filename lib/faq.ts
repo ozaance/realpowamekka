@@ -15,7 +15,7 @@ export const faqSections: FaqSection[] = [
       {
         question: "L'intelligence artificielle est-elle vraiment utile pour une PME ?",
         answer:
-          "Oui, à condition de l'appliquer à des tâches précises plutôt qu'à l'entreprise entière. Rédaction de devis, relances clients, tri des messages, rapports d'intervention : ce sont des tâches répétitives et sans valeur stratégique que l'IA traite aujourd'hui de façon fiable. Un dirigeant de PME passe entre 30 et 40 % de son temps sur ce type de travail administratif. C'est ce temps que l'automatisation rend disponible.",
+          "Oui, à condition de l'appliquer à des tâches précises plutôt qu'à l'entreprise entière. Rédaction de devis, relances clients, tri des messages, rapports d'intervention : ce sont des tâches répétitives, sans valeur stratégique, que l'IA peut aider à traiter, avec une relecture humaine. Dans beaucoup de PME, une part importante du temps passe sur ce type de travail administratif. C'est ce temps que l'automatisation peut aider à libérer.",
       },
       {
         question: "Faut-il des compétences techniques pour utiliser l'IA dans son entreprise ?",
@@ -65,7 +65,7 @@ export const faqSections: FaqSection[] = [
       {
         question: 'Combien de temps avant de voir des résultats ?',
         answer:
-          "Les premières automatisations produisent un effet en quelques semaines. Un artisan électricien avec qui nous avons travaillé passait 10 heures par semaine sur l'administratif ; après trois semaines de mise en place, il était descendu à 4 heures. Les projets plus larges, comme une application métier, se comptent en mois.",
+          "Cela dépend de votre situation et du périmètre. Une première automatisation simple peut produire un effet en quelques semaines, à partir du moment où nous avons reçu les accès et les informations nécessaires. Les projets plus larges, comme une application métier, se comptent en mois. Le délai est confirmé après le cadrage.",
       },
       {
         question: 'Intervenez-vous en dehors de Rouen et de la Normandie ?',
