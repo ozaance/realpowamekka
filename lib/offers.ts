@@ -10,7 +10,7 @@
  * toucher au code.
  */
 
-import { GRID_2026, SERVICES_GRID_2026, VAT_RATE_PERCENT, formatEuros, toTTC } from './pricing';
+import { GRID_2026, SERVICES_GRID_2026, SERVICE_SCHEDULE, VAT_RATE_PERCENT, formatEuros, scheduleAmounts, toTTC, type Tranche } from './pricing';
 
 export type Offer = {
   /** Identifiant interne envoyé par le front à /api/checkout */
@@ -205,10 +205,84 @@ export function gridPriceHT(id: string): number | undefined {
   return GRID_2026.find((o) => o.id === id)?.priceHT ?? gridServiceOf(id)?.priceHT;
 }
 
-/** Montant TTC (centimes) dû à la commande en ligne : le total TTC, pour une offre payée en une fois. */
+/** Échéancier de la grille pour une offre ou une prestation, ou undefined. */
+function scheduleOf(id: string): Tranche[] | undefined {
+  const offer = GRID_2026.find((o) => o.id === id);
+  if (offer) return offer.schedule;
+  return gridServiceOf(id) ? SERVICE_SCHEDULE : undefined;
+}
+
+/**
+ * Montant TTC (centimes) dû à la commande en ligne : la première échéance de la grille.
+ * Landing page et prestations à la carte : le total. Site vitrine : 50 % (594 € TTC).
+ */
 export function dueAtOrderTTC(id: string): number | undefined {
   const ht = gridPriceHT(id);
-  return ht === undefined ? undefined : toTTC(ht);
+  const schedule = scheduleOf(id);
+  if (ht === undefined || !schedule) return undefined;
+  return scheduleAmounts(ht, schedule)[0].ttc;
+}
+
+/** Commande payée en plusieurs échéances : première échéance encaissée en ligne, le reste sur facture et lien de paiement. */
+export type OrderPlan = {
+  /** Nombre total d'échéances. */
+  total: number;
+  /** Total TTC de la commande (centimes). */
+  totalTTC: number;
+  /** Première échéance TTC, encaissée à la commande (centimes). */
+  dueNowTTC: number;
+  /** Reste à régler TTC (centimes). */
+  remainingTTC: number;
+};
+
+/** Plan de paiement d'une commande en ligne en plusieurs échéances ; undefined si la grille est inactive ou si le paiement est unique. */
+export function orderPlan(id: string): OrderPlan | undefined {
+  if (!pricing2026Enabled() || isQuoteOnly(id)) return undefined;
+  const ht = gridPriceHT(id);
+  const schedule = scheduleOf(id);
+  if (ht === undefined || !schedule || schedule.length < 2) return undefined;
+  const amounts = scheduleAmounts(ht, schedule);
+  const totalTTC = toTTC(ht);
+  return { total: schedule.length, totalTTC, dueNowTTC: amounts[0].ttc, remainingTTC: totalTTC - amounts[0].ttc };
+}
+
+/** Métadonnées ajoutées au paiement Mollie quand la grille est active : repère de grille et échéance. */
+export function pricingMetadata(id: string): Record<string, string> {
+  if (!pricing2026Enabled()) return {};
+  const meta: Record<string, string> = { grille: '2026' };
+  const plan = orderPlan(id);
+  if (plan) {
+    meta.echeance = `1/${plan.total}`;
+    meta.total_ttc = (plan.totalTTC / 100).toFixed(2);
+    meta.solde_ttc = (plan.remainingTTC / 100).toFixed(2);
+  }
+  return meta;
+}
+
+/** Libellés d'échéancier (grille active) : à la commande en ligne, ou sur devis. */
+function scheduleDisplay(id: string): { scheduleLabel?: string; dueNowLabel?: string; balanceLabel?: string } {
+  if (!pricing2026Enabled()) return {};
+  const schedule = scheduleOf(id);
+  const ht = gridPriceHT(id);
+  if (!schedule || ht === undefined) return {};
+  if (isQuoteOnly(id)) {
+    return {
+      scheduleLabel:
+        schedule.length === 3
+          ? `Paiement en 3 échéances : ${schedule[0].percent} % à l'acceptation du devis, ${schedule[1].percent} % après validation de la conception, ${schedule[2].percent} % avant la livraison finale.`
+          : "Paiement intégral à l'acceptation du devis.",
+    };
+  }
+  const plan = orderPlan(id);
+  const ttc = (c: number) => `${formatEuros(c)} TTC`;
+  if (plan) {
+    return {
+      scheduleLabel: `Acompte de ${ttc(plan.dueNowTTC)} à la commande, puis ${ttc(plan.remainingTTC)} avant la livraison.`,
+      dueNowLabel: ttc(plan.dueNowTTC),
+      balanceLabel: `Solde de ${ttc(plan.remainingTTC)} avant la livraison : facture et lien de paiement envoyés par e-mail.`,
+    };
+  }
+  return { scheduleLabel: `Paiement de ${ttc(toTTC(ht))} à la commande.`, dueNowLabel: ttc(toTTC(ht)) };
 }
 
 /** Libellés de prix HT, TVA et TTC (grille 2026), ou aucun si la grille n'est pas active ou si l'offre est sur devis. */
@@ -274,6 +348,10 @@ export type OfferView = {
   priceHTLabel?: string;
   priceTTCLabel?: string;
   vatLabel?: string;
+  /** Grille 2026 active : échéancier, montant dû maintenant et solde. */
+  scheduleLabel?: string;
+  dueNowLabel?: string;
+  balanceLabel?: string;
   delivery: string;
   features: string[];
   featured: boolean;
@@ -288,6 +366,7 @@ export function getOfferViews(): OfferView[] {
     tagline: o.tagline,
     priceLabel: isQuoteOnly(o.id) ? QUOTE_LABEL : (priceDisplay(o.id)?.priceHTLabel ?? formatPrice(o.price)),
     ...priceDisplay(o.id),
+    ...scheduleDisplay(o.id),
     delivery: o.delivery,
     features: o.features,
     featured: o.featured ?? false,
@@ -304,6 +383,9 @@ export type ServiceView = {
   priceHTLabel?: string;
   priceTTCLabel?: string;
   vatLabel?: string;
+  scheduleLabel?: string;
+  dueNowLabel?: string;
+  balanceLabel?: string;
   category: ServiceCategory;
   /** Vendue sur devis uniquement : pas de commande en ligne. */
   quoteOnly: boolean;
@@ -317,6 +399,7 @@ export function getServiceViews(): ServiceView[] {
     tagline: pricing2026Enabled() ? (gridServiceOf(s.id)?.tagline ?? s.tagline) : s.tagline,
     priceLabel: isQuoteOnly(s.id) ? QUOTE_LABEL : (priceDisplay(s.id)?.priceHTLabel ?? formatPrice(s.price)),
     ...priceDisplay(s.id),
+    ...scheduleDisplay(s.id),
     category: s.category,
     quoteOnly: isQuoteOnly(s.id),
   }));

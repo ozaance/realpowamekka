@@ -115,6 +115,7 @@ export default function OffersGrid({
                   {offer.priceTTCLabel} <span>({offer.vatLabel})</span>
                 </p>
               )}
+              {offer.scheduleLabel && <p className="price-sub">{offer.scheduleLabel}</p>}
             </div>
 
             <p style={{ fontSize: 14, lineHeight: 1.7, color: 'var(--ink-dim)' }}>{offer.tagline}</p>
