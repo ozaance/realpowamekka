@@ -1,6 +1,19 @@
 # Feuille de route POWAMEKKA
 
-> Statuts au 25 novembre 2026, à partir de `main` (`7621d49`, déployé en production). Ils peuvent être périmés : vérifier l'état réel avant de s'y fier. Ce document ne vaut pas validation d'une modification du site ni des paiements. Il remplace la première version du 23 novembre, devenue en partie obsolète.
+> Statuts au 25 novembre 2026, à partir de `main` (`7621d49`, déployé en production), complétés par la section « Mise à jour du 26 novembre 2026 » ci-dessous. Ils peuvent être périmés : vérifier l'état réel avant de s'y fier. Ce document ne vaut pas validation d'une modification du site ni des paiements. Il remplace la première version du 23 novembre, devenue en partie obsolète.
+
+## Mise à jour du 26 novembre 2026
+
+Cette section prévaut sur les tableaux ci-dessous, rédigés le 25 novembre.
+
+- ✅ (prod) **Commande en ligne fermée** (PR #50) : les 25 offres se demandent sur devis ; les anciens prix ne sont plus affichés.
+- ✅ (prod) **Documents légaux publiés** : mentions légales et politique de confidentialité (PR #46), conditions générales de vente version 1.0 (PR #52). Non relus par un professionnel du droit. Clauses volontairement non publiées : clause attributive de compétence, plafond de responsabilité, annulation.
+- 🧪 (CI) **Grille tarifaire 2026 branchée, désactivée** (PR #48, #49, #53, indicateur `PRICING_2026`) : HT, TVA, TTC, acomptes, notifications, fiches Landing page et Site vitrine.
+- 🧪 (CI) **Collecte des informations de facturation et case CGV préparées, désactivées** (PR #47, indicateurs `BILLING_FIELDS_ENABLED` et `CGV_ACCEPTANCE_ENABLED`). La politique de confidentialité se met à jour toute seule quand la collecte est activée.
+- ✅ (prod) Mise à jour de sécurité Next.js 16.4.6 et de Tailwind (PR #39, #40) : `npm audit` à 0 vulnérabilité.
+- ✅ (prod) Contenu : témoignage et chiffres non justifiés retirés (PR #43, #44), localisation « Rouen » retirée, page 404, image de partage (PR #51), numéro WhatsApp (PR #45).
+- ⏳ **Restent à décider ou à faire avant d'ouvrir la vente en ligne** : choix de l'outil de facturation, vérification de l'activité déclarée (l'attestation INPI ne mentionne que le commerce de véhicules), test Mollie en mode test, relecture juridique des CGV, activation des indicateurs dans cet ordre : `PRICING_2026`, `BILLING_FIELDS_ENABLED`, `CGV_ACCEPTANCE_ENABLED`, `ONLINE_ORDERS_OPEN`.
+- Les soldes payés par lien Mollie n'envoient pas de notification interne : suivi manuel (procédure privée).
 
 ## Légende
 

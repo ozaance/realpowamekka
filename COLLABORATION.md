@@ -1,13 +1,13 @@
 # Collaboration ChatGPT × Claude Code
 
-Ce document décrit le fonctionnement du dépôt au 25 novembre 2026 (état de `main` : `7621d49`). Il peut devenir périmé : vérifier l'état réel avant de s'y fier, et le mettre à jour par une PR quand le fonctionnement change. Il ne vaut pas validation d'une modification du site ni des paiements.
+Ce document décrit le fonctionnement du dépôt au 26 novembre 2026. Il peut devenir périmé : vérifier l'état réel avant de s'y fier, et le mettre à jour par une PR quand le fonctionnement change. Il ne vaut pas validation d'une modification du site ni des paiements.
 
 ## Projet
 - Dépôt : https://github.com/ozaance/realpowamekka (public)
 - Branche de production : `main`
 - Hébergement : Vercel. **Chaque fusion sur `main` déclenche automatiquement une mise en production.** Les autres branches produisent des Previews (protégées par la connexion Vercel).
 - Domaine public : https://www.powamekka.com
-- Stack vérifiée dans le dépôt : Next.js 16.2.9 (App Router), React 19.2.4, TypeScript 5.9, Tailwind CSS 4, Framer Motion 12, Resend, Stripe (SDK 22) et Mollie (appelé directement par son API HTTP, sans SDK).
+- Stack vérifiée dans le dépôt : Next.js 16.4.6 (App Router), React 19.2.4, TypeScript 5.9, Tailwind CSS 4, Framer Motion 12, Resend, Stripe (SDK 22) et Mollie (appelé directement par son API HTTP, sans SDK).
 - Paiement : Mollie est le seul moyen actif. Stripe est fermé aux nouvelles commandes ; son code et son webhook sont conservés.
 - Positionnement : agence de conseil IA et de systèmes digitaux. Priorité commerciale : BTP et entreprises de services, sans exclure les autres entreprises.
 - **Clientèle exclusivement professionnelle (B2B), entreprises françaises au lancement** : décision validée, pas encore reflétée dans tous les textes publics (voir `ROADMAP.md`).
