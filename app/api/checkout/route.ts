@@ -3,6 +3,15 @@ import { getStripe } from '@/lib/stripe';
 import { createPayment, toMollieAmount, updatePayment } from '@/lib/mollie';
 import { getOffer, isQuoteOnly } from '@/lib/offers';
 import { clientIp, rateLimit } from '@/lib/security';
+import {
+  CGV_VERSION,
+  METADATA_MAX_BYTES,
+  billingFieldsEnabled,
+  billingMetadata,
+  cgvAcceptanceEnabled,
+  metadataBytes,
+  parseBilling,
+} from '@/lib/billing';
 
 type Offer = NonNullable<ReturnType<typeof getOffer>>;
 
@@ -74,7 +83,7 @@ export async function POST(req: Request) {
   }
 
   try {
-    const { offerId, provider, customer } = await req.json();
+    const { offerId, provider, customer, billing, acceptCgv } = await req.json();
 
     // Le client n'envoie qu'un identifiant d'offre : le prix vient toujours du
     // catalogue serveur, jamais de la requête.
@@ -99,7 +108,36 @@ export async function POST(req: Request) {
       if (!details) {
         return NextResponse.json({ error: 'Nom et email valides requis' }, { status: 400 });
       }
-      return NextResponse.json({ url: await mollieCheckout(offer, details, origin) });
+
+      // Informations de facturation et acceptation des CGV : désactivées par défaut. Tant qu'elles le sont,
+      // `extra` reste vide et la requête envoyée à Mollie est strictement celle d'avant.
+      let extra: Record<string, string> = {};
+      if (billingFieldsEnabled()) {
+        const parsed = parseBilling(billing);
+        if (!parsed.ok) {
+          return NextResponse.json({ error: parsed.error, field: parsed.field }, { status: 400 });
+        }
+        details.company = parsed.value.companyName;
+        extra = billingMetadata(parsed.value);
+      }
+      if (cgvAcceptanceEnabled()) {
+        if (acceptCgv !== true) {
+          return NextResponse.json(
+            { error: "Acceptez les conditions générales de vente pour continuer.", field: 'acceptCgv' },
+            { status: 400 }
+          );
+        }
+        extra = { ...extra, cgv_version: CGV_VERSION, cgv_accepted_at: new Date().toISOString() };
+      }
+
+      if (Object.keys(extra).length > 0) {
+        const size = metadataBytes({ ...mollieMetadata(offer, details), ...extra });
+        if (size > METADATA_MAX_BYTES) {
+          return NextResponse.json({ error: 'Certaines informations sont trop longues. Raccourcissez-les.' }, { status: 400 });
+        }
+      }
+
+      return NextResponse.json({ url: await mollieCheckout(offer, details, origin, extra) });
     }
 
     // Toute autre demande que Mollie relève de Stripe : refusée sans appel à Stripe.
@@ -145,7 +183,25 @@ async function stripeCheckout(offer: Offer, origin: string): Promise<string> {
   return session.url;
 }
 
-async function mollieCheckout(offer: Offer, customer: Customer, origin: string): Promise<string> {
+/** Métadonnées d'un paiement Mollie : identiques à l'ancien parcours, auxquelles s'ajoutent `extra` si actif. */
+function mollieMetadata(offer: Offer, customer: Customer): Record<string, string> {
+  return {
+    offer_id: offer.id,
+    offer_name: offer.name,
+    source: 'powamekka.com',
+    name: customer.name,
+    email: customer.email,
+    phone: customer.phone,
+    company: customer.company,
+  };
+}
+
+async function mollieCheckout(
+  offer: Offer,
+  customer: Customer,
+  origin: string,
+  extra: Record<string, string> = {}
+): Promise<string> {
   // Mollie refuse un webhook injoignable depuis internet : en local, on s'en
   // passe (la page /merci relit de toute façon le statut du paiement).
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || origin;
@@ -160,15 +216,7 @@ async function mollieCheckout(offer: Offer, customer: Customer, origin: string):
     redirectUrl: `${origin}/merci`,
     cancelUrl: `${origin}/offres?annule=1`,
     webhookUrl,
-    metadata: {
-      offer_id: offer.id,
-      offer_name: offer.name,
-      source: 'powamekka.com',
-      name: customer.name,
-      email: customer.email,
-      phone: customer.phone,
-      company: customer.company,
-    },
+    metadata: { ...mollieMetadata(offer, customer), ...extra },
   });
 
   // Mollie ne substitue pas l'identifiant dans redirectUrl comme Stripe : on

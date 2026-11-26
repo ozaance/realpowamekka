@@ -33,6 +33,7 @@ pour prouver qu'**aucun appel à Stripe ni à un service externe** n'a eu lieu.
 - **Prototype MVP, SaaS Standard, SaaS Premium : refusés côté serveur** (403), quel que soit le
   prestataire demandé ou le montant envoyé, sans aucun appel à Mollie ni à Stripe ;
 - **Stripe fermé aux nouvelles commandes** : 403, jamais de repli sur Stripe par défaut ;
+- **informations de facturation et acceptation des CGV** (`lib/billing.ts`) : désactivées par défaut (le serveur principal des tests garde le comportement de production et prouve que la requête envoyée à Mollie est inchangée) ; un **second serveur**, démarré par `tests/run.mjs` avec `BILLING_FIELDS_ENABLED=1` et `CGV_ACCEPTANCE_ENABLED=1`, vérifie les refus (SIREN, TVA, adresse, case CGV), les métadonnées Mollie, la limite de taille et la notification interne ;
 - page `/merci` (e-mail masqué), pages principales, en-têtes de sécurité.
 
 ### Ces tests décrivent l'état de `main` après les PR #35 et #36

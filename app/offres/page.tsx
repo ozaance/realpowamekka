@@ -4,6 +4,7 @@ import OffersGrid from '@/components/OffersGrid';
 import ServicesCatalog from '@/components/ServicesCatalog';
 import { offers as rawOffers, isQuoteOnly, getOfferViews, getServiceViews, serviceCategories } from '@/lib/offers';
 import { jsonLdScript, offerCatalogJsonLd } from '@/lib/schema';
+import { billingFieldsEnabled, cgvAcceptanceEnabled } from '@/lib/billing';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -28,6 +29,8 @@ export default async function OffresPage({
   const { annule } = await searchParams;
   const offers = getOfferViews();
   const services = getServiceViews();
+  // Collecte des informations de facturation et case CGV : désactivées par défaut (voir lib/billing.ts).
+  const checkout = { fields: billingFieldsEnabled(), cgv: cgvAcceptanceEnabled() };
 
   const offerCatalogSchema = offerCatalogJsonLd(rawOffers.map((o) => ({ ...o, quoteOnly: isQuoteOnly(o.id) })));
 
@@ -75,7 +78,7 @@ export default async function OffresPage({
         {/* OFFRES */}
         <section style={{ padding: 'clamp(50px,8vh,100px) 0', borderBottom: '1px solid var(--line)' }}>
           <div className="wrap">
-            <OffersGrid offers={offers} canceled={annule === '1'} />
+            <OffersGrid offers={offers} canceled={annule === '1'} checkout={checkout} />
           </div>
         </section>
 
@@ -114,7 +117,7 @@ export default async function OffresPage({
               Des prestations ponctuelles, à commander directement ou à faire chiffrer sur devis, pour
               améliorer un site existant, gagner en visibilité ou démarrer avec l&apos;IA.
             </p>
-            <ServicesCatalog services={services} categories={serviceCategories} />
+            <ServicesCatalog services={services} categories={serviceCategories} checkout={checkout} />
           </div>
         </section>
 

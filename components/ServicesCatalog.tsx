@@ -1,7 +1,7 @@
 'use client';
 import { useCallback, useState } from 'react';
 import type { ServiceCategory, ServiceView } from '@/lib/offers';
-import CheckoutDialog, { type CheckoutItem } from './CheckoutDialog';
+import CheckoutDialog, { type CheckoutItem, type CheckoutOptions } from './CheckoutDialog';
 
 /* Prestations sur devis : pas de commande en ligne, le bouton ouvre WhatsApp avec une
    demande de devis pré-remplie (même formulation que pour les offres sur devis). Le refus
@@ -15,9 +15,11 @@ function quoteLink(name: string) {
 export default function ServicesCatalog({
   services,
   categories,
+  checkout,
 }: {
   services: ServiceView[];
   categories: { id: ServiceCategory; label: string }[];
+  checkout?: CheckoutOptions;
 }) {
   const [filter, setFilter] = useState<ServiceCategory | 'all'>('all');
   const [selected, setSelected] = useState<CheckoutItem | null>(null);
@@ -75,7 +77,7 @@ export default function ServicesCatalog({
         ))}
       </ul>
 
-      <CheckoutDialog item={selected} onClose={close} />
+      <CheckoutDialog item={selected} onClose={close} options={checkout} />
     </>
   );
 }
