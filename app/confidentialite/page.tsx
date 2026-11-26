@@ -1,5 +1,5 @@
 import LegalPage from '@/components/LegalPage';
-import { politiqueConfidentialite } from '@/lib/legal';
+import { getPolitiqueConfidentialite, politiqueConfidentialite } from '@/lib/legal';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -16,5 +16,5 @@ export const metadata: Metadata = {
 };
 
 export default function Page() {
-  return <LegalPage doc={politiqueConfidentialite} />;
+  return <LegalPage doc={getPolitiqueConfidentialite()} />;
 }

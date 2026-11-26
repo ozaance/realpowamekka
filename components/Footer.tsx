@@ -41,6 +41,7 @@ export default function Footer() {
       <div className="foot-bottom">
         <span>© 2026 POWAMEKKA</span>
         <Link href="/mentions-legales">Mentions légales</Link>
+        <Link href="/cgv">Conditions de vente</Link>
         <Link href="/confidentialite">Confidentialité</Link>
         <span>Moins de complexité. Plus d&apos;impact.</span>
         <a href="mailto:contact@powamekka.com">contact@powamekka.com</a>
