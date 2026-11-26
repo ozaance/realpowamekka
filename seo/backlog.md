@@ -63,6 +63,11 @@ puis met ce fichier à jour. Abdoulaye peut réordonner, ajouter ou supprimer li
       réel. Le paragraphe d'origine est rétabli **mot pour mot**, sans ajout. Le « 15 à 20 % »
       (statistique générale, non confirmée) reste retiré. Ne jamais enrichir ce cas de détails
       ou de chiffres supplémentaires sans nouvelle validation.
+      **Décision définitive du 2026-11-26** : Abdoulaye ne peut pas justifier ce témoignage et
+      demande son retrait. Il remplace la confirmation du 2026-11-23. L'anecdote de l'électricien
+      (et le résultat « 10 h → 4 h ») est retirée de tout le site (FAQ, Vision, blog). Ne jamais la
+      rétablir ni inventer un cas client. Les estimations d'heures non sourcées (« 8 à 12 heures »,
+      « 4 à 8 heures », « 5 heures par semaine ») sont aussi retirées.
 
 ---
 

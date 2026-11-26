@@ -27,6 +27,24 @@ Format d'une entrée :
 
 ---
 
+## 2026-11-26 — Retrait du témoignage de l'électricien et des estimations non sourcées (manuel)
+
+**Chiffres (28 j, Search Console)**
+- Données indisponibles : intervention éditoriale manuelle, hors cycle hebdomadaire.
+
+**Actions**
+- Décision définitive d'Abdoulaye : le cas de l'artisan électricien ne peut pas être justifié, il est retiré partout. Cela annule la confirmation du 2026-11-23.
+- `content/blog/ia-btp-gagner-du-temps.md` : paragraphe de l'électricien remplacé par une formulation sans chiffre ; titre sans promesse de « 5 heures par semaine » (adresse de l'article inchangée) ; « 8 à 12 heures », « 30 à 45 minutes », « 3 minutes » et « 2 heures récupérées » reformulés sans chiffre.
+- `content/blog/systeme-digital-pme-guide-2026.md` : « 4 à 8 heures par semaine » retiré.
+- FAQ et page Vision déjà corrigées par la PR #43.
+
+**Hypothèse testée**
+- Aucune. Le retrait d'un chiffre ne vise pas le référencement ; surveiller seulement que la position de l'article BTP ne recule pas après le changement de titre → à réévaluer le 2026-12-24.
+
+**PR** : voir la PR de la branche `seo/2026-11-26-retrait-electricien`
+
+---
+
 ## 2026-11-23 — Consolidation des PR #10, #11 et #12 (cycle manuel)
 
 **Contexte** : les cycles des 26/10, 02/11 et 09/11 ont chacun ouvert une PR depuis `main` sans voir

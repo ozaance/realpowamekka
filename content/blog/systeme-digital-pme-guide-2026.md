@@ -52,7 +52,7 @@ Identifiez les tâches que vous ou votre équipe faites de façon identique, cha
 
 Ces tâches ne devraient pas occuper du temps humain. Des outils comme Make, Zapier, ou des automatisations natives dans votre CRM peuvent les prendre en charge intégralement.
 
-Une PME type récupère entre 4 et 8 heures par semaine rien qu'en automatisant les processus déjà en place.
+Automatiser les processus déjà en place libère du temps. L'ampleur du gain dépend de votre organisation.
 
 ### 4. Un tableau de bord pour piloter
 
