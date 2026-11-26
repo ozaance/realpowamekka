@@ -64,7 +64,7 @@ export function blogPostingJsonLd({
 }
 
 export function offerCatalogJsonLd(
-  offers: { id: string; name: string; tagline: string; price: number }[]
+  offers: { id: string; name: string; tagline: string; price: number; quoteOnly?: boolean }[]
 ) {
   return {
     '@context': 'https://schema.org',
@@ -77,8 +77,8 @@ export function offerCatalogJsonLd(
       '@type': 'Offer',
       url: `${BASE}/offres#${offer.id}`,
       seller: { '@id': ORG_ID },
-      priceCurrency: 'EUR',
-      price: (offer.price / 100).toFixed(2),
+      // Offre sur devis : aucun prix public, donc aucun prix dans le balisage.
+      ...(offer.quoteOnly ? {} : { priceCurrency: 'EUR', price: (offer.price / 100).toFixed(2) }),
       itemOffered: {
         '@type': 'Service',
         name: offer.name,

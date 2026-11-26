@@ -146,12 +146,35 @@ export const services: Service[] = [
 ];
 
 /**
- * Offres vendues uniquement sur devis : jamais de commande ni de paiement en
- * ligne. Facturées en trois échéances (40 %, 40 %, 20 %) par facture et lien
- * de paiement, hors du site. Liste serveur unique : elle commande à la fois le
- * refus dans l'API de paiement et l'affichage du bouton « Demander un devis ».
+ * Offres et prestations vendues uniquement sur devis : jamais de commande ni de
+ * paiement en ligne, et aucun prix affiché. Les projets (MVP, SaaS) sont facturés
+ * en trois échéances (40 %, 40 %, 20 %) par facture et lien de paiement, hors du
+ * site. Les prestations ci-dessous demandent un cadrage avant chiffrage. Liste
+ * serveur unique : elle commande à la fois le refus dans l'API de paiement et
+ * l'affichage « Sur devis » et du bouton « Demander un devis ». Les montants du
+ * catalogue restent en place, inchangés, pour une éventuelle remise en vente.
  */
-const QUOTE_ONLY_IDS: ReadonlySet<string> = new Set(['prototype-mvp', 'saas-standard', 'saas-premium']);
+const QUOTE_ONLY_IDS: ReadonlySet<string> = new Set([
+  'prototype-mvp',
+  'saas-standard',
+  'saas-premium',
+  'refonte-site',
+  'design-ui-page',
+  'optimisation-page-vente',
+  'charte-graphique',
+  'migration-site',
+  'redaction-seo',
+  'strategie-instagram',
+  'plan-automatisation',
+  'integration-chatbot',
+  'automatisation-emails',
+  'formation-ia',
+  'audit-performance',
+  'tracking-analytics',
+]);
+
+/** Libellé affiché à la place du prix pour une offre sur devis. */
+export const QUOTE_LABEL = 'Sur devis';
 
 export function isQuoteOnly(id: string): boolean {
   return QUOTE_ONLY_IDS.has(id);
@@ -208,7 +231,7 @@ export function getOfferViews(): OfferView[] {
     id: o.id,
     name: o.name,
     tagline: o.tagline,
-    priceLabel: formatPrice(o.price),
+    priceLabel: isQuoteOnly(o.id) ? QUOTE_LABEL : formatPrice(o.price),
     delivery: o.delivery,
     features: o.features,
     featured: o.featured ?? false,
@@ -222,6 +245,8 @@ export type ServiceView = {
   tagline: string;
   priceLabel: string;
   category: ServiceCategory;
+  /** Vendue sur devis uniquement : pas de commande en ligne. */
+  quoteOnly: boolean;
 };
 
 export function getServiceViews(): ServiceView[] {
@@ -229,7 +254,8 @@ export function getServiceViews(): ServiceView[] {
     id: s.id,
     name: s.name,
     tagline: s.tagline,
-    priceLabel: formatPrice(s.price),
+    priceLabel: isQuoteOnly(s.id) ? QUOTE_LABEL : formatPrice(s.price),
     category: s.category,
+    quoteOnly: isQuoteOnly(s.id),
   }));
 }

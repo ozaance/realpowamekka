@@ -142,10 +142,14 @@ check('retour vers /merci avec l’identifiant du paiement', created?.redirectUr
 check('aucun appel à Stripe', !st.calls.some((c) => c.api === 'stripe'));
 
 // Offres sur devis uniquement : jamais de commande en ligne (voir la section suivante).
-const QUOTE_ONLY = ['prototype-mvp', 'saas-standard', 'saas-premium'];
+const QUOTE_ONLY = [
+  'prototype-mvp', 'saas-standard', 'saas-premium', // projets
+  'refonte-site', 'design-ui-page', 'optimisation-page-vente', 'charte-graphique', 'migration-site', 'redaction-seo', 'strategie-instagram', // prestations sur devis
+  'plan-automatisation', 'integration-chatbot', 'automatisation-emails', 'formation-ia', 'audit-performance', 'tracking-analytics',
+];
 
 // Garde-fou de la grille : chaque offre et prestation commandable en ligne encaisse exactement son
-// prix de catalogue. Les 3 offres sur devis sont exclues de ce contrôle, elles sont refusées.
+// prix de catalogue. Les offres sur devis sont exclues de ce contrôle, elles sont refusées.
 const ids = Object.keys(prices);
 const orderable = ids.filter((id) => !QUOTE_ONLY.includes(id));
 const mismatches = [];
@@ -158,9 +162,9 @@ for (const id of orderable) {
   if (res.status !== 200 || Object.keys(after.payments).length !== before + 1 || p.amount.value !== (prices[id] / 100).toFixed(2)) mismatches.push(`${id}: ${res.status} ${p?.amount?.value}`);
 }
 check(`catalogue : ${ids.length} identifiants, dont ${QUOTE_ONLY.length} offres sur devis`, ids.length === 25 && QUOTE_ONLY.every((id) => ids.includes(id)));
-check(`montant encaissé = prix du catalogue pour les ${orderable.length} offres et prestations commandables en ligne`, orderable.length === 22 && mismatches.length === 0, JSON.stringify(mismatches) + ` (${orderable.length} identifiants)`);
+check(`montant encaissé = prix du catalogue pour les ${orderable.length} offres et prestations commandables en ligne`, orderable.length === 9 && mismatches.length === 0, JSON.stringify(mismatches) + ` (${orderable.length} identifiants)`);
 
-console.log('\n== Offres sur devis uniquement (Prototype MVP, SaaS Standard, SaaS Premium)');
+console.log('\n== Offres et prestations sur devis uniquement (3 projets et 13 prestations)');
 const beforeQuote = fakeState();
 const quoteRefused = [];
 let qip = 10;
@@ -181,7 +185,7 @@ for (const id of QUOTE_ONLY) {
   }
 }
 const afterQuote = fakeState();
-check('3 offres x 7 types de requête (Mollie, Stripe, sans moyen, autres prestataires, paramètres falsifiés) → 403 sans adresse de paiement', quoteRefused.length === 0, JSON.stringify(quoteRefused));
+check(`${QUOTE_ONLY.length} offres x 7 types de requête (Mollie, Stripe, sans moyen, autres prestataires, paramètres falsifiés) → 403 sans adresse de paiement`, quoteRefused.length === 0, JSON.stringify(quoteRefused));
 check('aucun paiement créé pour ces refus', Object.keys(afterQuote.payments).length === Object.keys(beforeQuote.payments).length);
 check('aucun appel à Mollie ni à Stripe pour ces refus', afterQuote.calls.length === beforeQuote.calls.length, JSON.stringify(afterQuote.calls.slice(beforeQuote.calls.length)));
 
@@ -262,9 +266,15 @@ console.log('\n== Page Offres : boutons de commande');
 {
   const html = await (await fetch(APP + '/offres')).text();
   const count = (needle) => html.split(needle).length - 1;
-  check('3 boutons « Demander un devis » (Prototype MVP, SaaS Standard, SaaS Premium)', count('Demander un devis <') === 3, `(trouvés ${count('Demander un devis <')})`);
-  check('22 boutons « Commander » (Landing page, Site vitrine, 20 prestations à la carte)', count('Commander <') === 22, `(trouvés ${count('Commander <')})`);
-  const quoteLinks = [...html.matchAll(/href="(https:\/\/wa\.me\/33605715122\?text=[^"]+)"/g)].map((m) => decodeURIComponent(m[1].replace(/&amp;/g, '&')));
+  check('16 boutons « Demander un devis » (3 projets et 13 prestations)', count('Demander un devis <') === 16, `(trouvés ${count('Demander un devis <')})`);
+  check('9 boutons « Commander » (Landing page, Site vitrine, 7 prestations à la carte)', count('Commander <') === 9, `(trouvés ${count('Commander <')})`);
+  const norm = (s) => s.replace(/[\s\u00a0\u202f]+/g, ' ');
+  const text = norm(html.replace(/<script[\s\S]*?<\/script>/g, ' ').replace(/<[^>]+>/g, ' '));
+  check('aucun prix affiché pour les projets sur devis (2 500, 5 000, 10 000 €)', !/2 500 €|5 000 €|10 000 €/.test(text) && count('Sur devis<') + count('Sur devis ') >= 16, `(« Sur devis » : ${count('Sur devis<')})`);
+  const ld = [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map((m) => JSON.parse(m[1])).find((j) => j['@type'] === 'OfferCatalog');
+  const ldPrices = (ld?.itemListElement ?? []).map((o) => o.price).filter(Boolean);
+  check('balisage JSON-LD : seuls Landing page et Site vitrine ont un prix', JSON.stringify(ldPrices) === JSON.stringify(['149.00', '499.00']), JSON.stringify(ldPrices));
+  const quoteLinks = [...html.matchAll(/href="(https:\/\/wa\.me\/33605715122\?text=[^"]+)"/g)].map((m) => decodeURIComponent(m[1].replace(/&amp;/g, '&').replace(/&#x27;/g, "'")));
   check('chaque offre sur devis a sa demande de devis WhatsApp pré-remplie', QUOTE_ONLY.every((id) => quoteLinks.some((l) => l.includes('demander un devis pour votre offre ' + names[id]))), JSON.stringify(quoteLinks.map((l) => l.slice(0, 120))));
 }
 

@@ -29,7 +29,7 @@ pour prouver qu'**aucun appel à Stripe ni à un service externe** n'a eu lieu.
 
 - formulaire de contact, webhooks Stripe et Mollie ;
 - commande Mollie : montant, libellé, métadonnées, retour vers `/merci` ;
-- **montant encaissé égal au prix du catalogue** pour les 22 offres et prestations commandables en ligne ;
+- **montant encaissé égal au prix du catalogue** pour les 9 offres et prestations commandables en ligne (les 16 autres sont sur devis, refusées par le serveur) ;
 - **Prototype MVP, SaaS Standard, SaaS Premium : refusés côté serveur** (403), quel que soit le
   prestataire demandé ou le montant envoyé, sans aucun appel à Mollie ni à Stripe ;
 - **Stripe fermé aux nouvelles commandes** : 403, jamais de repli sur Stripe par défaut ;
