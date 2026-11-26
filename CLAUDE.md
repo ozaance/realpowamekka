@@ -4,7 +4,7 @@
 
 Lis `AGENTS.md` avant toute intervention et respecte ses règles Next.js 16.
 
-Les sections « Contexte » et « État réel » ci-dessous datent du 25 novembre 2026 (état de `main` : `7621d49`). Elles peuvent être périmées : vérifie l'état réel (Git, `ROADMAP.md`) avant de t'y fier, et propose une PR de mise à jour de ces fichiers quand il change.
+Les sections « Contexte » et « État réel » ci-dessous datent du 26 novembre 2026. Elles peuvent être périmées : vérifie l'état réel (Git, `ROADMAP.md`) avant de t'y fier, et propose une PR de mise à jour de ces fichiers quand il change.
 
 ## Contexte métier
 POWAMEKKA est une agence de conseil en IA et de systèmes digitaux. La priorité commerciale est le BTP et les entreprises de services, sans exclure les autres entreprises. Signature à préserver : « Building the future of business ».
@@ -12,11 +12,12 @@ POWAMEKKA est une agence de conseil en IA et de systèmes digitaux. La priorité
 **La clientèle est exclusivement professionnelle (B2B), entreprises françaises au lancement.** C'est une décision validée ; les textes publics et les conditions de vente ne sont pas encore tous alignés (voir `ROADMAP.md`). Ne traite aucun parcours comme destiné à des particuliers.
 
 ## État réel du dépôt (à ne pas confondre avec les décisions)
-- **Paiement : Mollie est le seul moyen actif.** Stripe est fermé aux nouvelles commandes (refus serveur) ; son code, son webhook et la confirmation des anciennes commandes sont conservés.
-- **Prototype MVP, SaaS Standard, SaaS Premium : sur devis uniquement.** Le site refuse leur commande en ligne et propose « Demander un devis ». Le paiement en plusieurs échéances par factures et liens de paiement est **décidé mais pas automatisé**.
-- **Prix publics et montants encaissés : ceux de `lib/offers.ts`.** La grille 2026 préparée dans la PR #32 (`lib/pricing.ts`, fichier pas encore présent sur `main`) n'est **pas publiée ni branchée** : elle ne doit être ni affichée ni encaissée sans PR de bascule validée.
-- **Conditions de vente, mentions légales, politique de confidentialité : non publiées.** Les brouillons sont conservés hors du dépôt public. Ne les republie pas dans le dépôt.
+- **Commande en ligne FERMÉE par défaut** (`ONLINE_ORDERS_OPEN` non défini) : toute commande est refusée par le serveur (403), la page Offres propose « Demander un devis » pour les 25 offres, sans prix. Les prix de l'ancien catalogue (`lib/offers.ts`) sont obsolètes et ne sont plus affichés. Mollie reste le seul moyen de paiement prévu ; Stripe est fermé (refus serveur, code et webhook conservés).
+- **Grille tarifaire 2026 branchée mais DÉSACTIVÉE** (`PRICING_2026` non défini) : prix HT, TVA 20 % et TTC, montant Mollie = TTC dû à la commande, acomptes (Landing page 100 %, Site vitrine 50/50, MVP et SaaS 40/40/20 sur devis, prestations sur devis payées à l'acceptation), fiches Landing page et Site vitrine, libellés, notifications. Source : `lib/pricing.ts`.
+- **Collecte des informations de facturation et case CGV préparées, DÉSACTIVÉES** (`BILLING_FIELDS_ENABLED`, `CGV_ACCEPTANCE_ENABLED`) : voir `lib/billing.ts`.
+- **Documents légaux publiés** : mentions légales (`/mentions-legales`), politique de confidentialité (`/confidentialite`), conditions générales de vente version 1.0 (`/cgv`, clauses décidées ou vérifiées uniquement ; non relues par un juriste). Contenu dans `lib/legal.ts`. Ne pas modifier les informations d'identité sans preuve.
 - **Déploiement : chaque fusion sur `main` déclenche automatiquement une mise en production sur Vercel.** Les autres branches produisent des Previews.
+- **Activer l'un des quatre indicateurs, modifier une variable Vercel ou un prix encaissé exige l'autorisation spécifique du responsable.**
 
 ## Décisions et fonctionnalités : ne jamais les confondre
 Ne présente jamais une décision comme une fonctionnalité réalisée. Pour chaque sujet, dis clairement s'il est : réalisé et vérifié, en attente, décidé mais non implémenté, ou prévu mais non décidé (classement détaillé dans `ROADMAP.md`). N'affirme jamais qu'un contrôle a réussi s'il n'a pas été exécuté et si son résultat n'est pas vérifiable.
