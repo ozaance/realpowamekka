@@ -70,9 +70,9 @@ export const faqSections: FaqSection[] = [
           "Cela dépend de votre situation et du périmètre. Une première automatisation simple peut produire un effet en quelques semaines, à partir du moment où nous avons reçu les accès et les informations nécessaires. Les projets plus larges, comme une application métier, se comptent en mois. Le délai est confirmé après le cadrage.",
       },
       {
-        question: 'Intervenez-vous en dehors de Rouen et de la Normandie ?',
+        question: 'Intervenez-vous partout en France ?',
         answer:
-          "Oui. Nous sommes basés à Rouen et nous intervenons partout en France. L'essentiel du travail se fait à distance, les rendez-vous sur site restent possibles selon le projet.",
+          "Oui, nous intervenons partout en France. L'essentiel du travail se fait à distance ; les rendez-vous sur site restent possibles selon le projet.",
       },
       {
         question: 'Comment savoir si mon entreprise est prête ?',
