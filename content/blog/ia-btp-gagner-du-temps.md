@@ -1,5 +1,5 @@
 ---
-title: "Comment les artisans BTP peuvent gagner 5 heures par semaine grâce à l'IA"
+title: "Comment les artisans du BTP peuvent gagner du temps grâce à l'IA"
 date: "2026-06-19"
 description: "Devis, relances, planning, réponses clients : voici les 4 tâches que l'IA peut prendre en charge immédiatement dans votre entreprise BTP, sans formation technique."
 category: "BTP & IA"
@@ -8,17 +8,17 @@ readTime: "6 min de lecture"
 
 Vous êtes plombier, électricien, maçon ou chef de chantier. Votre journée commence sur le terrain et finit derrière un écran à gérer la paperasse. Devis à rédiger, clients à relancer, planning à ajuster, messages auxquels répondre.
 
-Ce temps administratif, la plupart des patrons de BTP l'estiment entre 8 et 12 heures par semaine. C'est du temps perdu sur des chantiers, sur du développement commercial, sur votre famille.
+Dans beaucoup d'entreprises du BTP, ce temps administratif pèse plusieurs heures chaque semaine. C'est du temps perdu sur des chantiers, sur du développement commercial, sur votre famille.
 
 [L'intelligence artificielle](/services/ia) ne remplace pas votre métier. Elle prend en charge ce qui vous épuise.
 
 ## 1. La rédaction de devis
 
-Un devis BTP, c'est souvent 30 à 45 minutes de travail pour quelque chose que vous avez déjà fait cent fois. Décrire les travaux, lister les fournitures, calculer les heures, formater le document.
+Un devis BTP, c'est souvent une demi-heure ou plus de travail pour quelque chose que vous avez déjà fait cent fois. Décrire les travaux, lister les fournitures, calculer les heures, formater le document.
 
-Avec un outil IA correctement configuré, vous dictez les grandes lignes à voix haute en 3 minutes. L'outil génère le document complet, dans votre format habituel, avec vos mentions légales. Vous relisez, vous ajustez si besoin, vous envoyez.
+Avec un outil IA correctement configuré, vous dictez les grandes lignes à voix haute. L'outil génère le document complet, dans votre format habituel, avec vos mentions légales. Vous relisez, vous ajustez si besoin, vous envoyez.
 
-Sur 5 devis par semaine, c'est 2 heures récupérées immédiatement.
+Multipliée par le nombre de devis que vous envoyez chaque semaine, la différence se compte en heures.
 
 ## 2. Les relances clients
 
@@ -42,7 +42,7 @@ Avec un simple formulaire vocal ou texte sur téléphone, l'IA compile ces infor
 
 ## Ce que ça change concrètement
 
-Un artisan électricien en région parisienne avec qui nous avons travaillé passait 10 heures par semaine sur l'administratif. Après 3 semaines de mise en place, il est descendu à 4 heures. Les 6 heures récupérées sont allées directement sur un nouveau chantier par mois.
+Le gain varie d'une entreprise à l'autre. Il dépend du nombre de devis, de la fréquence des relances et des outils que vous utilisez déjà. C'est précisément ce que l'audit permet d'estimer sur votre activité, avant tout engagement.
 
 Ce n'est pas de la magie. C'est de l'organisation, outillée correctement.
 
