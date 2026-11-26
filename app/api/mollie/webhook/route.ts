@@ -56,6 +56,15 @@ export async function POST(req: Request) {
               city: meta.ville || '',
             }
           : undefined,
+        ttc: meta.grille === '2026',
+        plan:
+          meta.grille === '2026' && meta.echeance
+            ? {
+                echeance: meta.echeance,
+                total: formatPrice(fromMollieAmount(meta.total_ttc || '0')),
+                remaining: formatPrice(fromMollieAmount(meta.solde_ttc || '0')),
+              }
+            : undefined,
         cgv: meta.cgv_version ? `version ${meta.cgv_version}, le ${meta.cgv_accepted_at || ''}` : undefined,
       });
     } catch (err) {

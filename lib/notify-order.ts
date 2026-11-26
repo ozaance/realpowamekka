@@ -15,6 +15,9 @@ export type PaidOrder = {
   billing?: { siren: string; vat?: string; address: string; postalCode: string; city: string };
   /** Acceptation des CGV (version et date), présente seulement si l'acceptation est active. */
   cgv?: string;
+  /** Grille 2026 : le montant est TTC ; `plan` décrit une commande payée en plusieurs échéances. */
+  ttc?: boolean;
+  plan?: { echeance: string; total: string; remaining: string };
 };
 
 /**
@@ -29,7 +32,7 @@ export type PaidOrder = {
 export async function notifyOrder(order: PaidOrder) {
   const rows: [string, string][] = [
     ['Offre', order.offerName],
-    ['Montant', order.amount],
+    ['Montant', order.ttc ? `${order.amount} TTC` : order.amount],
     ['Paiement', order.provider],
     ['Client', order.name],
     ['Email', order.email || 'Non renseigné'],
@@ -43,11 +46,24 @@ export async function notifyOrder(order: PaidOrder) {
     rows.push(['Adresse de facturation', `${b.address}, ${b.postalCode} ${b.city}`]);
   }
   if (order.cgv) rows.push(['CGV acceptées', order.cgv]);
+  if (order.plan) {
+    rows.push(['Échéance', `${order.plan.echeance} (acompte)`]);
+    rows.push(['Total de la commande', `${order.plan.total} TTC`]);
+    rows.push(['Solde à facturer', `${order.plan.remaining} TTC, avant la livraison`]);
+  }
+  if (order.ttc) {
+    rows.push([
+      'À faire',
+      order.plan
+        ? "Émettre la facture d'acompte, puis envoyer la facture et le lien de paiement du solde avant la livraison."
+        : 'Émettre la facture (TVA 20 %).',
+    ]);
+  }
 
   return sendMail({
     idempotencyKey: `commande-payee/${order.provider}/${order.reference}`,
     replyTo: order.email || undefined,
-    subject: `Commande payée : ${order.offerName} (${order.amount})`,
+    subject: `Commande payée : ${order.offerName} (${order.amount}${order.ttc ? ' TTC' : ''}${order.plan ? `, acompte ${order.plan.echeance}` : ''})`,
     html: `
       <div style="font-family:sans-serif;max-width:600px;margin:0 auto;padding:32px">
         <h2 style="color:#1c1813;margin-bottom:8px">Nouvelle commande payée</h2>

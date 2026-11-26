@@ -18,6 +18,9 @@ type Confirmation = {
   amount: string;
   email: string | null;
   provider: 'Stripe' | 'Mollie';
+  /** Grille 2026 : montant TTC ; solde restant dû si la commande est payée en plusieurs échéances. */
+  ttc?: boolean;
+  balance?: string;
 };
 
 /**
@@ -68,6 +71,11 @@ async function loadMollieConfirmation(id: string): Promise<Confirmation | null> 
       amount: formatPrice(fromMollieAmount(payment.amount.value)),
       email: maskEmail(payment.metadata?.email),
       provider: 'Mollie',
+      ttc: payment.metadata?.grille === '2026',
+      balance:
+        payment.metadata?.grille === '2026' && payment.metadata?.solde_ttc
+          ? formatPrice(fromMollieAmount(payment.metadata.solde_ttc))
+          : undefined,
     };
   } catch (err) {
     console.error('[merci] paiement Mollie illisible', err);
@@ -113,13 +121,21 @@ export default async function MerciPage({
             </h1>
 
             {confirmation && paid ? (
-              <p className="lede" style={{ marginBottom: 40 }}>
-                Votre paiement de {confirmation.amount} pour l&apos;offre {confirmation.offerName} a
-                bien été reçu.{' '}
-                {confirmation.provider === 'Stripe'
-                  ? `Un reçu Stripe vient de partir${confirmation.email ? ` sur ${confirmation.email}` : ''}.`
-                  : `Nous vous écrivons${confirmation.email ? ` sur ${confirmation.email}` : ''} pour organiser la suite.`}
-              </p>
+              <>
+                <p className="lede" style={{ marginBottom: confirmation.balance ? 20 : 40 }}>
+                  Votre paiement de {confirmation.amount}
+                  {confirmation.ttc ? ' TTC' : ''} pour l&apos;offre {confirmation.offerName} a bien été reçu.{' '}
+                  {confirmation.provider === 'Stripe'
+                    ? `Un reçu Stripe vient de partir${confirmation.email ? ` sur ${confirmation.email}` : ''}.`
+                    : `Nous vous écrivons${confirmation.email ? ` sur ${confirmation.email}` : ''} pour organiser la suite.`}
+                </p>
+                {confirmation.balance && (
+                  <p className="lede" style={{ marginBottom: 40 }}>
+                    Ce paiement est l&apos;acompte de votre commande. Le solde de {confirmation.balance} TTC est à
+                    régler avant la livraison : nous vous envoyons la facture et le lien de paiement par e-mail.
+                  </p>
+                )}
+              </>
             ) : (
               <p className="lede" style={{ marginBottom: 40 }}>
                 Votre commande est enregistrée. Si le paiement est encore en cours de traitement par

@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getStripe } from '@/lib/stripe';
 import { createPayment, toMollieAmount, updatePayment } from '@/lib/mollie';
-import { getOffer, isQuoteOnly } from '@/lib/offers';
+import { getOffer, isQuoteOnly, orderPlan, pricingMetadata } from '@/lib/offers';
 import { clientIp, rateLimit } from '@/lib/security';
 import {
   CGV_VERSION,
@@ -130,6 +130,9 @@ export async function POST(req: Request) {
         extra = { ...extra, cgv_version: CGV_VERSION, cgv_accepted_at: new Date().toISOString() };
       }
 
+      // Grille 2026 active : repère de grille et échéance dans les métadonnées (vide sinon : rien ne change).
+      extra = { ...extra, ...pricingMetadata(offer.id) };
+
       if (Object.keys(extra).length > 0) {
         const size = metadataBytes({ ...mollieMetadata(offer, details), ...extra });
         if (size > METADATA_MAX_BYTES) {
@@ -209,10 +212,12 @@ async function mollieCheckout(
     ? undefined
     : `${siteUrl}/api/mollie/webhook`;
 
+  const plan = orderPlan(offer.id);
   const payment = await createPayment({
     // Pour Mollie, le montant facturé est celui du catalogue (`offer.price`).
     amount: toMollieAmount(offer.price),
-    description: `Powamekka : ${offer.name}`,
+    // Commande en plusieurs échéances (grille 2026 active) : la première échéance est repérée dans le libellé.
+    description: `Powamekka : ${offer.name}${plan ? ` (acompte 1/${plan.total})` : ''}`,
     redirectUrl: `${origin}/merci`,
     cancelUrl: `${origin}/offres?annule=1`,
     webhookUrl,

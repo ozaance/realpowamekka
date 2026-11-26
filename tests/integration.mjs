@@ -363,10 +363,11 @@ console.log('\n== Grille tarifaire 2026 (désactivée par défaut, activée sur 
   for (const [id, ht] of Object.entries(GRILLE_LIGNE)) {
     const res = await co3({ offerId: id, provider: 'mollie', customer }, `10.10.0.${ipx++}`);
     const pay = Object.values(fakeState().payments).at(-1);
-    const attendu = (ttcCents(ht) / 100).toFixed(2);
+    // Site vitrine : seule la première échéance (50 %) est encaissée en ligne ; les autres : le total TTC.
+    const attendu = ((id === 'site-vitrine' ? ttcCents(ht) / 2 : ttcCents(ht)) / 100).toFixed(2);
     if (res.status !== 200 || pay.amount.value !== attendu || pay.amount.currency !== 'EUR') ecarts.push(`${id}: ${res.status} ${pay.amount?.value} (attendu ${attendu})`);
   }
-  check('grille active : montant envoyé à Mollie = prix HT x 1,20 pour les 9 offres commandables', ecarts.length === 0, JSON.stringify(ecarts));
+  check('grille active : montant envoyé à Mollie = prix TTC (HT x 1,20), première échéance (50 %) pour le Site vitrine, pour les 9 offres commandables', ecarts.length === 0, JSON.stringify(ecarts));
   const aux = Object.values(fakeState().payments).filter((p) => p.metadata?.offer_id === 'audit-ux').at(-1);
   check('grille active : libellé Mollie = nom de la grille', aux?.description === 'Powamekka : Audit UX et conversion', aux?.description);
 
@@ -399,6 +400,44 @@ console.log('\n== Grille tarifaire 2026 (désactivée par défaut, activée sur 
   check('grille active : 9 boutons « Commander » et 16 « Demander un devis »', c('Commander <') === 9 && c('Demander un devis <') === 16, `(${c('Commander <')} / ${c('Demander un devis <')})`);
   check('grille active : mention « prix hors taxes » et aucun tiret long', off3.includes('Prix en euros hors taxes (HT)') && !/[—–]/.test(off3));
   check('grille active : offres sur devis toujours sans prix', (off3.match(/Sur devis/g) ?? []).length >= 16);
+
+  // 4 bis. Échéancier : libellés affichés sur la page Offres.
+  const libelles = ['Acompte de 594 € TTC à la commande, puis 594 € TTC avant la livraison.', 'Paiement de 468 € TTC à la commande.', "Paiement en 3 échéances : 40 % à l'acceptation du devis, 40 % après validation de la conception, 20 % avant la livraison finale."];
+  check('grille active : échéanciers affichés (Landing page, Site vitrine, MVP et SaaS)', libelles.every((x) => off3.includes(x)) && (off3.match(/Paiement en 3 échéances/g) ?? []).length === 3, '');
+  check("grille active : 13 prestations sur devis, paiement intégral à l'acceptation du devis", (off3.match(/Paiement intégral à l'acceptation du devis\./g) ?? []).length === 13, String((off3.match(/Paiement intégral à l'acceptation du devis\./g) ?? []).length));
+  check('grille désactivée : aucun libellé d\'échéancier ni d\'acompte', !/acompte|Paiement en 3 échéances|Paiement intégral à l'acceptation|Paiement de \d/i.test(off1));
+
+  // 4 ter. Paiements : Site vitrine en deux fois, les autres en une fois ; métadonnées et libellé Mollie.
+  const dernierPaiement = (id) => Object.values(fakeState().payments).filter((p) => p.metadata?.offer_id === id).at(-1);
+  const vit = dernierPaiement('site-vitrine');
+  check('Site vitrine : 594,00 € TTC encaissés à la commande, libellé « acompte 1/2 »', vit?.amount.value === '594.00' && vit?.description === 'Powamekka : Site vitrine (acompte 1/2)', `${vit?.amount?.value} ${vit?.description}`);
+  check('Site vitrine : métadonnées d\'échéance (1/2, total 1188,00, solde 594,00)', vit?.metadata?.echeance === '1/2' && vit?.metadata?.total_ttc === '1188.00' && vit?.metadata?.solde_ttc === '594.00' && vit?.metadata?.grille === '2026', JSON.stringify(vit?.metadata));
+  const lan = dernierPaiement('landing-page');
+  check('Landing page : 468,00 € TTC en une fois, sans échéance', lan?.amount.value === '468.00' && lan?.description === 'Powamekka : Landing page' && !('echeance' in lan.metadata) && lan.metadata.grille === '2026', JSON.stringify(lan?.metadata));
+  const unePasEcheance = Object.keys(GRILLE_LIGNE).filter((id) => id !== 'site-vitrine').every((id) => !('echeance' in (dernierPaiement(id)?.metadata ?? {})));
+  check('seul le Site vitrine est payé en plusieurs échéances', unePasEcheance);
+
+  // 4 quater. Notification interne, page de confirmation (acompte puis paiement unique).
+  const wh3 = (id) => { const f = new FormData(); f.set('id', id); return fetch(`${APP3}/api/mollie/webhook`, { method: 'POST', body: f }); };
+  await mock('/__reset');
+  setFake((s) => { s.payments[vit.id].status = 'paid'; s.payments[lan.id].status = 'paid'; });
+  r = await wh3(vit.id);
+  let mails = await deliveries();
+  const unesc = (h) => strip(h).replace(/&#(\d+);/g, (m, n) => String.fromCharCode(Number(n)));
+  const norm1 = (x) => x.replace(/[\s\u00a0\u202f]+/g, ' ');
+  const sujet = norm1(mails[0]?.payload.subject ?? ''), corps = unesc(mails[0]?.payload.html ?? '');
+  check('notification de l\'acompte : sujet, montant TTC, échéance, total, solde et rappel de facturation', r.status === 200 && sujet.includes('594 € TTC') && sujet.includes('acompte 1/2') && ['594 € TTC', '1/2', 'Total de la commande', '1 188 € TTC', 'Solde à facturer', 'avant la livraison', "Émettre la facture d'acompte"].every((x) => corps.replace(/[\s  ]+/g, ' ').includes(x)), sujet);
+  r = await wh3(lan.id);
+  mails = await deliveries();
+  const corpsL = unesc(mails[1]?.payload.html ?? '');
+  check('notification d\'un paiement unique : montant TTC, rappel de facturation, aucune échéance', r.status === 200 && norm1(mails[1]?.payload.subject ?? '').includes('468 € TTC') && corpsL.includes('Émettre la facture (TVA 20 %)') && !corpsL.includes('Solde à facturer'), mails[1]?.payload.subject);
+  const merciV = strip(await (await fetch(`${APP3}/merci?mollie_id=${vit.id}`)).text());
+  check('page de confirmation de l\'acompte : montant TTC et solde à régler avant la livraison', merciV.includes('594 € TTC') && merciV.includes('Ce paiement est l\'acompte de votre commande') && merciV.includes('Le solde de 594 € TTC est à régler avant la livraison'));
+  const merciL = strip(await (await fetch(`${APP3}/merci?mollie_id=${lan.id}`)).text());
+  check('page de confirmation d\'un paiement unique : montant TTC, pas de solde', merciL.includes('468 € TTC') && !merciL.includes('acompte'));
+  const merci1 = strip(await (await fetch(`${APP}/merci?mollie_id=${created.id}`)).text());
+  check('grille désactivée : page de confirmation inchangée (montant sans « TTC », pas d\'acompte)', merci1.includes("Votre paiement de 149 € pour l'offre") && !merci1.includes('TTC') && !merci1.includes('acompte'));
+  await mock('/__reset');
 
   // 5. Données structurées : prix HT précisé pour la Landing page et le Site vitrine, rien pour les offres sur devis.
   const ld = [...html3.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map((m) => JSON.parse(m[1])).find((j) => j['@type'] === 'OfferCatalog');

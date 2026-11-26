@@ -12,6 +12,9 @@ export type CheckoutItem = {
   priceHTLabel?: string;
   priceTTCLabel?: string;
   vatLabel?: string;
+  /** Grille 2026 active : montant dû maintenant et solde éventuel. */
+  dueNowLabel?: string;
+  balanceLabel?: string;
 };
 
 /**
@@ -177,6 +180,18 @@ export default function CheckoutDialog({
             )}
           </div>
         </div>
+
+        {item.dueNowLabel && (
+          <p className="co-note">
+            <strong>À payer maintenant : {item.dueNowLabel}.</strong>
+            {item.balanceLabel && (
+              <>
+                <br />
+                {item.balanceLabel}
+              </>
+            )}
+          </p>
+        )}
 
         {provider !== 'mollie' ? (
           <div className="co-body">
