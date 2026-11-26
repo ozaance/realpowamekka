@@ -29,6 +29,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${BASE}/offres`, lastModified: lastCommitDate('app/offres/page.tsx'), changeFrequency: 'monthly', priority: 0.9 },
     { url: `${BASE}/faq`, lastModified: lastCommitDate('app/faq/page.tsx'), changeFrequency: 'monthly', priority: 0.8 },
     { url: `${BASE}/blog`, lastModified: lastCommitDate('app/blog/page.tsx'), changeFrequency: 'weekly', priority: 0.7 },
+    { url: `${BASE}/mentions-legales`, lastModified: lastCommitDate('app/mentions-legales/page.tsx'), changeFrequency: 'yearly', priority: 0.3 },
+    { url: `${BASE}/confidentialite`, lastModified: lastCommitDate('app/confidentialite/page.tsx'), changeFrequency: 'yearly', priority: 0.3 },
     { url: `${BASE}/vision`, lastModified: lastCommitDate('app/vision/page.tsx'), changeFrequency: 'yearly', priority: 0.6 },
     ...services.map((s) => ({
       url: `${BASE}/services/${s}`,
