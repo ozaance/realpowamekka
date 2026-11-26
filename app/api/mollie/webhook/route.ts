@@ -47,6 +47,16 @@ export async function POST(req: Request) {
         phone: meta.phone || 'Non renseigné',
         company: meta.company || 'Non renseigné',
         dashboardUrl: `https://my.mollie.com/dashboard/payments/${payment.id}`,
+        billing: meta.siren
+          ? {
+              siren: meta.siren,
+              vat: meta.tva || undefined,
+              address: meta.adresse || '',
+              postalCode: meta.cp || '',
+              city: meta.ville || '',
+            }
+          : undefined,
+        cgv: meta.cgv_version ? `version ${meta.cgv_version}, le ${meta.cgv_accepted_at || ''}` : undefined,
       });
     } catch (err) {
       // Le paiement est encaissé mais Powamekka n'a pas été prévenu : on répond

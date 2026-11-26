@@ -1,7 +1,7 @@
 'use client';
 import { useCallback, useState } from 'react';
 import type { OfferView } from '@/lib/offers';
-import CheckoutDialog, { type CheckoutItem } from './CheckoutDialog';
+import CheckoutDialog, { type CheckoutItem, type CheckoutOptions } from './CheckoutDialog';
 
 /* Prototype MVP et SaaS : sur devis uniquement. Pas de commande en ligne ; le
    bouton ouvre WhatsApp avec une demande de devis pré-remplie au nom de
@@ -22,9 +22,11 @@ function quoteLink(offerName: string) {
 export default function OffersGrid({
   offers,
   canceled,
+  checkout,
 }: {
   offers: OfferView[];
   canceled: boolean;
+  checkout?: CheckoutOptions;
 }) {
   const [selected, setSelected] = useState<CheckoutItem | null>(null);
   const close = useCallback(() => setSelected(null), []);
@@ -172,7 +174,7 @@ export default function OffersGrid({
         ))}
       </div>
 
-      <CheckoutDialog item={selected} onClose={close} />
+      <CheckoutDialog item={selected} onClose={close} options={checkout} />
     </>
   );
 }

@@ -254,6 +254,95 @@ const open = Object.values(fakeState().payments).find((p) => p.status === 'open'
 r = await wh(open.id);
 check('paiement non payé → 200 sans notification', r.status === 200 && (await deliveries()).length === 1);
 
+console.log('\n== Informations de facturation et CGV (désactivées par défaut, activées sur un second serveur de test)');
+{
+  const APP2 = process.env.APP2_URL;
+  const co2 = (body, ip) => fetch(`${APP2}/api/checkout`, { method: 'POST', headers: { 'content-type': 'application/json', 'x-forwarded-for': ip }, body: JSON.stringify(body) });
+  // SIREN d'exemple valide pour la clé de Luhn, et TVA calculée avec une copie indépendante de la formule.
+  const SIREN = '123456782';
+  const vatKey = String((12 + 3 * (Number(SIREN) % 97)) % 97).padStart(2, '0');
+  const VAT = `FR${vatKey}${SIREN}`;
+  const bill = { companyName: 'Entreprise Test SAS', siren: '123 456 782', vatNumber: '', street: '12 rue des Lilas', street2: '', postalCode: '68100', city: 'Mulhouse' };
+  const nPayments = () => Object.keys(fakeState().payments).length;
+  const lastPayment = () => Object.values(fakeState().payments).at(-1);
+
+  // 1. Production : tout est désactivé, la requête envoyée à Mollie est celle d'avant.
+  const KEYS = ['company', 'email', 'name', 'offer_id', 'offer_name', 'phone', 'source'];
+  r = await co({ offerId: 'landing-page', provider: 'mollie', customer, billing: bill, acceptCgv: true }, '10.8.0.1');
+  let p = lastPayment();
+  check('collecte désactivée : informations de facturation ignorées, métadonnées Mollie identiques à l\'ancien parcours', r.status === 200 && JSON.stringify(Object.keys(p.metadata).sort()) === JSON.stringify(KEYS) && p.metadata.company === customer.company, JSON.stringify(p.metadata));
+  const offresOff = await (await fetch(APP + '/offres')).text();
+  const offresOn = await (await fetch(APP2 + '/offres')).text();
+  check('page Offres : options de collecte désactivées sur le serveur principal, activées sur le second', /fields\\?":false/.test(offresOff) && /fields\\?":true/.test(offresOn));
+
+  // 2. Collecte activée : erreurs claires, aucun paiement créé.
+  const refused = [
+    ['informations de facturation absentes', { customer }, 'companyName'],
+    ['SIREN à 8 chiffres', { customer, billing: { ...bill, siren: '12345678' } }, 'siren'],
+    ['SIREN avec une faute de frappe (clé de Luhn)', { customer, billing: { ...bill, siren: '123456783' } }, 'siren'],
+    ['SIREN avec des lettres', { customer, billing: { ...bill, siren: '12345678A' } }, 'siren'],
+    ['numéro de TVA qui ne correspond pas au SIREN', { customer, billing: { ...bill, vatNumber: 'FR00987654321' } }, 'vatNumber'],
+    ['code postal à 4 chiffres', { customer, billing: { ...bill, postalCode: '6810' } }, 'postalCode'],
+    ['adresse vide', { customer, billing: { ...bill, street: ' ' } }, 'street'],
+    ['ville vide', { customer, billing: { ...bill, city: '' } }, 'city'],
+    ['nom d\'entreprise trop court', { customer, billing: { ...bill, companyName: 'A' } }, 'companyName'],
+    ['CGV non acceptées', { customer, billing: bill }, 'acceptCgv'],
+    ['CGV refusées (false)', { customer, billing: bill, acceptCgv: false }, 'acceptCgv'],
+    ['CGV « acceptées » avec une valeur non booléenne', { customer, billing: bill, acceptCgv: 'true' }, 'acceptCgv'],
+  ];
+  const before = nPayments();
+  const wrong = [];
+  let ipn = 1;
+  for (const [nom, extra, champ] of refused) {
+    const res = await co2({ offerId: 'landing-page', provider: 'mollie', ...extra }, `10.9.0.${ipn++}`);
+    const j = await res.json().catch(() => ({}));
+    if (res.status !== 400 || j.field !== champ || typeof j.error !== 'string' || j.url) wrong.push(`${nom}: ${res.status} ${j.field}`);
+  }
+  check('collecte activée : 12 saisies invalides → 400, champ désigné, message en français', wrong.length === 0, JSON.stringify(wrong));
+  check('aucun paiement créé pour ces refus', nPayments() === before);
+
+  // 3. Saisie valide : le prix ne bouge pas, les informations suivent le paiement et rien d'autre.
+  r = await co2({ offerId: 'landing-page', provider: 'mollie', customer, billing: { ...bill, vatNumber: VAT.toLowerCase(), street2: 'Bâtiment B' }, acceptCgv: true }, '10.9.1.1');
+  p = lastPayment();
+  const m = p.metadata;
+  check('saisie valide → 200 et paiement créé', r.status === 200 && p.id.startsWith('tr_'));
+  check('montant encaissé inchangé (prix du catalogue)', p.amount.value === (prices['landing-page'] / 100).toFixed(2), p.amount.value);
+  check('métadonnées : SIREN normalisé, TVA normalisée, adresse, code postal, ville', m.siren === SIREN && m.tva === VAT && m.adresse === '12 rue des Lilas, Bâtiment B' && m.cp === '68100' && m.ville === 'Mulhouse', JSON.stringify(m));
+  check('métadonnées : la dénomination remplace le champ entreprise', m.company === 'Entreprise Test SAS');
+  check('métadonnées : acceptation des CGV (version et date)', m.cgv_version === '1.0' && /^\d{4}-\d{2}-\d{2}T/.test(m.cgv_accepted_at ?? ''));
+  check('métadonnées : aucune autre donnée que celles attendues', JSON.stringify(Object.keys(m).sort()) === JSON.stringify([...KEYS, 'adresse', 'cgv_accepted_at', 'cgv_version', 'cp', 'siren', 'tva', 'ville'].sort()), JSON.stringify(Object.keys(m)));
+  check('métadonnées sous la limite de 1 000 octets', new TextEncoder().encode(JSON.stringify(m)).length <= 1000);
+
+  // 4. Garde-fous qui restent vrais.
+  const nb = nPayments();
+  r = await co2({ offerId: 'prototype-mvp', provider: 'mollie', customer, billing: bill, acceptCgv: true }, '10.9.2.1');
+  check('offre sur devis : toujours refusée (403), même avec des informations valides', r.status === 403 && nPayments() === nb);
+  r = await co2({ offerId: 'landing-page', provider: 'stripe', customer, billing: bill, acceptCgv: true }, '10.9.2.2');
+  check('Stripe : toujours fermé (403)', r.status === 403 && nPayments() === nb);
+  const long = 'x'.repeat(200);
+  r = await co2({ offerId: 'landing-page', provider: 'mollie', customer: { name: long, email: `${'a'.repeat(190)}@exemple.fr`, phone: long, company: long }, billing: { ...bill, companyName: 'y'.repeat(100), street: 'z'.repeat(120), street2: 'w'.repeat(80), vatNumber: VAT }, acceptCgv: true }, '10.9.2.3');
+  check('métadonnées trop volumineuses → 400, rien n\'est tronqué ni envoyé à Mollie', r.status === 400 && nPayments() === nb, `(reçu ${r.status})`);
+
+  // 5. Le webhook transmet les informations dans la notification interne, une seule fois.
+  setFake((s) => { s.payments[p.id].status = 'paid'; });
+  await mock('/__reset');
+  const f2 = new FormData(); f2.set('id', p.id);
+  r = await fetch(`${APP2}/api/mollie/webhook`, { method: 'POST', body: f2 });
+  d = await deliveries();
+  const mail = d[0]?.payload.html ?? '';
+  check('notification : SIREN, TVA, adresse de facturation et acceptation des CGV', r.status === 200 && d.length === 1 && ['SIREN', SIREN, 'TVA intracom.', VAT, 'Adresse de facturation', '12 rue des Lilas, Bâtiment B, 68100 Mulhouse', 'CGV acceptées', 'version 1.0'].every((x) => mail.includes(x)));
+  const f3 = new FormData(); f3.set('id', p.id);
+  r = await fetch(`${APP2}/api/mollie/webhook`, { method: 'POST', body: f3 });
+  check('webhook rejoué → toujours un seul e-mail', r.status === 200 && (await deliveries()).length === 1);
+
+  // 6. Ancien parcours : la notification d'une commande sans informations de facturation n'a pas de nouvelle ligne.
+  await mock('/__reset');
+  setFake((s) => { s.payments[created.id].status = 'paid'; });
+  r = await wh(created.id);
+  d = await deliveries();
+  check('notification de l\'ancien parcours : aucune ligne SIREN ni CGV', d.length === 1 && !(d[0].payload.html).includes('SIREN') && !(d[0].payload.html).includes('CGV'));
+}
+
 console.log('\n== Pages');
 for (const p of ['/', '/offres', '/faq', '/vision', '/mentions-legales', '/confidentialite', '/blog', '/services/ia', '/services/audit', '/merci', '/sitemap.xml', '/robots.txt']) {
   r = await fetch(APP + p);

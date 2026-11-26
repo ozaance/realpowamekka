@@ -11,6 +11,10 @@ export type PaidOrder = {
   phone: string;
   company: string;
   dashboardUrl: string;
+  /** Informations de facturation, présentes seulement si la collecte est active. */
+  billing?: { siren: string; vat?: string; address: string; postalCode: string; city: string };
+  /** Acceptation des CGV (version et date), présente seulement si l'acceptation est active. */
+  cgv?: string;
 };
 
 /**
@@ -32,6 +36,13 @@ export async function notifyOrder(order: PaidOrder) {
     ['Téléphone', order.phone],
     ['Entreprise', order.company],
   ];
+  if (order.billing) {
+    const b = order.billing;
+    rows.push(['SIREN', b.siren]);
+    if (b.vat) rows.push(['TVA intracom.', b.vat]);
+    rows.push(['Adresse de facturation', `${b.address}, ${b.postalCode} ${b.city}`]);
+  }
+  if (order.cgv) rows.push(['CGV acceptées', order.cgv]);
 
   return sendMail({
     idempotencyKey: `commande-payee/${order.provider}/${order.reference}`,
