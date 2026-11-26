@@ -22,12 +22,6 @@ const jsonLd = {
   "url": "https://www.powamekka.com",
   "logo": "https://www.powamekka.com/logo-mark-bone.png",
   "description": "Agence spécialisée en intelligence artificielle et systèmes digitaux pour PME. Audit stratégique, automatisation, formation et intégration IA.",
-  "address": {
-    "@type": "PostalAddress",
-    "addressLocality": "Rouen",
-    "addressRegion": "Normandie",
-    "addressCountry": "FR"
-  },
   "areaServed": "France",
   "serviceType": [
     "Conseil en intelligence artificielle",
@@ -40,10 +34,7 @@ const jsonLd = {
     "@type": "ContactPoint",
     "contactType": "customer service",
     "availableLanguage": "French"
-  },
-  "sameAs": [
-    "https://www.linkedin.com/company/powamekka"
-  ]
+  }
 };
 
 export default function Home() {

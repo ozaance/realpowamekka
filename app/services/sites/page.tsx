@@ -3,7 +3,7 @@ import { breadcrumbJsonLd, jsonLdScript, serviceJsonLd } from '@/lib/schema';
 import type { Metadata } from 'next';
 
 const TITLE = 'Sites Premium : Powamekka';
-const DESCRIPTION = 'Création de sites web premium pour PME et artisans. Design sur-mesure, développement Next.js, intégration avec vos outils internes. Basé à Rouen.';
+const DESCRIPTION = 'Création de sites web premium pour PME et artisans. Design sur-mesure, développement Next.js, intégration avec vos outils internes.';
 
 export const metadata: Metadata = {
   alternates: { canonical: '/services/sites' },

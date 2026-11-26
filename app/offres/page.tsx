@@ -18,6 +18,8 @@ export const metadata: Metadata = {
       'Landing page, site vitrine, prototype MVP, applications SaaS, audits IA et prestations à la carte. Un devis personnalisé.',
     url: 'https://www.powamekka.com/offres',
     type: 'website',
+    // Un openGraph de page remplace celui du layout : sans cette ligne, /offres était partagée sans image.
+    images: [{ url: '/og-image.jpg', width: 1200, height: 630, alt: 'Powamekka : offres' }],
   },
 };
 

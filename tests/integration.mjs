@@ -482,6 +482,20 @@ console.log('\n== Commande en ligne fermée (valeur de production par défaut, q
   check('commande fermée : balisage FAQ cohérent avec la page (aucune réponse « commandent directement »)', !JSON.stringify(faqLd).includes('se commandent directement'));
 }
 
+console.log('\n== Contenu et référencement');
+{
+  const strip5 = (h) => h.replace(/<script[\s\S]*?<\/script>/g, ' ').replace(/<[^>]+>/g, ' ').replace(/&#x27;/g, "'").replace(/[\s  ]+/g, ' ');
+  const nf = await fetch(APP + '/page-qui-n-existe-pas');
+  const nfh = await nf.text();
+  check('page 404 : statut 404, aux couleurs du site (navigation, titre, liens), non indexée', nf.status === 404 && nfh.includes('Cette page n') && nfh.includes('href="/offres"') && /noindex/.test(nfh) && nfh.includes('Powamekka'), `(${nf.status})`);
+  const offresHtml = await (await fetch(APP + '/offres')).text();
+  check('page Offres : image de partage Open Graph présente', /property="og:image"/.test(offresHtml));
+  const pagesTexte = [];
+  for (const p of ['/', '/faq', '/services/sites', '/vision', '/offres']) pagesTexte.push(await (await fetch(APP + p)).text());
+  check('aucune localisation non justifiée (Rouen, Normandie) ni profil LinkedIn non vérifié dans les pages', !/Rouen|Normandie|linkedin\.com/i.test(pagesTexte.join(' ')));
+  check('badge de la carte recommandée : « Recommandé » (plus de « Le plus choisi »)', strip5(offresHtml).includes('Recommandé') && !strip5(offresHtml).includes('Le plus choisi'));
+}
+
 console.log('\n== Pages');
 for (const p of ['/', '/offres', '/faq', '/vision', '/mentions-legales', '/confidentialite', '/cgv', '/blog', '/services/ia', '/services/audit', '/merci', '/sitemap.xml', '/robots.txt']) {
   r = await fetch(APP + p);
