@@ -3,6 +3,15 @@ import { useCallback, useState } from 'react';
 import type { ServiceCategory, ServiceView } from '@/lib/offers';
 import CheckoutDialog, { type CheckoutItem } from './CheckoutDialog';
 
+/* Prestations sur devis : pas de commande en ligne, le bouton ouvre WhatsApp avec une
+   demande de devis pré-remplie (même formulation que pour les offres sur devis). Le refus
+   est aussi appliqué côté serveur (API de paiement). */
+function quoteLink(name: string) {
+  return `https://wa.me/33605715122?text=${encodeURIComponent(
+    `Bonjour, je souhaite demander un devis pour votre offre ${name}.`,
+  )}`;
+}
+
 export default function ServicesCatalog({
   services,
   categories,
@@ -48,9 +57,20 @@ export default function ServicesCatalog({
               <p className="svc-tagline">{s.tagline}</p>
             </div>
             <p className="svc-price">{s.priceLabel}</p>
-            <button type="button" className="btn svc-cta" onClick={() => setSelected(s)}>
-              Commander <span className="ar">→</span>
-            </button>
+            {s.quoteOnly ? (
+              <a
+                className="btn svc-cta"
+                href={quoteLink(s.name)}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Demander un devis <span className="ar">→</span>
+              </a>
+            ) : (
+              <button type="button" className="btn svc-cta" onClick={() => setSelected(s)}>
+                Commander <span className="ar">→</span>
+              </button>
+            )}
           </li>
         ))}
       </ul>

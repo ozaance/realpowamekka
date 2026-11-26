@@ -2,7 +2,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import OffersGrid from '@/components/OffersGrid';
 import ServicesCatalog from '@/components/ServicesCatalog';
-import { offers as rawOffers, getOfferViews, getServiceViews, serviceCategories } from '@/lib/offers';
+import { offers as rawOffers, isQuoteOnly, getOfferViews, getServiceViews, serviceCategories } from '@/lib/offers';
 import { jsonLdScript, offerCatalogJsonLd } from '@/lib/schema';
 import type { Metadata } from 'next';
 
@@ -29,7 +29,7 @@ export default async function OffresPage({
   const offers = getOfferViews();
   const services = getServiceViews();
 
-  const offerCatalogSchema = offerCatalogJsonLd(rawOffers);
+  const offerCatalogSchema = offerCatalogJsonLd(rawOffers.map((o) => ({ ...o, quoteOnly: isQuoteOnly(o.id) })));
 
   return (
     <>
