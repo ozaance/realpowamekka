@@ -9,12 +9,12 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Offres & tarifs : sites web sur mesure | Powamekka',
   description:
-    'Landing page, site vitrine, prototype MVP et applications SaaS sur mesure. Tarifs clairs, commande en ligne et paiement sécurisé par Mollie.',
+    'Landing page et site vitrine à prix affiché, commande en ligne et paiement sécurisé par Mollie. Prestations à cadrer, prototype MVP et applications SaaS sur mesure : sur devis.',
   alternates: { canonical: '/offres' },
   openGraph: {
     title: 'Offres & tarifs | Powamekka',
     description:
-      'Landing page, site vitrine, prototype MVP et applications SaaS sur mesure. Tarifs clairs et paiement sécurisé.',
+      'Landing page et site vitrine à prix affiché, paiement sécurisé. Prestations à cadrer, prototype MVP et applications SaaS sur mesure : sur devis.',
     url: 'https://www.powamekka.com/offres',
     type: 'website',
   },
@@ -62,11 +62,12 @@ export default async function OffresPage({
               Offres & tarifs
             </p>
             <h1 className="display rv d2" style={{ maxWidth: '18ch', marginBottom: 28 }}>
-              Des formats clairs, des prix annoncés.
+              Des formats clairs, un devis pour le sur-mesure.
             </h1>
             <p className="lede rv d3" style={{ maxWidth: '48ch' }}>
-              Choisissez le format adapté à votre situation et lancez le projet immédiatement.
-              Paiement sécurisé par Mollie, démarrage dès réception de vos informations.
+              Commandez en ligne la landing page, le site vitrine et nos prestations simples. Pour un
+              projet sur mesure ou une prestation à cadrer, demandez un devis. Paiement sécurisé par
+              Mollie, démarrage dès réception de vos informations.
             </p>
           </div>
         </section>
@@ -110,8 +111,8 @@ export default async function OffresPage({
               Un besoin précis ? Commandez uniquement ce qu&apos;il vous faut.
             </h2>
             <p style={{ fontSize: 15, lineHeight: 1.7, color: 'var(--ink-dim)', maxWidth: '56ch', marginBottom: 40 }}>
-              Des prestations ponctuelles à prix fixe, pour améliorer un site existant, gagner en
-              visibilité ou démarrer avec l&apos;IA.
+              Des prestations ponctuelles, à commander directement ou à faire chiffrer sur devis, pour
+              améliorer un site existant, gagner en visibilité ou démarrer avec l&apos;IA.
             </p>
             <ServicesCatalog services={services} categories={serviceCategories} />
           </div>

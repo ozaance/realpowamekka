@@ -85,7 +85,7 @@ export const faqSections: FaqSection[] = [
       {
         question: 'Combien coûte un site internet pour une PME ?',
         answer:
-          "Les tarifs de nos offres web, de la landing page (une page unique pensée pour convertir) au site vitrine de 3 à 5 pages, sont affichés sur la page Offres. Les projets sur mesure, comme une application métier, sont chiffrés après un premier échange.",
+          "Les tarifs de la landing page (une page unique pensée pour convertir) et du site vitrine de 3 à 5 pages sont affichés sur la page Offres. Les prestations à cadrer et les projets sur mesure, comme une application métier, sont chiffrés sur devis après un premier échange.",
       },
       {
         question: 'En combien de temps un site est-il livré ?',
@@ -95,7 +95,7 @@ export const faqSections: FaqSection[] = [
       {
         question: 'Peut-on commander et payer en ligne ?',
         answer:
-          "Oui. Les offres web se commandent directement depuis la page Offres, avec un paiement sécurisé par Mollie. Nous vous contactons ensuite pour réunir les éléments nécessaires au démarrage.",
+          "Oui, pour la landing page, le site vitrine et nos prestations simples : elles se commandent directement depuis la page Offres, avec un paiement sécurisé par Mollie. Nous vous contactons ensuite pour réunir les éléments nécessaires au démarrage. Les autres projets se lancent après acceptation d'un devis.",
       },
     ],
   },
