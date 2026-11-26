@@ -197,6 +197,16 @@ export function pricing2026Enabled(): boolean {
   return process.env.PRICING_2026 === '1';
 }
 
+/**
+ * Commande en ligne FERMÉE par défaut. Tant que `ONLINE_ORDERS_OPEN` n'est pas à « 1 », aucune offre ne se
+ * commande ni ne se paie en ligne : le site propose « Demander un devis » partout et la route de paiement
+ * refuse toute commande (403), sans appel à Mollie ni à Stripe. L'ouverture relève du responsable du projet :
+ * elle suppose les CGV publiées, un outil de facturation et la collecte des informations de facturation.
+ */
+export function onlineOrdersOpen(): boolean {
+  return process.env.ONLINE_ORDERS_OPEN === '1';
+}
+
 type GridService = (typeof SERVICES_GRID_2026)[number];
 const gridServiceOf = (id: string): GridService | undefined => SERVICES_GRID_2026.find((s) => s.id === id);
 
@@ -265,12 +275,14 @@ function scheduleDisplay(id: string): { scheduleLabel?: string; dueNowLabel?: st
   const schedule = scheduleOf(id);
   const ht = gridPriceHT(id);
   if (!schedule || ht === undefined) return {};
-  if (isQuoteOnly(id)) {
+  if (isQuoteOnly(id) || !onlineOrdersOpen()) {
     return {
       scheduleLabel:
         schedule.length === 3
           ? `Paiement en 3 échéances : ${schedule[0].percent} % à l'acceptation du devis, ${schedule[1].percent} % après validation de la conception, ${schedule[2].percent} % avant la livraison finale.`
-          : "Paiement intégral à l'acceptation du devis.",
+          : schedule.length === 2
+            ? `Paiement en 2 échéances : ${schedule[0].percent} % à l'acceptation du devis, ${schedule[1].percent} % avant la livraison.`
+            : "Paiement intégral à l'acceptation du devis.",
     };
   }
   const plan = orderPlan(id);
@@ -296,6 +308,17 @@ function priceDisplay(id: string): { priceHTLabel: string; priceTTCLabel: string
     priceTTCLabel: `${formatEuros(ttc)} TTC`,
     vatLabel: `TVA ${VAT_RATE_PERCENT} % : ${formatEuros(ttc - ht)}`,
   };
+}
+
+/**
+ * Libellé de prix affiché. Offre sur devis : « Sur devis ». Commande en ligne fermée : les prix du catalogue
+ * actuel, jugés obsolètes, ne sont plus affichés ; la grille 2026, une fois activée, affiche ses prix HT.
+ */
+function priceLabelOf(id: string, catalogCents: number): string {
+  if (isQuoteOnly(id)) return QUOTE_LABEL;
+  const grid = priceDisplay(id)?.priceHTLabel;
+  if (grid) return grid;
+  return onlineOrdersOpen() ? formatPrice(catalogCents) : QUOTE_LABEL;
 }
 
 /** Variable d'environnement de surcharge pour une offre donnée. */
@@ -364,13 +387,13 @@ export function getOfferViews(): OfferView[] {
     id: o.id,
     name: o.name,
     tagline: o.tagline,
-    priceLabel: isQuoteOnly(o.id) ? QUOTE_LABEL : (priceDisplay(o.id)?.priceHTLabel ?? formatPrice(o.price)),
+    priceLabel: priceLabelOf(o.id, o.price),
     ...priceDisplay(o.id),
     ...scheduleDisplay(o.id),
     delivery: o.delivery,
     features: o.features,
     featured: o.featured ?? false,
-    quoteOnly: isQuoteOnly(o.id),
+    quoteOnly: isQuoteOnly(o.id) || !onlineOrdersOpen(),
   }));
 }
 
@@ -397,10 +420,10 @@ export function getServiceViews(): ServiceView[] {
     // Grille 2026 active : nom et description de la grille validée.
     name: pricing2026Enabled() ? (gridServiceOf(s.id)?.gridName ?? s.name) : s.name,
     tagline: pricing2026Enabled() ? (gridServiceOf(s.id)?.tagline ?? s.tagline) : s.tagline,
-    priceLabel: isQuoteOnly(s.id) ? QUOTE_LABEL : (priceDisplay(s.id)?.priceHTLabel ?? formatPrice(s.price)),
+    priceLabel: priceLabelOf(s.id, s.price),
     ...priceDisplay(s.id),
     ...scheduleDisplay(s.id),
     category: s.category,
-    quoteOnly: isQuoteOnly(s.id),
+    quoteOnly: isQuoteOnly(s.id) || !onlineOrdersOpen(),
   }));
 }

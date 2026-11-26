@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getStripe } from '@/lib/stripe';
 import { createPayment, toMollieAmount, updatePayment } from '@/lib/mollie';
-import { getOffer, isQuoteOnly, orderPlan, pricingMetadata } from '@/lib/offers';
+import { getOffer, isQuoteOnly, onlineOrdersOpen, orderPlan, pricingMetadata } from '@/lib/offers';
 import { clientIp, rateLimit } from '@/lib/security';
 import {
   CGV_VERSION,
@@ -90,6 +90,14 @@ export async function POST(req: Request) {
     const offer = getOffer(offerId);
     if (!offer) {
       return NextResponse.json({ error: 'Offre inconnue' }, { status: 400 });
+    }
+
+    // Commande en ligne fermée (par défaut) : refus avant tout appel à Mollie ou Stripe, pour toute offre.
+    if (!onlineOrdersOpen()) {
+      return NextResponse.json(
+        { error: "La commande en ligne n'est pas ouverte. Demandez un devis depuis la page Offres." },
+        { status: 403 }
+      );
     }
 
     // Prototype MVP et SaaS : sur devis uniquement. Refus avant tout appel à

@@ -5,6 +5,8 @@
  * donc du texte brut, sans balises.
  */
 
+import { onlineOrdersOpen } from './offers';
+
 export type FaqItem = { question: string; answer: string };
 export type FaqSection = { title: string; items: FaqItem[] };
 
@@ -101,12 +103,40 @@ export const faqSections: FaqSection[] = [
   },
 ];
 
+/**
+ * Sections affichées. Commande en ligne fermée (par défaut) : les réponses sur le prix et le paiement en ligne
+ * décrivent le parcours réel (demande de devis), à la place de celles qui supposent la commande en ligne.
+ */
+export function getFaqSections(): FaqSection[] {
+  if (onlineOrdersOpen()) return faqSections;
+  return faqSections.map((section) => ({
+    ...section,
+    items: section.items.map((item) => {
+      if (item.question === 'Combien coûte un site internet pour une PME ?') {
+        return {
+          ...item,
+          answer:
+            "Le prix dépend du format : landing page, site vitrine ou projet sur mesure comme une application métier. Chaque projet est chiffré sur devis après un premier échange, qui permet de confirmer le périmètre et le calendrier.",
+        };
+      }
+      if (item.question === 'Peut-on commander et payer en ligne ?') {
+        return {
+          ...item,
+          answer:
+            "Pour le moment, chaque projet démarre par une demande de devis. Les modalités de paiement, y compris les échéances, sont précisées dans le devis.",
+        };
+      }
+      return item;
+    }),
+  }));
+}
+
 /** Toutes les questions à plat, pour le balisage FAQPage. */
 export function faqJsonLd() {
   return {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
-    mainEntity: faqSections.flatMap((section) =>
+    mainEntity: getFaqSections().flatMap((section) =>
       section.items.map((item) => ({
         '@type': 'Question',
         name: item.question,

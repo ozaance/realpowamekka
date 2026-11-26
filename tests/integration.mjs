@@ -445,6 +445,43 @@ console.log('\n== Grille tarifaire 2026 (désactivée par défaut, activée sur 
   check('grille active : données structurées en HT (390,00 et 990,00, TVA non incluse)', JSON.stringify(specs) === JSON.stringify(['390.00/false', '990.00/false']), JSON.stringify(specs));
 }
 
+console.log('\n== Commande en ligne fermée (valeur de production par défaut, quatrième serveur de test)');
+{
+  const APP4 = process.env.APP4_URL;
+  const co4 = (body, ip) => fetch(`${APP4}/api/checkout`, { method: 'POST', headers: { 'content-type': 'application/json', 'x-forwarded-for': ip }, body: JSON.stringify(body) });
+  const strip4 = (h) => h.replace(/<script[\s\S]*?<\/script>/g, ' ').replace(/<[^>]+>/g, ' ').replace(/&#x27;/g, "'").replace(/[\s  ]+/g, ' ');
+  const nb = Object.keys(fakeState().payments).length, calls = fakeState().calls.length;
+  const allIds = Object.keys(prices);
+  const bad = [];
+  let k = 1;
+  for (const id of allIds) {
+    for (const provider of ['mollie', 'stripe']) {
+      const res = await co4({ offerId: id, provider, customer }, `10.11.${Math.floor(k / 250)}.${(k++ % 250) + 1}`);
+      const j = await res.json().catch(() => ({}));
+      if (res.status !== 403 || typeof j.error !== 'string' || j.url) bad.push(`${id}/${provider}: ${res.status}`);
+    }
+  }
+  check(`commande fermée : les ${allIds.length} offres refusées (403) en Mollie comme en Stripe, sans adresse de paiement`, bad.length === 0 && allIds.length === 25, JSON.stringify(bad.slice(0, 3)));
+  const a4 = fakeState();
+  check('commande fermée : aucun paiement créé, aucun appel à Mollie ni à Stripe', Object.keys(a4.payments).length === nb && a4.calls.length === calls);
+  const r4 = await co4({ offerId: 'inexistante', provider: 'mollie' }, '10.12.0.1');
+  check('commande fermée : une offre inconnue reste une erreur 400', r4.status === 400);
+  const h4 = await (await fetch(APP4 + '/offres')).text();
+  const t4 = strip4(h4);
+  const c4 = (n) => h4.split(n).length - 1;
+  check('commande fermée : 25 « Demander un devis », aucun « Commander »', c4('Demander un devis <') === 25 && c4('Commander <') === 0, `(${c4('Demander un devis <')} / ${c4('Commander <')})`);
+  check('commande fermée : aucun prix obsolète affiché (149, 205, 229, 499 €), « Sur devis » partout', !/\b(149|205|229|499|2 500|5 000|10 000) €/.test(t4) && (t4.match(/Sur devis/g) ?? []).length >= 25, '');
+  check('commande fermée : textes de la page Offres cohérents (aucune promesse de commande ni de paiement en ligne)', t4.includes('un devis pour chaque projet') && !/Commandez|commander directement|paiement sécurisé par Mollie/i.test(t4));
+  const ld4 = [...h4.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map((m) => JSON.parse(m[1])).find((j) => j['@type'] === 'OfferCatalog');
+  check('commande fermée : aucun prix dans les données structurées', (ld4?.itemListElement ?? []).every((o) => !o.price && !o.priceSpecification));
+  const faq4 = strip4(await (await fetch(APP4 + '/faq')).text());
+  check('commande fermée : FAQ décrivant le parcours par devis', faq4.includes('chaque projet démarre par une demande de devis') && !faq4.includes('se commandent directement'));
+  // La FAQ est une page statique : elle lit l'indicateur à la construction (Vercel reconstruit à chaque changement
+  // de variable), donc seule la valeur de production par défaut est vérifiée ici.
+  const faqLd = [...(await (await fetch(APP4 + '/faq')).text()).matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map((m) => JSON.parse(m[1])).find((j) => j['@type'] === 'FAQPage');
+  check('commande fermée : balisage FAQ cohérent avec la page (aucune réponse « commandent directement »)', !JSON.stringify(faqLd).includes('se commandent directement'));
+}
+
 console.log('\n== Pages');
 for (const p of ['/', '/offres', '/faq', '/vision', '/mentions-legales', '/confidentialite', '/blog', '/services/ia', '/services/audit', '/merci', '/sitemap.xml', '/robots.txt']) {
   r = await fetch(APP + p);
