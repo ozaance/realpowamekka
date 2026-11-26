@@ -10,6 +10,8 @@
  * toucher au code.
  */
 
+import { GRID_2026, SERVICES_GRID_2026, VAT_RATE_PERCENT, formatEuros, toTTC } from './pricing';
+
 export type Offer = {
   /** Identifiant interne envoyé par le front à /api/checkout */
   id: string;
@@ -180,6 +182,48 @@ export function isQuoteOnly(id: string): boolean {
   return QUOTE_ONLY_IDS.has(id);
 }
 
+/* ------------------------------------------------------------------ */
+/* Grille tarifaire 2026 (lib/pricing.ts)                              */
+/* ------------------------------------------------------------------ */
+
+/**
+ * PRÉPARÉE, DÉSACTIVÉE PAR DÉFAUT. Tant que `PRICING_2026` n'est pas à « 1 », le site affiche et Mollie
+ * encaisse les prix du catalogue ci-dessus, sans aucun changement. Activée, la grille 2026 de
+ * `lib/pricing.ts` devient la source unique : affichage HT, TVA et TTC, et montant encaissé par Mollie =
+ * montant TTC affiché. L'activation relève du responsable du projet (CGV publiées, outil de facturation
+ * choisi, collecte des informations de facturation, tests Mollie en mode test).
+ */
+export function pricing2026Enabled(): boolean {
+  return process.env.PRICING_2026 === '1';
+}
+
+type GridService = (typeof SERVICES_GRID_2026)[number];
+const gridServiceOf = (id: string): GridService | undefined => SERVICES_GRID_2026.find((s) => s.id === id);
+
+/** Prix HT (centimes) de la grille 2026 pour une offre ou une prestation, ou undefined. */
+export function gridPriceHT(id: string): number | undefined {
+  return GRID_2026.find((o) => o.id === id)?.priceHT ?? gridServiceOf(id)?.priceHT;
+}
+
+/** Montant TTC (centimes) dû à la commande en ligne : le total TTC, pour une offre payée en une fois. */
+export function dueAtOrderTTC(id: string): number | undefined {
+  const ht = gridPriceHT(id);
+  return ht === undefined ? undefined : toTTC(ht);
+}
+
+/** Libellés de prix HT, TVA et TTC (grille 2026), ou aucun si la grille n'est pas active ou si l'offre est sur devis. */
+function priceDisplay(id: string): { priceHTLabel: string; priceTTCLabel: string; vatLabel: string } | undefined {
+  if (!pricing2026Enabled() || isQuoteOnly(id)) return undefined;
+  const ht = gridPriceHT(id);
+  if (ht === undefined) return undefined;
+  const ttc = toTTC(ht);
+  return {
+    priceHTLabel: `${formatEuros(ht)} HT`,
+    priceTTCLabel: `${formatEuros(ttc)} TTC`,
+    vatLabel: `TVA ${VAT_RATE_PERCENT} % : ${formatEuros(ttc - ht)}`,
+  };
+}
+
 /** Variable d'environnement de surcharge pour une offre donnée. */
 function envPriceKey(id: string): string {
   return `STRIPE_PRICE_${id.toUpperCase().replace(/-/g, '_')}`;
@@ -195,7 +239,14 @@ export function getOffer(id: unknown): Pick<Offer, 'id' | 'name' | 'price' | 'pr
   if (!offer) return undefined;
 
   const override = process.env[envPriceKey(offer.id)];
-  return override ? { ...offer, priceId: override } : offer;
+  const base = override ? { ...offer, priceId: override } : offer;
+
+  // Grille 2026 active : le montant encaissé est le montant TTC affiché, et le nom celui de la grille.
+  if (pricing2026Enabled()) {
+    const due = dueAtOrderTTC(base.id);
+    if (due !== undefined) return { ...base, price: due, name: gridServiceOf(base.id)?.gridName ?? base.name };
+  }
+  return base;
 }
 
 const eur = new Intl.NumberFormat('fr-FR', {
@@ -219,6 +270,10 @@ export type OfferView = {
   name: string;
   tagline: string;
   priceLabel: string;
+  /** Grille 2026 active : prix HT, TTC et TVA (absents sinon). */
+  priceHTLabel?: string;
+  priceTTCLabel?: string;
+  vatLabel?: string;
   delivery: string;
   features: string[];
   featured: boolean;
@@ -231,7 +286,8 @@ export function getOfferViews(): OfferView[] {
     id: o.id,
     name: o.name,
     tagline: o.tagline,
-    priceLabel: isQuoteOnly(o.id) ? QUOTE_LABEL : formatPrice(o.price),
+    priceLabel: isQuoteOnly(o.id) ? QUOTE_LABEL : (priceDisplay(o.id)?.priceHTLabel ?? formatPrice(o.price)),
+    ...priceDisplay(o.id),
     delivery: o.delivery,
     features: o.features,
     featured: o.featured ?? false,
@@ -244,6 +300,10 @@ export type ServiceView = {
   name: string;
   tagline: string;
   priceLabel: string;
+  /** Grille 2026 active : prix HT, TTC et TVA (absents sinon). */
+  priceHTLabel?: string;
+  priceTTCLabel?: string;
+  vatLabel?: string;
   category: ServiceCategory;
   /** Vendue sur devis uniquement : pas de commande en ligne. */
   quoteOnly: boolean;
@@ -252,9 +312,11 @@ export type ServiceView = {
 export function getServiceViews(): ServiceView[] {
   return services.map((s) => ({
     id: s.id,
-    name: s.name,
-    tagline: s.tagline,
-    priceLabel: isQuoteOnly(s.id) ? QUOTE_LABEL : formatPrice(s.price),
+    // Grille 2026 active : nom et description de la grille validée.
+    name: pricing2026Enabled() ? (gridServiceOf(s.id)?.gridName ?? s.name) : s.name,
+    tagline: pricing2026Enabled() ? (gridServiceOf(s.id)?.tagline ?? s.tagline) : s.tagline,
+    priceLabel: isQuoteOnly(s.id) ? QUOTE_LABEL : (priceDisplay(s.id)?.priceHTLabel ?? formatPrice(s.price)),
+    ...priceDisplay(s.id),
     category: s.category,
     quoteOnly: isQuoteOnly(s.id),
   }));

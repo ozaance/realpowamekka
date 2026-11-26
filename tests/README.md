@@ -34,6 +34,7 @@ pour prouver qu'**aucun appel à Stripe ni à un service externe** n'a eu lieu.
   prestataire demandé ou le montant envoyé, sans aucun appel à Mollie ni à Stripe ;
 - **Stripe fermé aux nouvelles commandes** : 403, jamais de repli sur Stripe par défaut ;
 - **informations de facturation et acceptation des CGV** (`lib/billing.ts`) : désactivées par défaut (le serveur principal des tests garde le comportement de production et prouve que la requête envoyée à Mollie est inchangée) ; un **second serveur**, démarré par `tests/run.mjs` avec `BILLING_FIELDS_ENABLED=1` et `CGV_ACCEPTANCE_ENABLED=1`, vérifie les refus (SIREN, TVA, adresse, case CGV), les métadonnées Mollie, la limite de taille et la notification interne ;
+- **grille tarifaire 2026** (`lib/pricing.ts`, indicateur `PRICING_2026`) : désactivée par défaut (le serveur principal prouve que les anciens prix, sans HT ni TTC, sont inchangés) ; un **troisième serveur** avec `PRICING_2026=1` vérifie que le montant envoyé à Mollie est le prix HT x 1,20 de la grille (recopiée indépendamment dans le test), l'affichage HT, TVA et TTC, les 16 offres sur devis toujours refusées, Stripe fermé et les données structurées en HT ;
 - page `/merci` (e-mail masqué), pages principales, en-têtes de sécurité.
 
 ### Ces tests décrivent l'état de `main` après les PR #35 et #36

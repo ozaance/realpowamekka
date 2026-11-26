@@ -99,16 +99,23 @@ export default function OffersGrid({
               )}
             </div>
 
-            <p
-              style={{
-                fontFamily: 'var(--font-display)',
-                fontSize: 'clamp(28px,3vw,38px)',
-                color: 'var(--ink)',
-                lineHeight: 1,
-              }}
-            >
-              {offer.priceLabel}
-            </p>
+            <div>
+              <p
+                style={{
+                  fontFamily: 'var(--font-display)',
+                  fontSize: 'clamp(28px,3vw,38px)',
+                  color: 'var(--ink)',
+                  lineHeight: 1,
+                }}
+              >
+                {offer.priceLabel}
+              </p>
+              {offer.priceTTCLabel && (
+                <p className="price-sub">
+                  {offer.priceTTCLabel} <span>({offer.vatLabel})</span>
+                </p>
+              )}
+            </div>
 
             <p style={{ fontSize: 14, lineHeight: 1.7, color: 'var(--ink-dim)' }}>{offer.tagline}</p>
 

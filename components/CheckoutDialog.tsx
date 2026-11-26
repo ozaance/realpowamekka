@@ -4,7 +4,15 @@ import { parseBilling, type BillingField } from '@/lib/billing';
 
 type Provider = 'stripe' | 'mollie';
 
-export type CheckoutItem = { id: string; name: string; priceLabel: string };
+export type CheckoutItem = {
+  id: string;
+  name: string;
+  priceLabel: string;
+  /** Grille 2026 active : prix HT, TTC et TVA (absents sinon). */
+  priceHTLabel?: string;
+  priceTTCLabel?: string;
+  vatLabel?: string;
+};
 
 /**
  * Options de collecte, transmises par le serveur (désactivées par défaut) :
@@ -158,7 +166,16 @@ export default function CheckoutDialog({
             <p className="co-label">Votre commande</p>
             <h2 id="co-title" className="co-title">{item.name}</h2>
           </div>
-          <p className="co-price">{item.priceLabel}</p>
+          <div style={{ textAlign: 'right' }}>
+            <p className="co-price">{item.priceLabel}</p>
+            {item.priceTTCLabel && (
+              <p className="co-vat">
+                {item.vatLabel}
+                <br />
+                <strong>{item.priceTTCLabel}</strong>
+              </p>
+            )}
+          </div>
         </div>
 
         {provider !== 'mollie' ? (

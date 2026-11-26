@@ -621,6 +621,10 @@ html.preload .d3{animation-delay:.28s}html.preload .d4{animation-delay:.4s}html.
 .co-label{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;
   color:var(--ink-dim);margin-bottom:8px}
 .co-title{font-family:var(--font-display);font-weight:400;font-size:clamp(20px,2vw,24px);line-height:1.25;color:var(--ink)}
+.co-vat{font-size:12.5px;line-height:1.5;color:var(--ink-dim);margin-top:4px;white-space:nowrap}
+.co-vat strong{color:var(--ink);font-weight:500}
+.price-sub{display:block;font-size:13px;line-height:1.5;color:var(--ink-dim);margin-top:6px;font-family:var(--font-body,inherit)}
+.price-sub span{white-space:nowrap}
 .co-price{font-family:var(--font-display);font-size:clamp(22px,2.2vw,28px);color:var(--ink);white-space:nowrap}
 .co-body{display:flex;flex-direction:column;gap:10px}
 .co-body .co-label{margin-bottom:2px}
