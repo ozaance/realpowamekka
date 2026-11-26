@@ -497,7 +497,7 @@ console.log('\n== Contenu et référencement');
 }
 
 console.log('\n== Pages');
-for (const p of ['/', '/offres', '/faq', '/vision', '/mentions-legales', '/confidentialite', '/blog', '/services/ia', '/services/audit', '/merci', '/sitemap.xml', '/robots.txt']) {
+for (const p of ['/', '/offres', '/faq', '/vision', '/mentions-legales', '/confidentialite', '/cgv', '/blog', '/services/ia', '/services/audit', '/merci', '/sitemap.xml', '/robots.txt']) {
   r = await fetch(APP + p);
   check(`GET ${p} → 200`, r.status === 200, `(reçu ${r.status})`);
 }
@@ -512,7 +512,14 @@ console.log('\n== Pages légales');
   check('mentions légales : identité, SIREN, SIRET, TVA, adresse, téléphone, hébergeur', ['Osee DIAMPO SENGELE EI', '822 349 841', '822 349 841 00012', 'FR35822349841', "22 rue d'Ottmarsheim", '+33 6 35 09 79 80', 'Vercel Inc.', 'contact@powamekka.com'].every((x) => ml.includes(x)));
   check('politique de confidentialité : responsable, prestataires, droits, CNIL', ['Osee DIAMPO SENGELE EI', 'Mollie B.V.', 'Resend', 'Vercel Inc.', 'CNIL'].every((x) => pc.includes(x)));
   check('aucun champ à compléter ni tiret long dans les pages légales', !/\[À|\[A |À FOURNIR|À DÉCIDER|À VALIDER|[—–]/.test(ml + pc));
+  const cgvT = strip(await (await fetch(APP + '/cgv')).text());
+  check('CGV : identité de l\'éditeur, version, B2B exclusif, devis valables 30 jours, aucun escompte', ['Osee DIAMPO SENGELE EI', 'Version 1.0', 'exclusivement réservées aux professionnels', 'valables 30 jours', "Aucun escompte n'est accordé"].every((x) => cgvT.includes(x)));
+  check('CGV : échéanciers décidés (100 %, 50/50, 40/40/20, prestations sur devis à l\'acceptation)', ['Landing page : 100 % à la commande', 'Site vitrine : 50 % à la commande, 50 % avant la livraison', "40 % à l'acceptation du devis, 40 % après validation de la conception, 20 % avant la livraison finale", "Prestations à la carte sur devis : 100 % à l'acceptation du devis", 'Le dernier paiement est exigible avant la mise en production'].every((x) => cgvT.includes(x)));
+  check('CGV : pénalités (trois fois le taux légal) et indemnité de 40 euros, TVA 20 %', cgvT.includes("trois fois le taux d'intérêt légal") && cgvT.includes('40 euros') && cgvT.includes('TVA est facturée en sus au taux de 20 %'));
+  check('CGV : hébergement 12 mois, abonnement 149 € HT par mois sur accord écrit, sans reconduction automatique, préavis d\'un mois, sauvegardes 30 jours', ["12 mois d'hébergement", '149 € HT par mois (178,80 € TTC)', 'accord écrit préalable', "aucun abonnement n'est renouvelé automatiquement", "préavis d'un mois", 'conservées 30 jours'].every((x) => cgvT.includes(x)));
+  check('CGV : aucun prix MVP ou SaaS publié, aucun champ à compléter, aucun tiret long, aucune clause non vérifiée (plafond de responsabilité, tribunal désigné)', !/3 000 €|6 000 €|12 000 €|3 600 €|7 200 €|14 400 €/.test(cgvT) && !/\[À|À FOURNIR|À DÉCIDER|À VALIDER|[—–]/.test(cgvT) && !/plafon|Mulhouse|dommages indirects/i.test(cgvT));
   const home = await (await fetch(APP + '/')).text();
+  check('pied de page : lien vers les conditions de vente', home.includes('href="/cgv"'));
   check('pied de page : liens vers les mentions légales et la confidentialité', home.includes('href="/mentions-legales"') && home.includes('href="/confidentialite"'));
 }
 
