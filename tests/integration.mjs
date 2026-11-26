@@ -394,7 +394,8 @@ console.log('\n== Grille tarifaire 2026 (désactivée par défaut, activée sur 
     for (const x of attendus) if (!off3.includes(x)) manquants.push(`${id}: ${x}`);
   }
   check('grille active : chaque offre commandable affiche HT, TTC et TVA', manquants.length === 0, JSON.stringify(manquants.slice(0, 4)));
-  check('grille active : anciens prix absents (149, 499, 2 500, 5 000, 10 000 €)', !/\b149 €|\b499 €|2 500 €|5 000 €|10 000 €/.test(off3));
+  // « 149 € HT par mois » est le prix de l'abonnement d'hébergement de la grille, pas l'ancien prix de la Landing page.
+  check('grille active : anciens prix absents (149, 499, 2 500, 5 000, 10 000 €)', !/\b149 €(?! HT par mois)|\b499 €|2 500 €|5 000 €|10 000 €/.test(off3));
   const html3 = await (await fetch(APP3 + '/offres')).text();
   const c = (needle) => html3.split(needle).length - 1;
   check('grille active : 9 boutons « Commander » et 16 « Demander un devis »', c('Commander <') === 9 && c('Demander un devis <') === 16, `(${c('Commander <')} / ${c('Demander un devis <')})`);
@@ -438,6 +439,14 @@ console.log('\n== Grille tarifaire 2026 (désactivée par défaut, activée sur 
   const merci1 = strip(await (await fetch(`${APP}/merci?mollie_id=${created.id}`)).text());
   check('grille désactivée : page de confirmation inchangée (montant sans « TTC », pas d\'acompte)', merci1.includes("Votre paiement de 149 € pour l'offre") && !merci1.includes('TTC') && !merci1.includes('acompte'));
   await mock('/__reset');
+
+  // 4 quinquies. Fiches de la Landing page et du Site vitrine : inclus, non inclus, hébergement et abonnement.
+  const cartes = ['Landing page', 'Site vitrine'];
+  const fiches = ["12 mois d'hébergement inclus", '2 séries de révisions', 'Mise en ligne', 'Non inclus', 'Nom de domaine : enregistré à votre nom', 'Licences, API et services tiers', 'Aucune garantie de positionnement sur Google ni de résultat commercial', "149 € HT par mois (178,80 € TTC)", "uniquement sur votre accord écrit, sans reconduction automatique", 'Délai confirmé après cadrage et réception de vos éléments'];
+  const manqF = fiches.filter((x) => !off3.includes(x));
+  check('grille active : fiches Landing page et Site vitrine complètes (inclus, non inclus, hébergement, abonnement, délai conditionné)', manqF.length === 0 && (off3.match(/12 mois d'hébergement inclus/g) ?? []).length === 2, JSON.stringify(manqF));
+  check('grille active : aucune promesse de résultat, de délai chiffré ni de classement dans les fiches', !/garanti(?!e de| de)|en 24 ?h|en \d+ jours|premier sur Google|résultats? garantis?/i.test(off3.replace('Aucune garantie de positionnement sur Google ni de résultat commercial', '')));
+  check('grille désactivée : fiches inchangées (ni « Non inclus » ni hébergement)', !/Non inclus|12 mois d'hébergement|2 séries de révisions/.test(off1));
 
   // 5. Données structurées : prix HT précisé pour la Landing page et le Site vitrine, rien pour les offres sur devis.
   const ld = [...html3.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map((m) => JSON.parse(m[1])).find((j) => j['@type'] === 'OfferCatalog');

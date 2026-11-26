@@ -144,6 +144,21 @@ export default function OffersGrid({
               ))}
             </ul>
 
+            {offer.excludes && (
+              <div>
+                <p className="co-label" style={{ marginBottom: 8 }}>Non inclus</p>
+                <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 6, margin: 0, padding: 0 }}>
+                  {offer.excludes.map((x) => (
+                    <li key={x} style={{ fontSize: 13, lineHeight: 1.55, color: 'var(--ink-dim)', display: 'flex', gap: 10 }}>
+                      <span style={{ flexShrink: 0, width: '1.05903em', textAlign: 'center' }} aria-hidden="true">•</span>
+                      {x}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            {offer.note && <p style={{ fontSize: 13, lineHeight: 1.6, color: 'var(--ink-dim)' }}>{offer.note}</p>}
+
             <p
               className="offer-note"
               style={{
