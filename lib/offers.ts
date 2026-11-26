@@ -269,6 +269,56 @@ export function pricingMetadata(id: string): Record<string, string> {
   return meta;
 }
 
+/**
+ * Fiches de la Landing page et du Site vitrine pour la grille 2026 (affichées seulement si `PRICING_2026=1`) :
+ * ce qui est inclus, ce qui ne l'est pas, hébergement et abonnement. Rien n'y promet un résultat, un délai
+ * chiffré ou un service que POWAMEKKA ne peut pas fournir ; les contenus (textes, logo, images) sont fournis
+ * par le Client (CGV, article 8). Les conditions sont celles des CGV publiées (/cgv).
+ */
+const SITE_EXCLUDES = [
+  "Nom de domaine : enregistré à votre nom, à votre charge",
+  'Rédaction des textes, création du logo et des photos : à nous confier en prestation à part',
+  'Licences, API et services tiers',
+  'Nouvelles fonctionnalités hors du périmètre convenu',
+  'Aucune garantie de positionnement sur Google ni de résultat commercial',
+];
+const HOSTING_NOTE =
+  "Après les 12 mois : abonnement d'hébergement à 149 € HT par mois (178,80 € TTC), uniquement sur votre accord écrit, sans reconduction automatique, résiliable avec un préavis d'un mois.";
+const GRID_FICHES: Record<string, { tagline: string; features: string[]; excludes: string[]; note: string; delivery: string }> = {
+  'landing-page': {
+    tagline: 'Une page unique qui présente votre activité et invite vos visiteurs à vous contacter.',
+    features: [
+      '1 page web professionnelle, mise en page à partir des textes et visuels que vous fournissez',
+      'Design moderne adapté à votre activité',
+      'Formulaire de contact ou lien WhatsApp intégré',
+      'Compatible mobile, tablette et ordinateur',
+      'Mise en ligne de la page',
+      "12 mois d'hébergement inclus",
+      '2 séries de révisions',
+    ],
+    excludes: SITE_EXCLUDES,
+    note: HOSTING_NOTE,
+    delivery: 'Délai confirmé après cadrage et réception de vos éléments',
+  },
+  'site-vitrine': {
+    tagline: 'Un site complet qui présente votre activité, vos services et votre positionnement.',
+    features: [
+      '3 à 5 pages : Accueil, Services, À propos, Contact',
+      'Design moderne adapté à votre secteur, mise en page à partir des textes et visuels que vous fournissez',
+      'Formulaire de contact intégré',
+      'Compatible mobile, tablette et ordinateur',
+      'Mise en ligne du site',
+      "12 mois d'hébergement inclus",
+      '2 séries de révisions',
+    ],
+    excludes: [...SITE_EXCLUDES, 'Blog, boutique en ligne et espace client'],
+    note: HOSTING_NOTE,
+    delivery: 'Délai confirmé après cadrage et réception de vos éléments',
+  },
+};
+
+const fiche = (id: string) => (pricing2026Enabled() ? GRID_FICHES[id] : undefined);
+
 /** Libellés d'échéancier (grille active) : à la commande en ligne, ou sur devis. */
 function scheduleDisplay(id: string): { scheduleLabel?: string; dueNowLabel?: string; balanceLabel?: string } {
   if (!pricing2026Enabled()) return {};
@@ -375,6 +425,9 @@ export type OfferView = {
   scheduleLabel?: string;
   dueNowLabel?: string;
   balanceLabel?: string;
+  /** Grille 2026 active : ce qui n'est pas inclus et note d'hébergement (Landing page et Site vitrine). */
+  excludes?: string[];
+  note?: string;
   delivery: string;
   features: string[];
   featured: boolean;
@@ -386,12 +439,14 @@ export function getOfferViews(): OfferView[] {
   return offers.map((o) => ({
     id: o.id,
     name: o.name,
-    tagline: o.tagline,
+    tagline: fiche(o.id)?.tagline ?? o.tagline,
     priceLabel: priceLabelOf(o.id, o.price),
     ...priceDisplay(o.id),
     ...scheduleDisplay(o.id),
-    delivery: o.delivery,
-    features: o.features,
+    excludes: fiche(o.id)?.excludes,
+    note: fiche(o.id)?.note,
+    delivery: fiche(o.id)?.delivery ?? o.delivery,
+    features: fiche(o.id)?.features ?? o.features,
     featured: o.featured ?? false,
     quoteOnly: isQuoteOnly(o.id) || !onlineOrdersOpen(),
   }));
