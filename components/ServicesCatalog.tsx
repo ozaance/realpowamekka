@@ -7,7 +7,7 @@ import CheckoutDialog, { type CheckoutItem } from './CheckoutDialog';
    demande de devis pré-remplie (même formulation que pour les offres sur devis). Le refus
    est aussi appliqué côté serveur (API de paiement). */
 function quoteLink(name: string) {
-  return `https://wa.me/33605715122?text=${encodeURIComponent(
+  return `https://wa.me/33635097980?text=${encodeURIComponent(
     `Bonjour, je souhaite demander un devis pour votre offre ${name}.`,
   )}`;
 }

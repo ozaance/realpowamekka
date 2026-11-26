@@ -70,7 +70,7 @@ export default function CineNav() {
 
       <a
         className="cn-nav-cta"
-        href="https://wa.me/33605715122?text=Bonjour%2C%20je%20souhaite%20un%20premier%20%C3%A9change%20au%20sujet%20de%20mon%20entreprise."
+        href="https://wa.me/33635097980?text=Bonjour%2C%20je%20souhaite%20un%20premier%20%C3%A9change%20au%20sujet%20de%20mon%20entreprise."
         target="_blank"
         rel="noopener noreferrer"
       >

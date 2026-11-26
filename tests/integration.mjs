@@ -274,7 +274,7 @@ console.log('\n== Page Offres : boutons de commande');
   const ld = [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map((m) => JSON.parse(m[1])).find((j) => j['@type'] === 'OfferCatalog');
   const ldPrices = (ld?.itemListElement ?? []).map((o) => o.price).filter(Boolean);
   check('balisage JSON-LD : seuls Landing page et Site vitrine ont un prix', JSON.stringify(ldPrices) === JSON.stringify(['149.00', '499.00']), JSON.stringify(ldPrices));
-  const quoteLinks = [...html.matchAll(/href="(https:\/\/wa\.me\/33605715122\?text=[^"]+)"/g)].map((m) => decodeURIComponent(m[1].replace(/&amp;/g, '&').replace(/&#x27;/g, "'")));
+  const quoteLinks = [...html.matchAll(/href="(https:\/\/wa\.me\/33635097980\?text=[^"]+)"/g)].map((m) => decodeURIComponent(m[1].replace(/&amp;/g, '&').replace(/&#x27;/g, "'")));
   check('chaque offre sur devis a sa demande de devis WhatsApp pré-remplie', QUOTE_ONLY.every((id) => quoteLinks.some((l) => l.includes('demander un devis pour votre offre ' + names[id]))), JSON.stringify(quoteLinks.map((l) => l.slice(0, 120))));
 }
 

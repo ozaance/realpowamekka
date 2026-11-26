@@ -15,7 +15,7 @@ export default function CTAFinal() {
           Un seul échange peut révéler vos premiers leviers de croissance, de clarté et d&apos;efficacité.
         </p>
         <div className="acts">
-          <a className="btn" href="https://wa.me/33605715122?text=Bonjour%2C%20je%20souhaite%20demander%20un%20audit%20pour%20mon%20entreprise." target="_blank" rel="noopener noreferrer" style={{ borderRadius: 18 }}>Demander un audit <span className="ar">{"\u2192"}</span></a>
+          <a className="btn" href="https://wa.me/33635097980?text=Bonjour%2C%20je%20souhaite%20demander%20un%20audit%20pour%20mon%20entreprise." target="_blank" rel="noopener noreferrer" style={{ borderRadius: 18 }}>Demander un audit <span className="ar">{"\u2192"}</span></a>
           <a className="btn ghost" href="mailto:contact@powamekka.com" style={{ borderRadius: 18 }}>contact@powamekka.com</a>
         </div>
       </div>

@@ -14,7 +14,7 @@ const QUOTE_BUTTON = {
 } as const;
 
 function quoteLink(offerName: string) {
-  return `https://wa.me/33605715122?text=${encodeURIComponent(
+  return `https://wa.me/33635097980?text=${encodeURIComponent(
     `Bonjour, je souhaite demander un devis pour votre offre ${offerName}.`,
   )}`;
 }

@@ -153,7 +153,7 @@ export default async function OffresPage({
                 premier échange. Un appel suffit pour cadrer le périmètre.
               </p>
               <a
-                href="https://wa.me/33605715122?text=Bonjour%2C%20je%20souhaite%20discuter%20d%27un%20projet%20sur%20mesure."
+                href="https://wa.me/33635097980?text=Bonjour%2C%20je%20souhaite%20discuter%20d%27un%20projet%20sur%20mesure."
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn"

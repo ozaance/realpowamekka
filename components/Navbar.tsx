@@ -91,7 +91,7 @@ export default function Navbar() {
           </div>
         </div>
         <MobileMenu />
-        <a className="nav-cta" href="https://wa.me/33605715122?text=Bonjour%2C%20je%20souhaite%20un%20premier%20%C3%A9change%20au%20sujet%20de%20mon%20entreprise." target="_blank" rel="noopener noreferrer" style={{ borderRadius: 18 }}>
+        <a className="nav-cta" href="https://wa.me/33635097980?text=Bonjour%2C%20je%20souhaite%20un%20premier%20%C3%A9change%20au%20sujet%20de%20mon%20entreprise." target="_blank" rel="noopener noreferrer" style={{ borderRadius: 18 }}>
           <span className="cta-long">Demander un premier échange</span>
           <span className="cta-short">Premier échange</span>
         </a>
