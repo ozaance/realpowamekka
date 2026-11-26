@@ -2,7 +2,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import OffersGrid from '@/components/OffersGrid';
 import ServicesCatalog from '@/components/ServicesCatalog';
-import { offers as rawOffers, gridPriceHT, isQuoteOnly, pricing2026Enabled, getOfferViews, getServiceViews, serviceCategories } from '@/lib/offers';
+import { offers as rawOffers, gridPriceHT, isQuoteOnly, onlineOrdersOpen, pricing2026Enabled, getOfferViews, getServiceViews, serviceCategories } from '@/lib/offers';
 import { jsonLdScript, offerCatalogJsonLd } from '@/lib/schema';
 import { billingFieldsEnabled, cgvAcceptanceEnabled } from '@/lib/billing';
 import type { Metadata } from 'next';
@@ -10,12 +10,12 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Offres & tarifs : sites web sur mesure | Powamekka',
   description:
-    'Landing page et site vitrine à prix affiché, commande en ligne et paiement sécurisé par Mollie. Prestations à cadrer, prototype MVP et applications SaaS sur mesure : sur devis.',
+    'Landing page, site vitrine, prototype MVP, applications SaaS, audits IA et prestations à la carte. Un devis personnalisé après un premier échange.',
   alternates: { canonical: '/offres' },
   openGraph: {
     title: 'Offres & tarifs | Powamekka',
     description:
-      'Landing page et site vitrine à prix affiché, paiement sécurisé. Prestations à cadrer, prototype MVP et applications SaaS sur mesure : sur devis.',
+      'Landing page, site vitrine, prototype MVP, applications SaaS, audits IA et prestations à la carte. Un devis personnalisé.',
     url: 'https://www.powamekka.com/offres',
     type: 'website',
   },
@@ -38,7 +38,7 @@ export default async function OffresPage({
       // Grille 2026 active : prix HT de la grille ; sinon le prix du catalogue, comme avant.
       price: pricing2026Enabled() ? (gridPriceHT(o.id) ?? o.price) : o.price,
       vatExcluded: pricing2026Enabled(),
-      quoteOnly: isQuoteOnly(o.id),
+      quoteOnly: isQuoteOnly(o.id) || !onlineOrdersOpen(),
     }))
   );
 
@@ -73,12 +73,12 @@ export default async function OffresPage({
               Offres & tarifs
             </p>
             <h1 className="display rv d2" style={{ maxWidth: '18ch', marginBottom: 28 }}>
-              Des formats clairs, un devis pour le sur-mesure.
+              {onlineOrdersOpen() ? 'Des formats clairs, un devis pour le sur-mesure.' : 'Des formats clairs, un devis pour chaque projet.'}
             </h1>
             <p className="lede rv d3" style={{ maxWidth: '48ch' }}>
-              Commandez en ligne la landing page, le site vitrine et nos prestations simples. Pour un
-              projet sur mesure ou une prestation à cadrer, demandez un devis. Paiement sécurisé par
-              Mollie, démarrage dès réception de vos informations.
+              {onlineOrdersOpen()
+                ? "Commandez en ligne la landing page, le site vitrine et nos prestations simples. Pour un projet sur mesure ou une prestation à cadrer, demandez un devis. Paiement sécurisé par Mollie, démarrage dès réception de vos informations."
+                : "Choisissez le format qui correspond à votre besoin, puis demandez un devis : un premier échange gratuit permet de cadrer le projet, le périmètre et le calendrier. Les modalités de paiement sont précisées dans le devis."}
             </p>
             {pricing2026Enabled() && (
               <p className="rv d3" style={{ maxWidth: '48ch', marginTop: 14, fontSize: 13, color: 'var(--ink-dim)' }}>
@@ -124,11 +124,14 @@ export default async function OffresPage({
                 marginBottom: 14,
               }}
             >
-              Un besoin précis ? Commandez uniquement ce qu&apos;il vous faut.
+              {onlineOrdersOpen()
+                ? "Un besoin précis ? Commandez uniquement ce qu'il vous faut."
+                : "Un besoin précis ? Demandez uniquement ce qu'il vous faut."}
             </h2>
             <p style={{ fontSize: 15, lineHeight: 1.7, color: 'var(--ink-dim)', maxWidth: '56ch', marginBottom: 40 }}>
-              Des prestations ponctuelles, à commander directement ou à faire chiffrer sur devis, pour
-              améliorer un site existant, gagner en visibilité ou démarrer avec l&apos;IA.
+              {onlineOrdersOpen()
+                ? "Des prestations ponctuelles, à commander directement ou à faire chiffrer sur devis, pour améliorer un site existant, gagner en visibilité ou démarrer avec l'IA."
+                : "Des prestations ponctuelles, chiffrées sur devis, pour améliorer un site existant, gagner en visibilité ou démarrer avec l'IA."}
             </p>
             <ServicesCatalog services={services} categories={serviceCategories} checkout={checkout} />
           </div>

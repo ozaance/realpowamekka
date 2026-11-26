@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-import { faqSections, faqJsonLd } from '@/lib/faq';
+import { getFaqSections, faqJsonLd } from '@/lib/faq';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -62,7 +62,7 @@ export default function FaqPage() {
         </section>
 
         {/* SECTIONS */}
-        {faqSections.map((section) => (
+        {getFaqSections().map((section) => (
           <section
             key={section.title}
             style={{ padding: 'clamp(50px,8vh,100px) 0', borderBottom: '1px solid var(--line)' }}
