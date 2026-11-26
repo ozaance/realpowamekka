@@ -58,7 +58,10 @@ export default function ServicesCatalog({
               <h3 className="svc-name">{s.name}</h3>
               <p className="svc-tagline">{s.tagline}</p>
             </div>
-            <p className="svc-price">{s.priceLabel}</p>
+            <p className="svc-price">
+              {s.priceLabel}
+              {s.priceTTCLabel && <span className="price-sub">{s.priceTTCLabel}</span>}
+            </p>
             {s.quoteOnly ? (
               <a
                 className="btn svc-cta"

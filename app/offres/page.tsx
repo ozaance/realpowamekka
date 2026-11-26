@@ -2,7 +2,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import OffersGrid from '@/components/OffersGrid';
 import ServicesCatalog from '@/components/ServicesCatalog';
-import { offers as rawOffers, isQuoteOnly, getOfferViews, getServiceViews, serviceCategories } from '@/lib/offers';
+import { offers as rawOffers, gridPriceHT, isQuoteOnly, pricing2026Enabled, getOfferViews, getServiceViews, serviceCategories } from '@/lib/offers';
 import { jsonLdScript, offerCatalogJsonLd } from '@/lib/schema';
 import { billingFieldsEnabled, cgvAcceptanceEnabled } from '@/lib/billing';
 import type { Metadata } from 'next';
@@ -32,7 +32,15 @@ export default async function OffresPage({
   // Collecte des informations de facturation et case CGV : désactivées par défaut (voir lib/billing.ts).
   const checkout = { fields: billingFieldsEnabled(), cgv: cgvAcceptanceEnabled() };
 
-  const offerCatalogSchema = offerCatalogJsonLd(rawOffers.map((o) => ({ ...o, quoteOnly: isQuoteOnly(o.id) })));
+  const offerCatalogSchema = offerCatalogJsonLd(
+    rawOffers.map((o) => ({
+      ...o,
+      // Grille 2026 active : prix HT de la grille ; sinon le prix du catalogue, comme avant.
+      price: pricing2026Enabled() ? (gridPriceHT(o.id) ?? o.price) : o.price,
+      vatExcluded: pricing2026Enabled(),
+      quoteOnly: isQuoteOnly(o.id),
+    }))
+  );
 
   return (
     <>
@@ -72,6 +80,11 @@ export default async function OffresPage({
               projet sur mesure ou une prestation à cadrer, demandez un devis. Paiement sécurisé par
               Mollie, démarrage dès réception de vos informations.
             </p>
+            {pricing2026Enabled() && (
+              <p className="rv d3" style={{ maxWidth: '48ch', marginTop: 14, fontSize: 13, color: 'var(--ink-dim)' }}>
+                Prix en euros hors taxes (HT). La TVA de 20 % s&apos;ajoute : le montant TTC est indiqué sous chaque prix.
+              </p>
+            )}
           </div>
         </section>
 

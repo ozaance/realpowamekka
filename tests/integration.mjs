@@ -343,6 +343,69 @@ console.log('\n== Informations de facturation et CGV (désactivées par défaut,
   check('notification de l\'ancien parcours : aucune ligne SIREN ni CGV', d.length === 1 && !(d[0].payload.html).includes('SIREN') && !(d[0].payload.html).includes('CGV'));
 }
 
+console.log('\n== Grille tarifaire 2026 (désactivée par défaut, activée sur un troisième serveur de test)');
+{
+  const APP3 = process.env.APP3_URL;
+  const co3 = (body, ip) => fetch(`${APP3}/api/checkout`, { method: 'POST', headers: { 'content-type': 'application/json', 'x-forwarded-for': ip }, body: JSON.stringify(body) });
+  const strip = (h) => h.replace(/<script[\s\S]*?<\/script>/g, ' ').replace(/<[^>]+>/g, ' ').replace(/&#x27;/g, "'").replace(/&amp;/g, '&').replace(/[\s  ]+/g, ' ');
+  // Grille validée, recopiée INDÉPENDAMMENT du code testé (euros HT). TTC = HT x 1,20.
+  const GRILLE_LIGNE = { 'landing-page': 390, 'site-vitrine': 990, 'maintenance-site': 229, 'audit-ia': 205, 'optimisation-seo': 290, 'pack-seo-local': 250, 'google-business': 150, 'chatbot-ia-basique': 390, 'audit-ux': 290 };
+  const ttcCents = (ht) => Math.round(ht * 100 * 1.2);
+  const nPay = () => Object.keys(fakeState().payments).length;
+
+  // 1. Production : aucune trace de la grille 2026 sur le serveur par défaut.
+  const off1 = strip(await (await fetch(APP + '/offres')).text());
+  check('grille désactivée : aucun prix HT ou TTC, anciens prix affichés', !/ HT\b|TTC/.test(off1) && ['149 €', '499 €'].every((x) => off1.includes(x)), '');
+
+  // 2. Grille active : le montant encaissé est le TTC affiché, pour chaque offre commandable.
+  const ecarts = [];
+  let ipx = 1;
+  for (const [id, ht] of Object.entries(GRILLE_LIGNE)) {
+    const res = await co3({ offerId: id, provider: 'mollie', customer }, `10.10.0.${ipx++}`);
+    const pay = Object.values(fakeState().payments).at(-1);
+    const attendu = (ttcCents(ht) / 100).toFixed(2);
+    if (res.status !== 200 || pay.amount.value !== attendu || pay.amount.currency !== 'EUR') ecarts.push(`${id}: ${res.status} ${pay.amount?.value} (attendu ${attendu})`);
+  }
+  check('grille active : montant envoyé à Mollie = prix HT x 1,20 pour les 9 offres commandables', ecarts.length === 0, JSON.stringify(ecarts));
+  const aux = Object.values(fakeState().payments).filter((p) => p.metadata?.offer_id === 'audit-ux').at(-1);
+  check('grille active : libellé Mollie = nom de la grille', aux?.description === 'Powamekka : Audit UX et conversion', aux?.description);
+
+  // 3. Garde-fous inchangés.
+  const nb = nPay();
+  const refus = [];
+  for (const id of QUOTE_ONLY) {
+    const res = await co3({ offerId: id, provider: 'mollie', customer }, `10.10.1.${ipx++}`);
+    if (res.status !== 403) refus.push(`${id}: ${res.status}`);
+  }
+  check('grille active : les 16 offres sur devis restent refusées (403) sans paiement créé', refus.length === 0 && nPay() === nb, JSON.stringify(refus));
+  const st3 = await co3({ offerId: 'landing-page', provider: 'stripe' }, `10.10.1.${ipx++}`);
+  check('grille active : Stripe reste fermé (403)', st3.status === 403 && nPay() === nb);
+
+  // 4. Affichage : HT en grand, TTC et TVA dessous ; offres sur devis sans prix.
+  const off3 = strip(await (await fetch(APP3 + '/offres')).text());
+  const fmt = (c) => new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', minimumFractionDigits: c % 100 ? 2 : 0, maximumFractionDigits: 2 }).format(c / 100).replace(/[\s  ]+/g, ' ');
+  const manquants = [];
+  for (const [id, ht] of Object.entries(GRILLE_LIGNE)) {
+    const ttc = ttcCents(ht);
+    // La TVA détaillée figure sous le prix des deux offres principales et dans la fenêtre de commande ; les prestations affichent HT et TTC.
+    const attendus = [`${fmt(ht * 100)} HT`, `${fmt(ttc)} TTC`];
+    if (id === 'landing-page' || id === 'site-vitrine') attendus.push(`TVA 20 % : ${fmt(ttc - ht * 100)}`);
+    for (const x of attendus) if (!off3.includes(x)) manquants.push(`${id}: ${x}`);
+  }
+  check('grille active : chaque offre commandable affiche HT, TTC et TVA', manquants.length === 0, JSON.stringify(manquants.slice(0, 4)));
+  check('grille active : anciens prix absents (149, 499, 2 500, 5 000, 10 000 €)', !/\b149 €|\b499 €|2 500 €|5 000 €|10 000 €/.test(off3));
+  const html3 = await (await fetch(APP3 + '/offres')).text();
+  const c = (needle) => html3.split(needle).length - 1;
+  check('grille active : 9 boutons « Commander » et 16 « Demander un devis »', c('Commander <') === 9 && c('Demander un devis <') === 16, `(${c('Commander <')} / ${c('Demander un devis <')})`);
+  check('grille active : mention « prix hors taxes » et aucun tiret long', off3.includes('Prix en euros hors taxes (HT)') && !/[—–]/.test(off3));
+  check('grille active : offres sur devis toujours sans prix', (off3.match(/Sur devis/g) ?? []).length >= 16);
+
+  // 5. Données structurées : prix HT précisé pour la Landing page et le Site vitrine, rien pour les offres sur devis.
+  const ld = [...html3.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map((m) => JSON.parse(m[1])).find((j) => j['@type'] === 'OfferCatalog');
+  const specs = (ld?.itemListElement ?? []).filter((o) => o.priceSpecification).map((o) => `${o.priceSpecification.price}/${o.priceSpecification.valueAddedTaxIncluded}`);
+  check('grille active : données structurées en HT (390,00 et 990,00, TVA non incluse)', JSON.stringify(specs) === JSON.stringify(['390.00/false', '990.00/false']), JSON.stringify(specs));
+}
+
 console.log('\n== Pages');
 for (const p of ['/', '/offres', '/faq', '/vision', '/mentions-legales', '/confidentialite', '/blog', '/services/ia', '/services/audit', '/merci', '/sitemap.xml', '/robots.txt']) {
   r = await fetch(APP + p);

@@ -64,7 +64,7 @@ export function blogPostingJsonLd({
 }
 
 export function offerCatalogJsonLd(
-  offers: { id: string; name: string; tagline: string; price: number; quoteOnly?: boolean }[]
+  offers: { id: string; name: string; tagline: string; price: number; quoteOnly?: boolean; vatExcluded?: boolean }[]
 ) {
   return {
     '@context': 'https://schema.org',
@@ -78,7 +78,19 @@ export function offerCatalogJsonLd(
       url: `${BASE}/offres#${offer.id}`,
       seller: { '@id': ORG_ID },
       // Offre sur devis : aucun prix public, donc aucun prix dans le balisage.
-      ...(offer.quoteOnly ? {} : { priceCurrency: 'EUR', price: (offer.price / 100).toFixed(2) }),
+      // Grille 2026 : le prix du balisage est HT, ce que `valueAddedTaxIncluded: false` précise.
+      ...(offer.quoteOnly
+        ? {}
+        : offer.vatExcluded
+          ? {
+              priceSpecification: {
+                '@type': 'PriceSpecification',
+                price: (offer.price / 100).toFixed(2),
+                priceCurrency: 'EUR',
+                valueAddedTaxIncluded: false,
+              },
+            }
+          : { priceCurrency: 'EUR', price: (offer.price / 100).toFixed(2) }),
       itemOffered: {
         '@type': 'Service',
         name: offer.name,
