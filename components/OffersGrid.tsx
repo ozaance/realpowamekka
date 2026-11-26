@@ -94,7 +94,7 @@ export default function OffersGrid({
                     whiteSpace: 'nowrap',
                   }}
                 >
-                  Le plus choisi
+                  Recommandé
                 </span>
               )}
             </div>
