@@ -20,12 +20,15 @@ export type LegalDocument = {
 
 export const LEGAL_UPDATED = '26 novembre 2026';
 
+/** Mise à jour des mentions légales et de la politique de confidentialité (mesure d'audience Vercel). Les CGV gardent LEGAL_UPDATED. */
+export const PRIVACY_UPDATED = '27 novembre 2026';
+
 export const mentionsLegales: LegalDocument = {
   slug: 'mentions-legales',
   kicker: 'Informations légales',
   title: 'Mentions légales',
   lede: "Qui édite ce site, qui l'héberge et comment nous joindre.",
-  updated: LEGAL_UPDATED,
+  updated: PRIVACY_UPDATED,
   description:
     "Mentions légales du site powamekka.com : éditeur, immatriculation, directeur de la publication, hébergeur et contact.",
   sections: [
@@ -67,7 +70,7 @@ export const mentionsLegales: LegalDocument = {
       title: 'Données personnelles et stockage dans le navigateur',
       blocks: [
         'Le traitement des données personnelles est décrit dans la politique de confidentialité.',
-        "Le site n'utilise aucun cookie de mesure d'audience ni de publicité. Il enregistre dans le navigateur un seul indicateur technique non personnel, qui évite de rejouer l'animation d'ouverture de la page d'accueil.",
+        "Le site ne dépose aucun cookie. Il mesure sa fréquentation avec Vercel Web Analytics, sans cookie : voir la politique de confidentialité. Il enregistre dans le navigateur un seul indicateur technique non personnel, qui évite de rejouer l'animation d'ouverture de la page d'accueil.",
       ],
     },
     {
@@ -88,7 +91,7 @@ export const politiqueConfidentialite: LegalDocument = {
   kicker: 'Informations légales',
   title: 'Politique de confidentialité',
   lede: 'Les données que nous recevons, pourquoi, combien de temps, et vos droits.',
-  updated: LEGAL_UPDATED,
+  updated: PRIVACY_UPDATED,
   description:
     "Politique de confidentialité de powamekka.com : données collectées, finalités, durées de conservation, prestataires et droits des personnes.",
   sections: [
@@ -120,13 +123,27 @@ export const politiqueConfidentialite: LegalDocument = {
         "Vos données ne sont accessibles qu'à l'éditeur et aux prestataires techniques suivants, dans la limite de leur mission :",
         {
           list: [
-            'Vercel Inc. : hébergement du site ;',
+            "Vercel Inc. : hébergement du site et mesure d'audience (Vercel Web Analytics) ;",
             'Resend : envoi des e-mails du site (demandes de contact, notifications de commande) ;',
             'Namecheap (Private Email) : boîte de réception contact@powamekka.com ;',
             'Mollie B.V. : paiement en ligne ;',
             'WhatsApp (Meta) : seulement si vous choisissez ce canal.',
           ],
         },
+      ],
+    },
+    {
+      title: "Mesure d'audience",
+      blocks: [
+        "Le site mesure sa fréquentation avec Vercel Web Analytics, fourni par Vercel Inc., qui héberge déjà le site. Cet outil fonctionne sans cookie : selon Vercel, les visiteurs sont reconnus par un identifiant calculé à partir de la requête reçue, supprimé automatiquement après 24 heures.",
+        {
+          list: [
+            "Données reçues pour chaque page vue : adresse de la page, page d'origine (référent), date et heure, localisation géographique approximative, système d'exploitation, navigateur et type d'appareil.",
+            "Finalité : connaître la fréquentation du site et des pages consultées, sous forme de statistiques agrégées, pour l'améliorer. Ces données ne servent ni à la publicité ni au suivi d'une personne d'un site à l'autre.",
+            "Base légale : l'intérêt légitime de l'éditeur à comprendre l'usage de son site.",
+          ],
+        },
+        "Vous pouvez vous y opposer en écrivant à contact@powamekka.com, ou en activant le blocage des traceurs de votre navigateur.",
       ],
     },
     {
@@ -139,7 +156,7 @@ export const politiqueConfidentialite: LegalDocument = {
     {
       title: 'Stockage dans le navigateur',
       blocks: [
-        "Le site ne dépose aucun cookie de mesure d'audience ni de publicité. Il enregistre dans le navigateur un seul indicateur technique non personnel, qui évite de rejouer l'animation d'ouverture de la page d'accueil.",
+        "Le site ne dépose aucun cookie, y compris pour la mesure d'audience. Il enregistre dans le navigateur un seul indicateur technique non personnel, qui évite de rejouer l'animation d'ouverture de la page d'accueil.",
         'Les pages de paiement de Mollie sont régies par la politique de Mollie.',
       ],
     },
@@ -165,7 +182,7 @@ export const politiqueConfidentialite: LegalDocument = {
     {
       title: 'Modifications',
       blocks: [
-        "Cette politique évoluera si de nouveaux outils sont ajoutés au site, par exemple un outil de facturation ou une mesure d'audience. La date de mise à jour figure en tête de page.",
+        "Cette politique évoluera si de nouveaux outils sont ajoutés au site, par exemple un outil de facturation. La date de mise à jour figure en tête de page.",
       ],
     },
   ],
