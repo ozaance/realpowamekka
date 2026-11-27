@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
+import { Analytics } from "@vercel/analytics/next";
 import "./fonts/fallbacks.css";
 import "./globals.css";
 import "../styles/hikari-v2.css";
@@ -143,6 +144,7 @@ export default function RootLayout({
         data-italics="off"
       >
         {children}
+        <Analytics />
       </body>
     </html>
   );
