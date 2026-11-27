@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
 import { ART_QUALITY, ART_SIZES } from './art';
 
@@ -112,6 +113,10 @@ export default function CTACine() {
             contact@powamekka.com
           </a>
         </div>
+        <p className="cn-cta-local">
+          Vous dirigez une PME ? Découvrez notre accompagnement{' '}
+          <Link href="/agence-ia-rouen">en IA à Rouen</Link>, entièrement à distance.
+        </p>
       </div>
     </section>
   );

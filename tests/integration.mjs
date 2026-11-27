@@ -501,12 +501,30 @@ console.log('\n== Contenu et référencement');
   check('page Offres : image de partage Open Graph présente', /property="og:image"/.test(offresHtml));
   const pagesTexte = [];
   for (const p of ['/', '/faq', '/services/sites', '/vision', '/offres']) pagesTexte.push(await (await fetch(APP + p)).text());
-  check('aucune localisation non justifiée (Rouen, Normandie) ni profil LinkedIn non vérifié dans les pages', !/Rouen|Normandie|linkedin\.com/i.test(pagesTexte.join(' ')));
+  // Rouen : mention autorisée depuis le 2026-11-27 (activité exercée à Rouen, confirmée par le responsable).
+  // Restent interdits : Normandie, profil LinkedIn non vérifié, adresse ou commerce local dans le balisage,
+  // promesse de rendez-vous sur place (l'accompagnement se fait uniquement à distance).
+  const rouenHtml = await (await fetch(APP + '/agence-ia-rouen')).text();
+  pagesTexte.push(rouenHtml);
+  const tous = pagesTexte.join(' ');
+  check('aucune localisation non justifiée (Normandie) ni profil LinkedIn non vérifié dans les pages', !/Normandie|linkedin\.com/i.test(tous));
+  const ldTous = pagesTexte.flatMap((h) => [...h.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map((m) => m[1])).join(' ');
+  check('aucune adresse ni commerce local dans les données structurées (PostalAddress, LocalBusiness)', !/PostalAddress|LocalBusiness|addressLocality|streetAddress/.test(ldTous));
+  check('aucune promesse de rendez-vous sur place ou de rendez-vous sur site', !/rendez-vous sur (site|place) restent possibles|sur site restent possibles|nous recevons (vos|nos) clients/i.test(strip5(tous)));
+  const rouenT = strip5(rouenHtml);
+  const h1s = [...rouenHtml.matchAll(/<h1[^>]*>([\s\S]*?)<\/h1>/g)].map((m) => strip5(m[1]));
+  check('page /agence-ia-rouen : un seul h1 contenant « IA à Rouen », titre avec « IA à Rouen », canonique propre', h1s.length === 1 && h1s[0].includes('IA à Rouen') && /<title>[^<]*IA à Rouen[^<]*<\/title>/.test(rouenHtml) && rouenHtml.includes('<link rel="canonical" href="https://www.powamekka.com/agence-ia-rouen"'), JSON.stringify(h1s));
+  const rouenLd = [...rouenHtml.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].flatMap((m) => [].concat(JSON.parse(m[1])));
+  check('page /agence-ia-rouen : données structurées Service, BreadcrumbList et FAQPage', ['Service', 'BreadcrumbList', 'FAQPage'].every((t) => rouenLd.some((j) => j['@type'] === t)));
+  check('page /agence-ia-rouen : accompagnement à distance affirmé, clientèle professionnelle, aucun tiret long', rouenT.includes('uniquement à distance') && rouenT.includes('exclusivement avec des professionnels') && !/[—–]/.test(rouenT));
+  const sitemapXml = await (await fetch(APP + '/sitemap.xml')).text();
+  const iaHtml = await (await fetch(APP + '/services/ia')).text();
+  check('page /agence-ia-rouen : présente dans le sitemap, liée depuis l\'accueil et /services/ia', sitemapXml.includes('https://www.powamekka.com/agence-ia-rouen</loc>') && pagesTexte[0].includes('href="/agence-ia-rouen"') && iaHtml.includes('href="/agence-ia-rouen"'));
   check('badge de la carte recommandée : « Recommandé » (plus de « Le plus choisi »)', strip5(offresHtml).includes('Recommandé') && !strip5(offresHtml).includes('Le plus choisi'));
 }
 
 console.log('\n== Pages');
-for (const p of ['/', '/offres', '/faq', '/vision', '/mentions-legales', '/confidentialite', '/cgv', '/blog', '/services/ia', '/services/audit', '/merci', '/sitemap.xml', '/robots.txt']) {
+for (const p of ['/', '/offres', '/faq', '/vision', '/mentions-legales', '/confidentialite', '/cgv', '/blog', '/services/ia', '/services/audit', '/agence-ia-rouen', '/merci', '/sitemap.xml', '/robots.txt']) {
   r = await fetch(APP + p);
   check(`GET ${p} → 200`, r.status === 200, `(reçu ${r.status})`);
 }

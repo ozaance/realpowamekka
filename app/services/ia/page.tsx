@@ -53,6 +53,7 @@ export default function IAPage() {
         { label: 'Systèmes Digitaux', href: '/services/systemes' },
         { label: 'Formation & Adoption', href: '/services/formation' },
         { label: 'Sites Premium', href: '/services/sites' },
+        { label: 'IA à Rouen', href: '/agence-ia-rouen' },
       ]}
       />
     </>

@@ -72,7 +72,7 @@ export const faqSections: FaqSection[] = [
       {
         question: 'Intervenez-vous partout en France ?',
         answer:
-          "Oui, nous intervenons partout en France. L'essentiel du travail se fait à distance ; les rendez-vous sur site restent possibles selon le projet.",
+          "Oui. Powamekka exerce son activité à Rouen et accompagne des entreprises partout en France. L'accompagnement se fait uniquement à distance : visioconférence, téléphone, e-mail et partage de documents en ligne.",
       },
       {
         question: 'Comment savoir si mon entreprise est prête ?',
