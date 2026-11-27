@@ -6,7 +6,8 @@ l'agent le respecte, il ne le réécrit pas de sa propre initiative.
 ## Positionnement
 
 Powamekka aide les dirigeants de PME à automatiser leurs opérations, intégrer l'IA et
-structurer leur croissance. Basé à Rouen, intervient partout en France.
+structurer leur croissance. Activité exercée à Rouen, accompagnement uniquement à distance,
+clients professionnels partout en France.
 
 Le SEO sert **un seul objectif** : faire arriver sur le site des dirigeants de PME qui ont un
 problème d'organisation ou de temps administratif, et les amener à demander un audit. Le trafic
@@ -62,11 +63,22 @@ Page pilier : `/services/audit`
 Page pilier : `/services/formation`
 - formation IA entreprise · former ses équipes à l'IA · formation ChatGPT professionnelle
 
-### Cluster 6 — Local (Normandie)
+### Cluster 6 — Local (Rouen)
 
-- consultant IA Rouen · agence digitale Rouen · automatisation Normandie
-Une seule page locale, sur l'accueil et le `ProfessionalService` existant.
-**Ne pas dupliquer de pages ville par ville** : contenu dupliqué, sanctionné.
+Page pilier : `/agence-ia-rouen` (autorisée le 2026-11-27 par le responsable, priorité du moment).
+- **ia rouen · agence ia rouen** (requêtes prioritaires) · consultant IA Rouen
+- Faits confirmés : Powamekka exerce son activité à Rouen ; la maison mère (adresse légale des
+  mentions légales) est à Mulhouse. L'adresse des mentions légales ne change pas sans demande
+  du responsable.
+- **L'accompagnement se fait uniquement à distance** : ne jamais promettre de rendez-vous sur
+  place ni de local ouvert au public.
+- **Pas de balisage de commerce local avec adresse à Rouen** (`LocalBusiness`, `PostalAddress`) :
+  seulement un `Service` dont `areaServed` inclut la ville de Rouen.
+- « Normandie » reste hors des pages tant que le responsable ne l'a pas autorisé (test
+  d'intégration).
+- Cette page est **la seule page locale**. Elle se renforce de cycle en cycle (contenu, liens
+  entrants), elle ne se duplique pas.
+**Ne pas dupliquer de pages ville par ville** (Le Havre, Caen…) : contenu dupliqué, sanctionné.
 
 ### Cluster 7 — Offres web (transactionnel)
 

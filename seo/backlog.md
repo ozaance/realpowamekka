@@ -69,6 +69,22 @@ puis met ce fichier à jour. Abdoulaye peut réordonner, ajouter ou supprimer li
       rétablir ni inventer un cas client. Les estimations d'heures non sourcées (« 8 à 12 heures »,
       « 4 à 8 heures », « 5 heures par semaine ») sont aussi retirées.
 
+- [x] ~~**Page locale « IA à Rouen »**~~ Créée le 2026-11-27 : `/agence-ia-rouen` (title et H1
+      avec « IA à Rouen », FAQ, `Service` + `BreadcrumbList` + `FAQPage`, sitemap, liens depuis
+      l'accueil et `/services/ia`).
+- [ ] **Renforcer `/agence-ia-rouen`** aux cycles suivants (requêtes « ia rouen », « agence ia
+      rouen ») : suivre sa position dans Search Console dès qu'elle apparaît ; ajouter des liens
+      entrants contextuels depuis les articles (`par-ou-commencer-ia-entreprise`,
+      `ia-btp-gagner-du-temps`) ; enrichir d'une section utile aux PME (exemple de premier
+      chantier d'automatisation, sans cas client inventé). Ne jamais promettre de rendez-vous
+      sur place, ni ajouter d'adresse ou de `LocalBusiness`.
+- [ ] **Demander l'indexation de `/agence-ia-rouen`** dans Search Console (inspection d'URL) après
+      la mise en production : action humaine.
+- [ ] **Vercel Web Analytics toujours inactif** (404 au connecteur le 2026-11-27, comme les
+      2026-11-02 et 2026-11-09) : à activer côté tableau de bord Vercel si le trafic réel doit
+      servir à prioriser. Les journaux d'exécution ne sont conservés qu'une heure (offre Hobby) :
+      la recherche des 404 et 5xx en production reste partielle.
+
 ---
 
 ## Éditorial — file d'attente

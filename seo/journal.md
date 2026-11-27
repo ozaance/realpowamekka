@@ -27,6 +27,59 @@ Format d'une entrée :
 
 ---
 
+## 2026-11-27 : Page « IA à Rouen » (priorité « ia rouen », « agence ia rouen »)
+
+**Chiffres (28 j, Search Console, période 2026-10-23 → 2026-11-20, export `seo-data` du 2026-11-23)**
+- Clics : 1 (accueil, requête « powamekka », position 1). Impressions : 16 sur tout le site
+  (8 sur l'accueil, position moyenne 1,9 ; 1 impression chacune sur `/blog`, `/faq`, les cinq
+  pages de service et `/blog/par-ou-commencer-ia-entreprise`, positions 2 à 9).
+- Toujours une seule requête visible (marque). Aucune requête « rouen » dans les données : la page
+  locale part de zéro. Volume trop faible pour une optimisation on-page guidée par les données.
+- Pas de nouvel export depuis le 2026-11-23 (le prochain est attendu le 2026-11-30).
+- Vercel Web Analytics : 404 « Web Analytics not found », toujours inactif sur le projet.
+
+**Erreurs 404 et 5xx**
+- Vercel : aucune erreur d'exécution sur les 7 derniers jours (`get_runtime_errors`). Les journaux
+  détaillés ne remontent qu'à une heure (offre Hobby) : impossible de lister les 404 réels.
+- Production : `sitemap.xml` répond 200 (17 URL). Le réseau de l'environnement bloque l'accès
+  direct au site, donc les autres URL de production n'ont pas été sondées une par une.
+- Build local : exploration de tous les liens internes depuis l'accueil et le sitemap, 18 pages,
+  toutes en 200, aucune à plus de 2 clics de l'accueil.
+
+**Actions**
+- Créé `/agence-ia-rouen` (`app/agence-ia-rouen/page.tsx`) : title « Agence IA à Rouen :
+  automatisation pour PME | Powamekka » (55 caractères), description de 144 caractères, H1
+  unique « Agence IA à Rouen pour les PME. », sections (accompagnement à distance, usages de l'IA,
+  pour qui, déroulé, FAQ de 6 questions, appel à l'action), 9 liens internes (4 services, 4
+  articles, FAQ). JSON-LD `Service` (zone desservie : Rouen et France, sans adresse),
+  `BreadcrumbList`, `FAQPage`. Aucun chiffre, client ni délai inventé.
+- Sitemap : page ajoutée (`app/sitemap.ts`).
+- Liens entrants : accueil (ligne sous les boutons du dernier écran, `components/cine/CTACine.tsx`
+  et `styles/cinema.css`) et `/services/ia` (pastille « IA à Rouen »).
+- FAQ (`lib/faq.ts`) : la réponse « les rendez-vous sur site restent possibles selon le projet »
+  contredisait l'accompagnement uniquement à distance ; remplacée par « Powamekka exerce son
+  activité à Rouen […] L'accompagnement se fait uniquement à distance ».
+- Test d'intégration (`tests/integration.mjs`) : la vérification de la PR #51 interdisait toute
+  mention de Rouen. Remplacée, conformément à la nouvelle décision, par des vérifications plus
+  ciblées (Normandie et LinkedIn toujours interdits, aucune adresse ni `LocalBusiness` dans le
+  balisage, aucune promesse de rendez-vous sur place) et 4 vérifications de la nouvelle page.
+  153 tests réussis, 0 échec.
+- `seo/strategie.md` : cluster 6 réécrit pour autoriser `/agence-ia-rouen` et fixer ses limites.
+- Pas d'article de blog ce cycle : le cycle est consacré à la page prioritaire.
+
+**Hypothèse testée**
+- Une page dédiée avec « IA à Rouen » dans le title et le H1 fera apparaître le site sur
+  « ia rouen » et « agence ia rouen » dans Search Console une fois indexée → à réévaluer le
+  2026-12-25.
+
+**À faire côté responsable (humain)** : valider la Preview (changement visuel sur l'accueil) ;
+demander l'indexation de `/agence-ia-rouen` dans Search Console après mise en production ;
+activer Vercel Web Analytics si souhaité.
+
+**PR** : cycle du 2026-11-27
+
+---
+
 ## 2026-11-26 — Retrait du témoignage de l'électricien et des estimations non sourcées (manuel)
 
 **Chiffres (28 j, Search Console)**

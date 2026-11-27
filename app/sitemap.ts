@@ -32,6 +32,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${BASE}/mentions-legales`, lastModified: lastCommitDate('app/mentions-legales/page.tsx'), changeFrequency: 'yearly', priority: 0.3 },
     { url: `${BASE}/cgv`, lastModified: lastCommitDate('app/cgv/page.tsx'), changeFrequency: 'yearly', priority: 0.3 },
     { url: `${BASE}/confidentialite`, lastModified: lastCommitDate('app/confidentialite/page.tsx'), changeFrequency: 'yearly', priority: 0.3 },
+    { url: `${BASE}/agence-ia-rouen`, lastModified: lastCommitDate('app/agence-ia-rouen/page.tsx'), changeFrequency: 'monthly', priority: 0.8 },
     { url: `${BASE}/vision`, lastModified: lastCommitDate('app/vision/page.tsx'), changeFrequency: 'yearly', priority: 0.6 },
     ...services.map((s) => ({
       url: `${BASE}/services/${s}`,
